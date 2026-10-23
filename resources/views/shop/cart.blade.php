@@ -17,25 +17,35 @@
                     @foreach ($lines as $line)
                         <li class="flex gap-4 py-6 sm:gap-6">
                             <a href="{{ route('products.show', $line->product) }}" class="group w-24 shrink-0 sm:w-32">
-                                <x-product-image :product="$line->product" class="aspect-[4/5]" />
+                                @if ($line->variant?->image)
+                                    <img src="{{ $line->imageUrl() }}" alt="{{ $line->product->name }}" class="aspect-[4/5] w-full object-cover">
+                                @else
+                                    <x-product-image :product="$line->product" class="aspect-[4/5]" />
+                                @endif
                             </a>
                             <div class="flex min-w-0 flex-1 flex-col">
                                 <div class="flex items-start justify-between gap-3">
                                     <div class="min-w-0">
                                         <a href="{{ route('products.show', $line->product) }}" class="font-semibold leading-snug line-clamp-2 hover:underline hover:underline-offset-4">{{ $line->product->name }}</a>
-                                        <p class="mt-1 text-sm text-stone-500">@rupiah($line->product->price)</p>
+                                        @if ($line->variant)
+                                            <p class="mt-1 text-xs font-medium text-stone-600">{{ $line->product->variant_label ?: 'Varian' }}: {{ $line->variant->name }}</p>
+                                        @endif
+                                        <p class="mt-1 text-sm text-stone-500">
+                                            @rupiah($line->unitPrice())
+                                            @if ($line->compareAtPrice() > $line->unitPrice())<span class="ml-1 text-xs text-stone-400 line-through">@rupiah($line->compareAtPrice())</span>@endif
+                                        </p>
                                     </div>
                                     <p class="shrink-0 font-semibold">@rupiah($line->subtotal())</p>
                                 </div>
                                 <div class="mt-auto flex items-center justify-between pt-4">
-                                    <form method="POST" action="{{ route('cart.update', $line->product) }}" class="inline-flex items-center rounded-full border border-stone-300">
+                                    <form method="POST" action="{{ route('cart.update', $line->key()) }}" class="inline-flex items-center rounded-full border border-stone-300">
                                         @csrf
                                         @method('PATCH')
                                         <button name="quantity" value="{{ $line->quantity - 1 }}" class="grid size-9 place-items-center rounded-full hover:bg-sand-100" aria-label="Kurangi"><x-icon name="minus" class="size-3.5" /></button>
                                         <span class="w-8 text-center text-sm font-semibold">{{ $line->quantity }}</span>
-                                        <button name="quantity" value="{{ $line->quantity + 1 }}" class="grid size-9 place-items-center rounded-full hover:bg-sand-100 disabled:opacity-30" aria-label="Tambah" @disabled($line->quantity >= $line->product->stock)><x-icon name="plus" class="size-3.5" /></button>
+                                        <button name="quantity" value="{{ $line->quantity + 1 }}" class="grid size-9 place-items-center rounded-full hover:bg-sand-100 disabled:opacity-30" aria-label="Tambah" @disabled($line->quantity >= $line->availableStock())><x-icon name="plus" class="size-3.5" /></button>
                                     </form>
-                                    <form method="POST" action="{{ route('cart.destroy', $line->product) }}">
+                                    <form method="POST" action="{{ route('cart.destroy', $line->key()) }}">
                                         @csrf
                                         @method('DELETE')
                                         <button class="link-underline text-xs font-semibold text-stone-500 hover:text-rose-600">Hapus</button>

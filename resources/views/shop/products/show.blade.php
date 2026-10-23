@@ -4,50 +4,126 @@
             <a href="{{ route('home') }}" class="hover:text-ink">Beranda</a>
             <span>/</span>
             <a href="{{ route('products.index') }}" class="hover:text-ink">Produk</a>
+            @if ($product->category?->parent)
+                <span>/</span>
+                <a href="{{ route('products.index', ['kategori' => $product->category->parent->slug]) }}" class="hover:text-ink">{{ $product->category->parent->name }}</a>
+            @endif
             @if ($product->category)
                 <span>/</span>
                 <a href="{{ route('products.index', ['kategori' => $product->category->slug]) }}" class="hover:text-ink">{{ $product->category->name }}</a>
             @endif
         </nav>
 
-        <div class="mt-5 grid gap-8 lg:grid-cols-12 lg:gap-14">
-            {{-- Foto --}}
-            <div class="-mx-4 sm:mx-0 lg:col-span-7">
+        @php
+            $variants = $product->activeVariants;
+            $pageConfig = [
+                'images' => $product->images->map(fn ($i) => ['id' => $i->id, 'url' => $i->url()])->values(),
+                'variants' => $variants->map(fn ($v) => [
+                    'id' => $v->id, 'name' => $v->name, 'price' => $v->price, 'compare_at_price' => $v->compare_at_price,
+                    'stock' => $v->stock, 'image_id' => $v->product_image_id, 'sku' => $v->sku,
+                ])->values(),
+                // Pilih otomatis bila hanya ada satu varian yang tersedia.
+                'selectedId' => old('variant_id') ? (int) old('variant_id') : ($variants->where('stock', '>', 0)->count() === 1 ? $variants->firstWhere('stock', '>', 0)->id : null),
+                'price' => $product->price,
+                'compareAt' => $product->compare_at_price,
+                'stock' => $product->stock,
+            ];
+            $priceRange = $variants->isNotEmpty() && $variants->pluck('price')->unique()->count() > 1;
+            $lowStock = config('shop.low_stock_threshold');
+        @endphp
+        <div class="mt-5 grid gap-8 lg:grid-cols-12 lg:gap-14" x-data="productPage(@js($pageConfig))">
+            {{-- Galeri --}}
+            <div class="-mx-4 min-w-0 sm:mx-0 lg:col-span-7">
                 <div class="relative">
-                    <x-product-image :product="$product" :eager="true" class="aspect-square sm:aspect-[4/5]" />
-                    @if ($product->isOnSale())
-                        <span class="absolute left-4 top-4 bg-brand-600 px-2.5 py-1 text-[11px] font-bold tracking-wider text-white uppercase">Hemat {{ $product->discountPercent() }}%</span>
+                    @if ($product->images->isEmpty())
+                        <x-product-image :product="$product" :eager="true" class="aspect-square sm:aspect-[4/5]" />
+                    @else
+                        <div class="relative aspect-square overflow-hidden bg-sand-100 sm:aspect-[4/5]">
+                            @foreach ($product->images as $index => $image)
+                                <img src="{{ $image->url() }}" alt="{{ $product->name }} — foto {{ $index + 1 }}"
+                                     @if ($index > 0) loading="lazy" x-cloak @endif decoding="async"
+                                     x-show="active === {{ $index }}" x-transition.opacity.duration.200ms
+                                     class="absolute inset-0 size-full object-cover">
+                            @endforeach
+                        </div>
+                        @if ($product->images->count() > 1)
+                            <button type="button" @click="next(-1)" class="absolute left-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-ink shadow transition hover:bg-white" aria-label="Foto sebelumnya"><x-icon name="chevron-left" class="size-5" /></button>
+                            <button type="button" @click="next(1)" class="absolute right-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-ink shadow transition hover:bg-white" aria-label="Foto berikutnya"><x-icon name="chevron-right" class="size-5" /></button>
+                            <span class="absolute bottom-4 right-4 rounded-full bg-ink/70 px-2.5 py-1 text-xs font-semibold text-white" x-text="`${active + 1} / ${images.length}`">1 / {{ $product->images->count() }}</span>
+                        @endif
                     @endif
+                    <template x-if="discount">
+                        <span class="absolute left-4 top-4 bg-brand-600 px-2.5 py-1 text-[11px] font-bold tracking-wider text-white uppercase" x-text="`Hemat ${discount}%`"></span>
+                    </template>
                 </div>
+                @if ($product->images->count() > 1)
+                    <div class="no-scrollbar mt-3 flex gap-2 overflow-x-auto px-4 sm:px-0">
+                        @foreach ($product->images as $index => $image)
+                            <button type="button" @click="active = {{ $index }}"
+                                    class="size-16 shrink-0 overflow-hidden border-2 transition sm:size-20"
+                                    :class="active === {{ $index }} ? 'border-ink' : 'border-transparent opacity-60 hover:opacity-100'"
+                                    aria-label="Lihat foto {{ $index + 1 }}">
+                                <img src="{{ $image->url() }}" alt="" loading="lazy" class="size-full object-cover">
+                            </button>
+                        @endforeach
+                    </div>
+                @endif
             </div>
 
             {{-- Info --}}
             <div class="lg:col-span-5">
-                <div class="lg:sticky lg:top-28" x-data="{ qty: 1, max: {{ max(1, $product->stock) }} }">
+                <div class="lg:sticky lg:top-28">
                     @if ($product->category)
                         <a href="{{ route('products.index', ['kategori' => $product->category->slug]) }}" class="eyebrow text-stone-500 hover:text-ink">{{ $product->category->name }}</a>
                     @endif
                     <h1 class="mt-2 font-display text-3xl leading-[1.05] font-extrabold tracking-tight sm:text-4xl">{{ $product->name }}</h1>
 
                     <div class="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                        <p @class(['text-2xl font-semibold', 'text-brand-700' => $product->isOnSale()])>@rupiah($product->price)</p>
-                        @if ($product->isOnSale())
-                            <p class="text-base text-stone-400 line-through">@rupiah($product->compare_at_price)</p>
-                        @endif
+                        <p class="text-2xl font-semibold" :class="compareAt && 'text-brand-700'">
+                            @if ($priceRange)<span x-show="!selected" class="text-base font-medium text-stone-500">Mulai</span>@endif
+                            <span x-text="rupiah(price)">@rupiah($product->price)</span>
+                        </p>
+                        <p x-show="compareAt" @unless ($product->isOnSale()) x-cloak @endunless class="text-base text-stone-400 line-through" x-text="rupiah(compareAt)">@rupiah($product->compare_at_price)</p>
                     </div>
 
                     <p class="mt-4 flex items-center gap-2 text-sm">
-                        @if ($product->inStock())
-                            <span class="size-2 rounded-full {{ $product->isLowStock() ? 'bg-amber-500' : 'bg-emerald-500' }}"></span>
-                            {{ $product->isLowStock() ? 'Stok terbatas, sisa '.$product->stock : 'Stok tersedia, siap dikirim' }}
-                        @else
-                            <span class="size-2 rounded-full bg-stone-400"></span> Stok habis
-                        @endif
+                        <span class="size-2 rounded-full" :class="stock < 1 ? 'bg-stone-400' : (stock <= {{ $lowStock }} ? 'bg-amber-500' : 'bg-emerald-500')"></span>
+                        <span x-text="stock < 1 ? 'Stok habis' : (stock <= {{ $lowStock }} ? `Stok terbatas, sisa ${stock}` : 'Stok tersedia, siap dikirim')">
+                            {{ ! $product->inStock() ? 'Stok habis' : ($product->isLowStock() ? 'Stok terbatas, sisa '.$product->stock : 'Stok tersedia, siap dikirim') }}
+                        </span>
                     </p>
 
+                    @if ($variants->isNotEmpty())
+                        <div class="mt-8">
+                            <p class="eyebrow text-stone-500">
+                                {{ $product->variant_label ?: 'Varian' }}:
+                                <span class="normal-case tracking-normal text-ink" x-text="selected ? selected.name : 'pilih salah satu'"></span>
+                            </p>
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                @foreach ($variants as $variant)
+                                    <button type="button" @click="select(@js(['id' => $variant->id, 'stock' => $variant->stock, 'image_id' => $variant->product_image_id]))"
+                                            @disabled(! $variant->inStock())
+                                            :aria-pressed="selectedId === {{ $variant->id }}"
+                                            :class="selectedId === {{ $variant->id }} ? 'chip-active' : ''"
+                                            class="chip inline-flex items-center gap-2 disabled:cursor-not-allowed disabled:border-dashed disabled:text-stone-300 disabled:line-through">
+                                        @if ($variant->image)
+                                            <img src="{{ $variant->image->url() }}" alt="" class="size-5 rounded-full object-cover">
+                                        @endif
+                                        {{ $variant->name }}
+                                        @unless ($variant->inStock())<span class="sr-only">(habis)</span>@endunless
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
                     @if ($product->inStock())
-                        <form id="add-to-cart" method="POST" action="{{ route('cart.store', $product) }}" class="mt-8">
+                        <form id="add-to-cart" method="POST" action="{{ route('cart.store', $product) }}" class="mt-8"
+                              @submit="if (needsVariant) { $event.preventDefault(); $refs.variantHint.classList.remove('hidden') }">
                             @csrf
+                            @if ($variants->isNotEmpty())
+                                <input type="hidden" name="variant_id" :value="selectedId ?? ''">
+                            @endif
                             <p class="eyebrow text-stone-500">Jumlah</p>
                             <div class="mt-3 inline-flex items-center rounded-full border border-stone-300">
                                 <button type="button" @click="qty = Math.max(1, qty - 1)" class="grid size-11 place-items-center rounded-full hover:bg-sand-100" aria-label="Kurangi"><x-icon name="minus" class="size-4" /></button>
@@ -55,6 +131,7 @@
                                        class="w-12 border-0 bg-transparent p-0 text-center text-sm font-semibold focus:ring-0 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none">
                                 <button type="button" @click="qty = Math.min(max, qty + 1)" class="grid size-11 place-items-center rounded-full hover:bg-sand-100" aria-label="Tambah"><x-icon name="plus" class="size-4" /></button>
                             </div>
+                            <p x-ref="variantHint" x-show="needsVariant" class="mt-4 hidden text-sm font-medium text-brand-700">Pilih {{ mb_strtolower($product->variant_label ?: 'varian') }} terlebih dahulu.</p>
                             <div class="mt-6 grid gap-3">
                                 <button class="btn btn-ink btn-pill w-full py-4 text-[15px]">Tambah ke keranjang</button>
                                 <button name="buy_now" value="1" class="btn btn-outline btn-pill w-full py-4 text-[15px]">Beli sekarang</button>
@@ -97,7 +174,7 @@
                                         <div class="whitespace-pre-line">{{ $product->description }}</div>
                                     @elseif ($key === 'detail')
                                         <dl class="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">
-                                            @if ($product->sku)<dt class="text-stone-400">SKU</dt><dd>{{ $product->sku }}</dd>@endif
+                                            @if ($product->sku)<dt class="text-stone-400">SKU</dt><dd><span x-text="selected?.sku || @js($product->sku)">{{ $product->sku }}</span></dd>@endif
                                             @if ($product->category)<dt class="text-stone-400">Kategori</dt><dd>{{ $product->category->name }}</dd>@endif
                                             <dt class="text-stone-400">Berat</dt><dd>{{ $product->weight }} gr</dd>
                                         </dl>
@@ -135,7 +212,7 @@
             <div class="flex items-center gap-3 px-4 py-3">
                 <div class="min-w-0 flex-1">
                     <p class="truncate text-xs text-stone-500">{{ $product->name }}</p>
-                    <p class="text-sm font-semibold">@rupiah($product->price)</p>
+                    <p class="text-sm font-semibold">@if ($priceRange)Mulai @endif@rupiah($product->price)</p>
                 </div>
                 <button form="add-to-cart" class="btn btn-ink rounded-full px-6 py-3">Tambah ke keranjang</button>
             </div>

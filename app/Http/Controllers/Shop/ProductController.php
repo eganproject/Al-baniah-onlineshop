@@ -20,7 +20,7 @@ class ProductController extends Controller
     public function index(Request $request): View
     {
         $category = $request->filled('kategori')
-            ? Category::active()->where('slug', $request->string('kategori'))->first()
+            ? Category::active()->with('parent')->where('slug', $request->string('kategori'))->first()
             : null;
 
         $minPrice = $request->integer('harga_min') ?: null;
@@ -31,7 +31,7 @@ class ProductController extends Controller
         $products = Product::active()
             ->with('category')
             ->search($request->string('q')->trim()->value() ?: null)
-            ->when($category, fn ($q) => $q->where('category_id', $category->id))
+            ->when($category, fn ($q) => $q->whereIn('category_id', $category->familyIds()))
             ->when($request->boolean('tersedia'), fn ($q) => $q->where('stock', '>', 0))
             ->when($request->boolean('promo'), fn ($q) => $q->onSale())
             ->when($minPrice, fn ($q) => $q->where('price', '>=', $minPrice))
@@ -45,7 +45,9 @@ class ProductController extends Controller
 
         return view('shop.products.index', [
             'products' => $products,
-            'categories' => Category::active()->orderBy('sort_order')->get(),
+            'categories' => Category::active()->root()
+                ->with(['children' => fn ($q) => $q->active()])
+                ->orderBy('sort_order')->orderBy('name')->get(),
             'activeCategory' => $category,
             'sort' => $sort,
             'sorts' => self::SORTS,
@@ -59,7 +61,7 @@ class ProductController extends Controller
         abort_unless($product->is_active, 404);
 
         return view('shop.products.show', [
-            'product' => $product->load('category'),
+            'product' => $product->load(['category.parent', 'images', 'activeVariants.image']),
             'related' => Product::active()
                 ->where('category_id', $product->category_id)
                 ->with('category')

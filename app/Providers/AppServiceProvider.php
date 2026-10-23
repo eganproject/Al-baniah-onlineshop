@@ -51,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
         View::composer('components.layouts.shop', function ($view) {
             $view->with([
                 'cartCount' => app(CartService::class)->count(),
-                'navCategories' => Category::active()->orderBy('sort_order')->get(['id', 'name', 'slug']),
+                'navCategories' => Category::active()->root()->orderBy('sort_order')->get(['id', 'name', 'slug']),
             ]);
         });
     }
