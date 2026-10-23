@@ -125,7 +125,19 @@ Route::middleware(['auth', 'role:admin', 'log.activity'])->prefix('admin')->name
         Route::patch('/categories/{category}/toggle', [Admin\CategoryController::class, 'toggle'])->name('categories.toggle');
         Route::resource('categories', Admin\CategoryController::class)->except('show');
         Route::post('/products/bulk', [Admin\ProductController::class, 'bulk'])->name('products.bulk');
+        Route::get('/products/export', [Admin\ProductTransferController::class, 'exportProducts'])->name('products.export');
+        Route::get('/products/import-template', [Admin\ProductTransferController::class, 'template'])->name('products.template');
         Route::resource('products', Admin\ProductController::class)->except('show');
+    });
+
+    // Impor/ekspor: produk butuh catalog.manage, stok butuh stock.manage (dicek di controller per jenis impor).
+    Route::controller(Admin\ProductTransferController::class)->group(function () {
+        Route::get('/products/import-export', 'index')->name('products.transfer');
+        Route::get('/stock/export', 'exportStock')->name('stock.export')->middleware('can:stock.manage');
+        Route::post('/imports', 'store')->name('imports.store')->middleware('throttle:20,1');
+        Route::get('/imports/{import}', 'show')->name('imports.show');
+        Route::post('/imports/{import}/commit', 'commit')->name('imports.commit');
+        Route::delete('/imports/{import}', 'destroy')->name('imports.destroy');
     });
 
     Route::middleware('can:stock.manage')->group(function () {

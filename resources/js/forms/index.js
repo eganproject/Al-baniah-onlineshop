@@ -14,6 +14,7 @@
  * resources/views/components/form.
  */
 
+import fileUpload from './file-upload';
 import imageUpload from './image-upload';
 
 let tomSelect;
@@ -91,6 +92,7 @@ const setValue = (el, value) => {
 };
 
 export default function forms(Alpine) {
+    Alpine.data('fileUpload', fileUpload);
     Alpine.data('imageUpload', imageUpload);
 
     /*
