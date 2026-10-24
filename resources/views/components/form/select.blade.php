@@ -3,6 +3,7 @@
     opsinya banyak; paksa dengan :search="true|false".
     <x-form.select name="courier" label="Kurir" :options="['jne' => 'JNE']" :selected="..." placeholder="Semua kurir" />
     :options = [value => label] atau [label grup => [value => label]] untuk optgroup.
+    Pilihan ganda: name="tags[]" multiple :selected="[1, 2]".
     Opsi juga boleh ditulis manual di slot (<option>...).
 --}}
 @use('App\Support\FormField')
@@ -25,7 +26,9 @@
     $invalid = FormField::hasError($name, $bag);
     $selected = $key ? old($key, $selected) : $selected;
     $selected = $selected instanceof \BackedEnum ? $selected->value : $selected;
-    $isSelected = fn ($value) => (string) $value === (string) $selected;
+    $isSelected = is_iterable($selected)
+        ? fn ($value) => collect($selected)->map(fn ($v) => (string) ($v instanceof \BackedEnum ? $v->value : $v))->contains((string) $value)
+        : fn ($value) => (string) $value === (string) $selected;
     $config = array_filter(['search' => $search], fn ($v) => $v !== null);
 @endphp
 <x-form.field :label="$label" :for="$id" :name="$name" :hint="$hint" :optional="$optional" :bag="$bag" :class="$wrapperClass">

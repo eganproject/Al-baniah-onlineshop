@@ -267,6 +267,14 @@
                                         @if ($product->category)
                                             <dt class="border-t border-stone-200 bg-sand-50 px-4 py-3 font-semibold text-ink">Kategori</dt><dd class="px-4 py-3 sm:border-t sm:border-stone-200">{{ $product->category->parent ? $product->category->parent->name.' › ' : '' }}{{ $product->category->name }}</dd>
                                         @endif
+                                        @if ($product->collections->isNotEmpty())
+                                            <dt class="border-t border-stone-200 bg-sand-50 px-4 py-3 font-semibold text-ink">Cocok untuk</dt>
+                                            <dd class="flex flex-wrap gap-1.5 px-4 py-3 sm:border-t sm:border-stone-200">
+                                                @foreach ($product->collections as $collection)
+                                                    <a href="{{ $collection->url() }}" class="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-semibold text-brand-800 ring-1 ring-brand-200 hover:bg-brand-100">{{ $collection->name }}</a>
+                                                @endforeach
+                                            </dd>
+                                        @endif
                                         @if ($variants->isNotEmpty())
                                             <dt class="border-t border-stone-200 bg-sand-50 px-4 py-3 font-semibold text-ink">{{ $product->variant_label ?: 'Varian' }}</dt><dd class="px-4 py-3 sm:border-t sm:border-stone-200">{{ $variants->pluck('name')->join(', ') }}</dd>
                                         @endif

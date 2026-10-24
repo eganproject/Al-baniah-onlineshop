@@ -49,6 +49,8 @@ class ProductRequest extends FormRequest
             'slug' => ['nullable', 'string', 'max:255', 'alpha_dash', Rule::unique('products')->ignore($product)],
             'sku' => ['nullable', 'string', 'max:64', Rule::unique('products')->ignore($product)],
             'category_id' => ['nullable', 'exists:categories,id'],
+            'collection_ids' => ['nullable', 'array', 'max:20'],
+            'collection_ids.*' => ['integer', 'distinct', 'exists:collections,id'],
             'description' => ['nullable', 'string', 'max:10000'],
             'weight' => ['required', 'integer', 'min:1', 'max:100000'],
             'is_active' => ['sometimes', 'boolean'],
@@ -120,6 +122,8 @@ class ProductRequest extends FormRequest
         return [
             'name' => 'nama produk',
             'category_id' => 'kategori',
+            'collection_ids' => 'koleksi',
+            'collection_ids.*' => 'koleksi',
             'description' => 'deskripsi',
             'price' => 'harga',
             'compare_at_price' => 'harga coret',

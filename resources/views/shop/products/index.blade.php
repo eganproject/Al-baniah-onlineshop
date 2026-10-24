@@ -1,7 +1,7 @@
 @php
     use Illuminate\Support\Arr;
 
-    $heading = request('q') ? 'Hasil untuk "'.request('q').'"' : ($activeCategory?->name ?? (request()->boolean('promo') ? 'Promo' : 'Semua produk'));
+    $heading = request('q') ? 'Hasil untuk "'.request('q').'"' : ($activeCategory?->name ?? $activeCollection?->name ?? (request()->boolean('promo') ? 'Promo' : 'Semua produk'));
     $baseQuery = request()->except('page');
     $pricePresets = [
         ['Di bawah 50rb', null, 50000],
@@ -13,13 +13,15 @@
     // Filter aktif yang bisa dihapus satu per satu.
     $activeFilters = array_filter([
         'q' => request('q') ? 'Kata kunci: '.request('q') : null,
+        'koleksi' => $activeCollection && ($activeCategory || request('q')) ? 'Aktivitas: '.$activeCollection->name : null,
         'tersedia' => request()->boolean('tersedia') ? 'Tersedia' : null,
         'promo' => request()->boolean('promo') ? 'Sedang diskon' : null,
         'harga' => ($minPrice || $maxPrice)
             ? 'Harga: '.($minPrice ? \App\Support\Money::rupiah($minPrice) : 'Rp0').' – '.($maxPrice ? \App\Support\Money::rupiah($maxPrice) : '∞')
             : null,
     ]);
-    $filterCount = count(array_diff_key($activeFilters, ['q' => true]));
+    $filterCount = count(array_diff_key($activeFilters, ['q' => true, 'koleksi' => true]));
+    $collectionUrl = fn (?string $slug) => route('products.index', ($slug ? ['koleksi' => $slug] : []) + Arr::except($baseQuery, ['koleksi', 'kategori']));
     $hasPrice = $minPrice || $maxPrice;
 
     // Kategori induk yang sedang dibuka (untuk subkategori).
@@ -27,13 +29,15 @@
     $categoryUrl = fn (?string $slug) => route('products.index', ($slug ? ['kategori' => $slug] : []) + Arr::except($baseQuery, 'kategori'));
     $toggleUrl = fn (string $key) => route('products.index', request()->boolean($key) ? Arr::except($baseQuery, $key) : [$key => 1] + $baseQuery);
 
-    $metaDescription = $activeCategory
-        ? ($activeCategory->description ?: 'Belanja '.$activeCategory->name.' original di '.config('shop.full_name').'. Harga terjangkau, kirim ke seluruh Indonesia.')
+    $context = $activeCategory ?? $activeCollection;
+    $metaDescription = $context
+        ? ($context->description ?: 'Belanja '.$context->name.' original di '.config('shop.full_name').'. Harga terjangkau, kirim ke seluruh Indonesia.')
         : null;
     $intro = $activeCategory?->description
+        ?: ($activeCollection && ! $activeCategory ? ($activeCollection->tagline ?: $activeCollection->description) : null)
         ?: (request('q') ? 'Produk yang cocok dengan pencarianmu.' : (request()->boolean('promo') ? 'Harga spesial untuk perlengkapan favorit, selama stok masih ada.' : 'Perlengkapan lari, yoga, workout, padel, renang, dan lainnya untuk menemani latihanmu.'));
 @endphp
-<x-layouts.shop :title="$activeCategory?->name ?? 'Semua Produk'" :description="$metaDescription" transparent-header>
+<x-layouts.shop :title="$context?->name ?? 'Semua Produk'" :description="$metaDescription" transparent-header>
     <div x-data="{ filters: false }" x-effect="document.body.classList.toggle('overflow-hidden', filters)" @keydown.escape.window="filters = false">
         {{-- Kepala katalog: menyatu dengan navbar transparan --}}
         <section class="relative isolate overflow-hidden bg-ink text-white">
@@ -46,15 +50,25 @@
                 <nav class="flex flex-wrap items-center gap-1.5 text-xs text-white/55" aria-label="Breadcrumb">
                     <a href="{{ route('home') }}" class="hover:text-white">Beranda</a>
                     <x-icon name="chevron-right" class="size-3" />
-                    @if ($activeCategory)
+                    @if ($activeCategory || $activeCollection)
                         <a href="{{ route('products.index') }}" class="hover:text-white">Produk</a>
+                        @if ($activeCollection)
+                            <x-icon name="chevron-right" class="size-3" />
+                            @if ($activeCategory)
+                                <a href="{{ $collectionUrl($activeCollection->slug) }}" class="hover:text-white">{{ $activeCollection->name }}</a>
+                            @else
+                                <span class="text-white">{{ $activeCollection->name }}</span>
+                            @endif
+                        @endif
+                    @endif
+                    @if ($activeCategory)
                         @if ($activeCategory->parent)
                             <x-icon name="chevron-right" class="size-3" />
                             <a href="{{ $categoryUrl($activeCategory->parent->slug) }}" class="hover:text-white">{{ $activeCategory->parent->name }}</a>
                         @endif
                         <x-icon name="chevron-right" class="size-3" />
                         <span class="text-white">{{ $activeCategory->name }}</span>
-                    @else
+                    @elseif (! $activeCollection)
                         <span class="text-white">Produk</span>
                     @endif
                 </nav>
@@ -62,7 +76,11 @@
                 <div class="mt-5 flex items-end justify-between gap-6">
                     <div class="min-w-0">
                         <p class="eyebrow text-brand-300">
-                            @if ($activeCategory?->parent)
+                            @if ($activeCollection && $activeCategory)
+                                {{ $activeCollection->name }}
+                            @elseif ($activeCollection)
+                                Aktivitas
+                            @elseif ($activeCategory?->parent)
                                 {{ $activeCategory->parent->name }}
                             @elseif ($activeCategory)
                                 Kategori
@@ -73,20 +91,34 @@
                         <h1 class="display mt-2 text-[2.6rem] leading-[0.9] break-words sm:text-6xl lg:text-7xl">{{ $heading }}</h1>
                         <p class="mt-4 max-w-xl text-sm leading-relaxed text-white/65 sm:text-base">{{ $intro }}</p>
                     </div>
-                    @if ($activeCategory)
+                    @if ($context)
                         <div class="relative hidden shrink-0 md:block" aria-hidden="true">
                             <span class="absolute -inset-4 rounded-full border border-dashed border-white/15"></span>
                             <span class="grid size-32 place-items-center rounded-full bg-brand-400 text-ink shadow-[0_20px_60px_-15px] shadow-brand-400/60 lg:size-40">
-                                <x-sport-icon :for="$activeCategory->name.' '.$activeCategory->slug" class="size-16 lg:size-20" />
+                                <x-sport-icon :name="$activeCategory ? null : $activeCollection->iconName()" :for="$context->name.' '.$context->slug" class="size-16 lg:size-20" />
                             </span>
                             <span class="absolute -top-1 -right-1 size-8 rounded-full bg-volt"></span>
                         </div>
                     @endif
                 </div>
 
+                {{-- Pilihan aktivitas (koleksi) --}}
+                @if ($collections->isNotEmpty())
+                    <div class="no-scrollbar -mx-4 mt-8 flex items-center gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0 lg:mt-10" aria-label="Aktivitas">
+                        <span class="eyebrow mr-1 shrink-0 text-white/45">Aktivitas</span>
+                        @foreach ($collections as $item)
+                            <a href="{{ $activeCollection?->is($item) ? $collectionUrl(null) : $collectionUrl($item->slug) }}"
+                               @class(['chip chip-dark shrink-0 px-3.5 py-1.5 text-xs max-lg:min-h-9', 'chip-active' => $activeCollection?->is($item)])
+                               @if ($activeCollection?->is($item)) aria-current="page" @endif>
+                                <x-sport-icon :name="$item->iconName()" :for="$item->name.' '.$item->slug" class="size-4" /> {{ $item->name }}
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
+
                 {{-- Rail kategori --}}
                 @if ($categories->isNotEmpty())
-                    <div class="no-scrollbar -mx-4 mt-8 flex snap-x scroll-px-4 gap-2.5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 lg:mt-10">
+                    <div @class(['no-scrollbar -mx-4 flex snap-x scroll-px-4 gap-2.5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0', 'mt-8 lg:mt-10' => $collections->isEmpty(), 'mt-4' => $collections->isNotEmpty()])>
                         <a href="{{ $categoryUrl(null) }}" @class([
                             'group flex shrink-0 snap-start items-center gap-3 rounded-2xl border py-2 pr-4 pl-2 transition',
                             'border-brand-400 bg-brand-400 text-ink' => ! $activeCategory,
@@ -95,7 +127,7 @@
                             <span @class(['grid size-10 place-items-center rounded-xl', 'bg-ink text-brand-300' => ! $activeCategory, 'bg-white/10 text-white' => $activeCategory])>
                                 <x-icon name="storefront" class="size-5" />
                             </span>
-                            <span class="text-sm leading-tight font-semibold">Semua<span @class(['block text-xs font-normal', 'text-ink/70' => ! $activeCategory, 'text-white/50' => $activeCategory])>Katalog lengkap</span></span>
+                            <span class="text-sm leading-tight font-semibold">Semua<span @class(['block text-xs font-normal', 'text-ink/70' => ! $activeCategory, 'text-white/50' => $activeCategory])>{{ $activeCollection ? $activeCollection->name : 'Katalog lengkap' }}</span></span>
                         </a>
                         @foreach ($categories as $category)
                             @php($on = $openParent?->is($category))
@@ -217,7 +249,7 @@
                         </a>
                     @endforeach
                     @if (count($activeFilters) > 1)
-                        <a href="{{ route('products.index', Arr::only($baseQuery, ['kategori'])) }}" class="link-underline px-1 text-xs font-semibold">Hapus semua</a>
+                        <a href="{{ route('products.index', Arr::only($baseQuery, ['kategori', 'koleksi'])) }}" class="link-underline px-1 text-xs font-semibold">Hapus semua</a>
                     @endif
                 </div>
             @endif
@@ -247,7 +279,7 @@
                   method="GET" action="{{ route('products.index') }}"
                   x-data="{ min: @js(\App\Support\FormField::thousands($minPrice)), max: @js(\App\Support\FormField::thousands($maxPrice)) }"
                   class="absolute inset-x-0 bottom-0 flex max-h-[88svh] flex-col rounded-t-[2rem] bg-white">
-                @foreach (Arr::only($baseQuery, ['q', 'kategori']) as $key => $value)
+                @foreach (Arr::only($baseQuery, ['q', 'kategori', 'koleksi']) as $key => $value)
                     <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                 @endforeach
                 <div class="flex items-center justify-between px-5 pt-3 pb-2">
@@ -302,7 +334,7 @@
                 </div>
 
                 <div class="grid grid-cols-[auto_1fr] gap-2 border-t border-stone-200 px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
-                    <a href="{{ route('products.index', Arr::only($baseQuery, ['q', 'kategori'])) }}" class="btn btn-outline rounded-full px-6 py-3">Reset</a>
+                    <a href="{{ route('products.index', Arr::only($baseQuery, ['q', 'kategori', 'koleksi'])) }}" class="btn btn-outline rounded-full px-6 py-3">Reset</a>
                     <button class="btn btn-brand rounded-full py-3">Tampilkan produk</button>
                 </div>
             </form>

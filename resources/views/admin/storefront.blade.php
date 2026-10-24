@@ -1,12 +1,22 @@
 @php
     $hint = fn (string $field) => filled($defaults[$field] ?? null) ? 'Kosongkan untuk memakai teks bawaan: "'.$defaults[$field].'"' : null;
+    $sHint = fn (string $field, ?string $extra = null) => trim((filled($sectionDefaults[$field] ?? null) ? 'Kosongkan untuk teks bawaan: "'.$sectionDefaults[$field].'". ' : '').$extra) ?: null;
 @endphp
 <x-layouts.admin title="Tampilan Beranda">
-    <x-admin.page-header title="Tampilan Beranda" description="Foto besar (hero) di bagian atas beranda dan pengumuman di bar paling atas toko.">
+    <x-admin.page-header title="Tampilan Beranda" description="Atur isi beranda: foto & teks hero, pengumuman topbar, urutan seksi beserta teksnya, dan produk Best Seller.">
         <a href="{{ route('home') }}" target="_blank" rel="noopener" class="btn btn-secondary"><x-icon name="external" class="size-4" /> Lihat beranda</a>
     </x-admin.page-header>
 
-    <form method="POST" action="{{ route('admin.storefront.update') }}" enctype="multipart/form-data" class="grid gap-6 lg:grid-cols-3">
+    <nav class="no-scrollbar -mx-1 mb-6 flex gap-2 overflow-x-auto px-1" aria-label="Bagian halaman">
+        @foreach (['#hero' => 'Hero & topbar', '#seksi' => 'Seksi & teks', '#best-seller' => 'Best Seller'] as $href => $label)
+            <a href="{{ $href }}" class="shrink-0 rounded-full border border-stone-200 bg-white px-4 py-1.5 text-sm font-semibold text-stone-700 hover:border-brand-400 hover:text-brand-700">{{ $label }}</a>
+        @endforeach
+        @can('catalog.manage')
+            <a href="{{ route('admin.collections.index') }}" class="shrink-0 rounded-full border border-dashed border-stone-300 px-4 py-1.5 text-sm font-semibold text-stone-600 hover:border-brand-400 hover:text-brand-700">Koleksi / aktivitas <x-icon name="arrow-right" class="inline size-3.5" /></a>
+        @endcan
+    </nav>
+
+    <form id="hero" method="POST" action="{{ route('admin.storefront.update') }}" enctype="multipart/form-data" class="grid scroll-mt-24 gap-6 lg:grid-cols-3">
         @csrf
         @method('PUT')
 
@@ -63,6 +73,118 @@
 
             <div class="card sticky top-20 p-4">
                 <button class="btn btn-primary w-full">Simpan tampilan</button>
+            </div>
+        </div>
+    </form>
+
+    {{-- Seksi beranda: urutan, tampil/sembunyi, dan teks tiap seksi. --}}
+    <form id="seksi" method="POST" action="{{ route('admin.storefront.sections') }}" class="mt-6 grid scroll-mt-24 gap-6 lg:grid-cols-3"
+          x-data="{
+              items: @js(old('sections') ? collect($sections)->sortBy(fn ($s) => ($i = array_search($s['key'], old('sections'))) === false ? 99 : $i)->map(fn ($s) => [...$s, 'on' => in_array($s['key'], old('sections'))])->values()->all() : $sections),
+              move(i, step) { const to = i + step; if (to < 0 || to >= this.items.length) return; const [it] = this.items.splice(i, 1); this.items.splice(to, 0, it); },
+          }">
+        @csrf
+        @method('PUT')
+
+        <div class="space-y-6 lg:col-span-2">
+            <section class="card space-y-5 p-6">
+                <div class="flex items-center gap-3">
+                    <span class="grid size-10 place-items-center rounded-xl bg-brand-50 text-brand-600"><x-icon name="list-number" /></span>
+                    <div><h2 class="font-bold text-stone-900">Teks seksi</h2><p class="text-xs text-stone-500">Judul & isi setiap seksi di bawah hero. Kosongkan untuk teks bawaan.</p></div>
+                </div>
+
+                <details class="group rounded-xl border border-stone-200 p-4" open>
+                    <summary class="flex cursor-pointer list-none items-center justify-between font-semibold text-stone-800">Pita slogan & Best Seller <x-icon name="chevron-down" class="size-4 transition group-open:rotate-180" /></summary>
+                    <div class="mt-4 space-y-5">
+                        <x-form.input name="ribbon_text" label="Teks pita berjalan" optional :value="$sectionText['ribbon_text']" :maxlength="$textLimits['ribbon_text']"
+                            :hint="$sHint('ribbon_text', 'Pisahkan kata/kalimat dengan tanda •')" />
+                        <div class="grid gap-5 sm:grid-cols-2">
+                            <x-form.input name="best_eyebrow" label="Teks kecil Best Seller" optional :value="$sectionText['best_eyebrow']" :maxlength="$textLimits['best_eyebrow']" :hint="$sHint('best_eyebrow')" />
+                            <x-form.input name="best_title" label="Judul Best Seller" optional :value="$sectionText['best_title']" :maxlength="$textLimits['best_title']" :hint="$sHint('best_title')" />
+                        </div>
+                    </div>
+                </details>
+
+                <details class="group rounded-xl border border-stone-200 p-4">
+                    <summary class="flex cursor-pointer list-none items-center justify-between font-semibold text-stone-800">Belanja per aktivitas <x-icon name="chevron-down" class="size-4 transition group-open:rotate-180" /></summary>
+                    <div class="mt-4 space-y-5">
+                        <x-form.select name="activities_source" label="Isi ubin" :search="false" :selected="$sectionText['activities_source']"
+                            :options="\App\Services\Storefront\ActivityTiles::SOURCES"
+                            hint="Ubin & urutannya diatur di menu Koleksi (atau Kategori). Maks. {{ \App\Services\Storefront\ActivityTiles::LIMIT }} ubin, yang pertama jadi ubin besar." />
+                        <div class="grid gap-5 sm:grid-cols-2">
+                            <x-form.input name="activities_eyebrow" label="Teks kecil" optional :value="$sectionText['activities_eyebrow']" :maxlength="$textLimits['activities_eyebrow']"
+                                hint="Kosongkan: &quot;Aktivitas&quot; untuk koleksi, &quot;Kategori&quot; untuk kategori." />
+                            <x-form.input name="activities_title" label="Judul" optional :value="$sectionText['activities_title']" :maxlength="$textLimits['activities_title']" :hint="$sHint('activities_title')" />
+                        </div>
+                        <label class="flex items-start gap-3 text-sm text-stone-700">
+                            <input type="hidden" name="hero_rail" value="0">
+                            <input type="checkbox" name="hero_rail" value="1" @checked(old('hero_rail', $sectionText['hero_rail'])) class="mt-0.5 rounded text-brand-600 focus:ring-brand-500">
+                            <span>Tampilkan pintasan "Pilih aktivitasmu" di bawah hero<span class="block text-xs text-stone-500">Deretan tombol aktivitas berlapis kaca di bagian bawah foto hero.</span></span>
+                        </label>
+                    </div>
+                </details>
+
+                <details class="group rounded-xl border border-stone-200 p-4">
+                    <summary class="flex cursor-pointer list-none items-center justify-between font-semibold text-stone-800">Panel diskon <x-icon name="chevron-down" class="size-4 transition group-open:rotate-180" /></summary>
+                    <div class="mt-4 space-y-5">
+                        <p class="text-xs text-stone-500">Tampil bila ada produk yang sedang diskon (harga coret), bersama 4 produk diskon terbaru.</p>
+                        <div class="grid gap-5 sm:grid-cols-2">
+                            <x-form.input name="promo_eyebrow" label="Teks kecil" optional :value="$sectionText['promo_eyebrow']" :maxlength="$textLimits['promo_eyebrow']" :hint="$sHint('promo_eyebrow')" />
+                            <x-form.input name="promo_title" label="Judul" optional :value="$sectionText['promo_title']" :maxlength="$textLimits['promo_title']" :hint="$sHint('promo_title')" />
+                        </div>
+                        <x-form.textarea name="promo_text" label="Deskripsi" optional :value="$sectionText['promo_text']" rows="2" :maxlength="$textLimits['promo_text']" :hint="$sHint('promo_text')" />
+                        <div class="grid gap-5 sm:grid-cols-3">
+                            <x-form.input name="promo_badge" label="Stiker bulat" optional :value="$sectionText['promo_badge']" :maxlength="$textLimits['promo_badge']" :hint="$sHint('promo_badge')" />
+                            <x-form.input name="promo_button" label="Tombol" optional :value="$sectionText['promo_button']" :maxlength="$textLimits['promo_button']" :hint="$sHint('promo_button')" />
+                            <x-form.input name="promo_url" label="Link tombol" optional :value="$sectionText['promo_url']" :maxlength="$textLimits['promo_url']" placeholder="/produk?promo=1" :hint="$sHint('promo_url')" />
+                        </div>
+                    </div>
+                </details>
+
+                <details class="group rounded-xl border border-stone-200 p-4">
+                    <summary class="flex cursor-pointer list-none items-center justify-between font-semibold text-stone-800">Kenapa {{ config('shop.name') }} & artikel <x-icon name="chevron-down" class="size-4 transition group-open:rotate-180" /></summary>
+                    <div class="mt-4 space-y-5">
+                        <div class="grid gap-5 sm:grid-cols-2">
+                            <x-form.input name="why_eyebrow" label="Teks kecil" optional :value="$sectionText['why_eyebrow']" :maxlength="$textLimits['why_eyebrow']"
+                                hint="Kosongkan: &quot;Kenapa {{ config('shop.name') }}&quot;." />
+                            <x-form.input name="why_title" label="Judul besar" optional :value="$sectionText['why_title']" :maxlength="$textLimits['why_title']"
+                                hint="Pisahkan baris dengan •. Baris ke-2 berwarna biru. Kosongkan untuk motto toko." />
+                        </div>
+                        <x-form.textarea name="why_text" label="Paragraf" optional :value="$sectionText['why_text']" rows="2" :maxlength="$textLimits['why_text']" />
+                        <x-form.textarea name="why_points" label="Poin keunggulan" optional :value="$sectionText['why_points']" rows="4" maxlength="1000"
+                            hint="Satu poin per baris, format: Judul | deskripsi. Maks. 4 (ikon: truk, perisai, tukar, gembok). Kosongkan untuk poin bawaan." />
+                        <x-form.input name="articles_title" label="Judul seksi artikel" optional :value="$sectionText['articles_title']" :maxlength="$textLimits['articles_title']" :hint="$sHint('articles_title')" />
+                    </div>
+                </details>
+            </section>
+        </div>
+
+        <div class="space-y-6">
+            <section class="card space-y-4 p-6">
+                <div class="flex items-center gap-3">
+                    <span class="grid size-10 place-items-center rounded-xl bg-violet-50 text-violet-600"><x-icon name="swatch" /></span>
+                    <div><h2 class="font-bold text-stone-900">Urutan seksi</h2><p class="text-xs text-stone-500">Di bawah hero, dari atas ke bawah.</p></div>
+                </div>
+                <ol class="divide-y divide-stone-100 overflow-hidden rounded-xl border border-stone-200">
+                    <li class="flex items-center gap-3 bg-stone-50 px-3 py-2.5 text-sm text-stone-500"><x-icon name="photo" class="size-4" /> Hero (selalu paling atas)</li>
+                    <template x-for="(item, index) in items" :key="item.key">
+                        <li class="flex items-center gap-2 bg-white px-3 py-2" :class="!item.on && 'bg-stone-50'">
+                            <template x-if="item.on"><input type="hidden" name="sections[]" x-bind:value="item.key"></template>
+                            <label class="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-sm">
+                                <input type="checkbox" x-model="item.on" class="rounded text-brand-600 focus:ring-brand-500">
+                                <span class="truncate font-medium" :class="item.on ? 'text-stone-900' : 'text-stone-400 line-through'" x-text="item.label"></span>
+                            </label>
+                            <button type="button" class="rounded p-1 text-stone-400 hover:text-stone-700 disabled:opacity-30" :disabled="index === 0" @click="move(index, -1)" title="Naikkan"><x-icon name="chevron-up" class="size-4" /><span class="sr-only">Naikkan</span></button>
+                            <button type="button" class="rounded p-1 text-stone-400 hover:text-stone-700 disabled:opacity-30" :disabled="index === items.length - 1" @click="move(index, 1)" title="Turunkan"><x-icon name="chevron-down" class="size-4" /><span class="sr-only">Turunkan</span></button>
+                        </li>
+                    </template>
+                </ol>
+                <p class="hint">Hapus centang untuk menyembunyikan seksi. Seksi tanpa isi (mis. belum ada banner aktif) otomatis tidak tampil.</p>
+                <x-input-error for="sections" />
+            </section>
+
+            <div class="card sticky top-20 p-4">
+                <button class="btn btn-primary w-full">Simpan seksi</button>
             </div>
         </div>
     </form>

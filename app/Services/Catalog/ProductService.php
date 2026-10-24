@@ -44,6 +44,11 @@ class ProductService
 
             $product->save();
 
+            // Hanya disentuh bila form mengirimkan kolomnya (impor/form lain tidak menghapus koleksi).
+            if (array_key_exists('collection_ids', $data)) {
+                $product->collections()->sync(array_map('intval', $data['collection_ids'] ?? []));
+            }
+
             $this->syncImages($product, $data['image_order'] ?? [], $data['remove_images'] ?? [], $uploads);
 
             if ($hasVariants) {

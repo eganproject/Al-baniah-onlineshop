@@ -136,6 +136,9 @@ Route::middleware(['auth', 'role:admin', 'log.activity'])->prefix('admin')->name
     Route::middleware('can:catalog.manage')->group(function () {
         Route::patch('/categories/{category}/toggle', [Admin\CategoryController::class, 'toggle'])->name('categories.toggle');
         Route::resource('categories', Admin\CategoryController::class)->except('show');
+        Route::patch('/collections/{collection}/toggle', [Admin\CollectionController::class, 'toggle'])->name('collections.toggle');
+        Route::get('/collections/products', [Admin\CollectionController::class, 'searchProducts'])->name('collections.products');
+        Route::resource('collections', Admin\CollectionController::class)->except('show');
         Route::post('/products/bulk', [Admin\ProductController::class, 'bulk'])->name('products.bulk');
         Route::get('/products/export', [Admin\ProductTransferController::class, 'exportProducts'])->name('products.export');
         Route::get('/products/import-template', [Admin\ProductTransferController::class, 'template'])->name('products.template');
@@ -171,6 +174,7 @@ Route::middleware(['auth', 'role:admin', 'log.activity'])->prefix('admin')->name
         Route::resource('banners', Admin\BannerController::class)->except('show');
         Route::get('/storefront', [Admin\StorefrontController::class, 'edit'])->name('storefront.edit');
         Route::put('/storefront', [Admin\StorefrontController::class, 'update'])->name('storefront.update');
+        Route::put('/storefront/sections', [Admin\StorefrontController::class, 'updateSections'])->name('storefront.sections');
         Route::put('/storefront/best-sellers', [Admin\StorefrontController::class, 'updateBestSellers'])->name('storefront.best-sellers');
         Route::get('/storefront/products', [Admin\StorefrontController::class, 'searchProducts'])->name('storefront.products');
     });

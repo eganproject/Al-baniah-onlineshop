@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Shop;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductCollection;
 use App\Services\Reviews\ReviewService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -24,6 +25,10 @@ class ProductController extends Controller
             ? Category::active()->with('parent')->where('slug', $request->string('kategori'))->first()
             : null;
 
+        $collection = $request->filled('koleksi')
+            ? ProductCollection::active()->where('slug', $request->string('koleksi'))->first()
+            : null;
+
         $minPrice = $request->integer('harga_min') ?: null;
         $maxPrice = $request->integer('harga_max') ?: null;
 
@@ -33,6 +38,7 @@ class ProductController extends Controller
             ->with('category')
             ->search($request->string('q')->trim()->value() ?: null)
             ->when($category, fn ($q) => $q->whereIn('category_id', $category->familyIds()))
+            ->when($collection, fn ($q) => $q->inCollection($collection))
             ->when($request->boolean('tersedia'), fn ($q) => $q->where('stock', '>', 0))
             ->when($request->boolean('promo'), fn ($q) => $q->onSale())
             ->when($minPrice, fn ($q) => $q->where('price', '>=', $minPrice))
@@ -44,14 +50,28 @@ class ProductController extends Controller
             ->paginate(12)
             ->withQueryString();
 
+        // Hitungan per kategori mengikuti koleksi yang sedang dibuka.
+        $countable = fn ($q) => $q->active()->when($collection, fn ($q) => $q->inCollection($collection));
+
+        $categories = Category::active()->root()
+            ->withCount(['products' => $countable])
+            ->with(['children' => fn ($q) => $q->active()->withCount(['products' => $countable])])
+            ->orderBy('sort_order')->orderBy('name')->get()
+            // Jumlah produk induk termasuk produk di subkategorinya.
+            ->each(fn (Category $c) => $c->products_count += $c->children->sum('products_count'));
+
+        if ($collection) {
+            // Di halaman koleksi, sembunyikan kategori yang tidak punya produk di koleksi itu.
+            $categories = $categories->filter(fn (Category $c) => $c->products_count > 0 || $category?->is($c) || (int) $category?->parent_id === $c->id)
+                ->each(fn (Category $c) => $c->setRelation('children', $c->children->filter(fn (Category $child) => $child->products_count > 0 || $category?->is($child))->values()))
+                ->values();
+        }
+
         return view('shop.products.index', [
             'products' => $products,
-            'categories' => Category::active()->root()
-                ->withCount(['products' => fn ($q) => $q->active()])
-                ->with(['children' => fn ($q) => $q->active()->withCount(['products' => fn ($q) => $q->active()])])
-                ->orderBy('sort_order')->orderBy('name')->get()
-                // Jumlah produk induk termasuk produk di subkategorinya.
-                ->each(fn (Category $c) => $c->products_count += $c->children->sum('products_count')),
+            'categories' => $categories,
+            'collections' => ProductCollection::active()->ordered()->get(['id', 'name', 'slug', 'icon']),
+            'activeCollection' => $collection,
             'activeCategory' => $category,
             'sort' => $sort,
             'sorts' => self::SORTS,
@@ -67,7 +87,7 @@ class ProductController extends Controller
         $user = $request->user();
 
         return view('shop.products.show', [
-            'product' => $product->load(['category.parent', 'images', 'activeVariants.image']),
+            'product' => $product->load(['category.parent', 'images', 'activeVariants.image', 'collections' => fn ($q) => $q->active()->ordered()]),
             'related' => Product::active()
                 ->where('category_id', $product->category_id)
                 ->with('category')

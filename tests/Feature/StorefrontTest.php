@@ -173,4 +173,47 @@ class StorefrontTest extends TestCase
         $this->actingAs(User::factory()->staff(StaffRole::Warehouse)->create())
             ->getJson(route('admin.storefront.products'))->assertForbidden();
     }
+
+    public function test_admin_reorders_hides_and_retitles_home_sections(): void
+    {
+        Product::factory()->create(['name' => 'Produk Diskon', 'price' => 50000, 'compare_at_price' => 80000]);
+        $this->actingAs(User::factory()->admin()->create());
+
+        $this->get(route('admin.storefront.edit'))->assertOk()->assertSee('Urutan seksi')->assertSee('Teks seksi');
+
+        $this->put(route('admin.storefront.sections'), [
+            'sections' => ['promo', 'ribbon', 'best_sellers'],
+            'activities_source' => 'auto',
+            'hero_rail' => '0',
+            'ribbon_text' => 'Gerak • Sehat • Bahagia',
+            'best_title' => 'Paling Laris',
+            'promo_title' => 'Cuci Gudang',
+            'promo_url' => '/produk?promo=1',
+            'why_points' => "Poin Satu | Penjelasan satu\nPoin Dua",
+        ])->assertRedirect()->assertSessionHasNoErrors();
+
+        $this->assertSame(['promo', 'ribbon', 'best_sellers'], Storefront::sections());
+
+        $this->get(route('home'))->assertOk()
+            ->assertSeeInOrder(['Cuci Gudang', 'Bahagia', 'Paling Laris'])
+            ->assertDontSee('Belanja per aktivitas')
+            ->assertDontSee('Pilih aktivitasmu');
+
+        $this->put(route('admin.storefront.sections'), [
+            'sections' => ['why'], 'activities_source' => 'auto', 'hero_rail' => '1',
+            'why_points' => "Poin Satu | Penjelasan satu\nPoin Dua",
+        ])->assertSessionHasNoErrors();
+
+        $this->get(route('home'))->assertOk()
+            ->assertSee('Poin Satu')->assertSee('Penjelasan satu')->assertSee('Poin Dua')
+            ->assertDontSee('Kualitas terkontrol, dari bahan sampai jahitan.');
+    }
+
+    public function test_section_settings_are_validated(): void
+    {
+        $this->actingAs(User::factory()->admin()->create())
+            ->put(route('admin.storefront.sections'), [
+                'sections' => ['hacker'], 'activities_source' => 'semua', 'promo_url' => 'javascript:alert(1)',
+            ])->assertSessionHasErrors(['sections.0', 'activities_source', 'promo_url']);
+    }
 }
