@@ -1,75 +1,99 @@
 @php
     $hero = \App\Support\Storefront::hero();
-    $light = $hero['light'];
+    // Foto hero tampil di dalam bingkai lengkung (potret). Tanpa foto sendiri: ilustrasi versi potret.
+    $heroImage = $hero['custom'] ? $hero['image'] : ($hero['mobile_image'] ?? $hero['image']);
+    $heroMobile = $hero['custom'] ? $hero['mobile_image'] : null;
+    $pick = $bestSellers->first();
 @endphp
-<x-layouts.shop :transparent-header="$light">
+<x-layouts.shop>
     <x-slot:head>
         {!! \App\Support\StructuredData::script(\App\Support\StructuredData::website()) !!}
-        <link rel="preload" as="image" href="{{ $hero['image'] }}" @if ($hero['mobile_image']) media="(min-width: 768px)" @endif>
-        @if ($hero['mobile_image'])
-            <link rel="preload" as="image" href="{{ $hero['mobile_image'] }}" media="(max-width: 767px)">
+        <link rel="preload" as="image" href="{{ $heroImage }}" @if ($heroMobile) media="(min-width: 768px)" @endif>
+        @if ($heroMobile)
+            <link rel="preload" as="image" href="{{ $heroMobile }}" media="(max-width: 767px)">
         @endif
     </x-slot:head>
 
-    {{-- Hero layar penuh: navbar transparan menyatu di atasnya (diatur di Admin › Tampilan Beranda) --}}
-    <section @class(['relative isolate overflow-hidden', 'bg-ink text-white' => $light, 'bg-sand-100 text-ink' => ! $light])>
-        <picture class="absolute inset-0 -z-20">
-            @if ($hero['mobile_image'])
-                <source media="(max-width: 767px)" srcset="{{ $hero['mobile_image'] }}">
-            @endif
-            <img src="{{ $hero['image'] }}" alt="" fetchpriority="high" decoding="async" class="size-full object-cover">
-        </picture>
-        @if ($light)
-            <div class="absolute inset-0 -z-10 bg-gradient-to-t from-ink/90 via-ink/30 to-ink/40 md:bg-gradient-to-r md:from-ink/80 md:via-ink/25 md:to-transparent"></div>
-            <div class="absolute inset-x-0 top-0 -z-10 h-36 bg-gradient-to-b from-ink/60 to-transparent"></div>
-        @else
-            <div class="absolute inset-0 -z-10 bg-gradient-to-t from-white/90 via-white/40 to-transparent md:bg-gradient-to-r md:from-white/85 md:via-white/30"></div>
-        @endif
+    {{-- Hero: latar krem bermotif lengkung, foto dalam bingkai mihrab (diatur di Admin › Tampilan Beranda) --}}
+    <section class="relative isolate overflow-hidden bg-sand-100">
+        <div class="ornament-bg-light absolute inset-0 -z-10 opacity-70 [mask-image:radial-gradient(ellipse_at_70%_40%,#000,transparent_75%)]" aria-hidden="true"></div>
+        <div class="absolute -bottom-40 -left-40 -z-10 size-[28rem] rounded-full bg-brand-200/40 blur-3xl" aria-hidden="true"></div>
 
-        <div @class(['shop-container flex min-h-[calc(100svh-100px)] max-h-[860px] lg:min-h-[calc(100svh-36px)] flex-col justify-end pb-8 sm:pb-12', 'pt-28 lg:pt-36' => $light, 'pt-16' => ! $light])>
-            <div class="max-w-[44rem]">
-                @if ($hero['eyebrow'])
-                    <p @class(['kicker', 'text-white/70' => $light, 'text-stone-600' => ! $light])>{{ $hero['eyebrow'] }}</p>
+        <div class="shop-container grid grid-cols-1 items-center gap-x-10 gap-y-10 pt-6 pb-12 md:grid-cols-12 md:py-14 lg:gap-x-16 lg:py-20">
+            {{-- Bingkai foto --}}
+            <div class="relative mx-auto w-full max-w-[22rem] sm:max-w-[26rem] md:col-span-6 md:col-start-7 md:row-start-1 md:max-w-none lg:col-span-5 lg:col-start-8">
+                <div class="arch absolute inset-0 translate-x-3 -translate-y-3 border border-brand-300 sm:translate-x-4 sm:-translate-y-4" aria-hidden="true"></div>
+                <picture class="arch relative block aspect-[5/6] overflow-hidden bg-ink shadow-2xl shadow-ink/15 md:aspect-[4/5]">
+                    @if ($heroMobile)
+                        <source media="(max-width: 767px)" srcset="{{ $heroMobile }}">
+                    @endif
+                    <img src="{{ $heroImage }}" alt="" fetchpriority="high" decoding="async" class="size-full object-cover object-[70%_50%]">
+                </picture>
+
+                {{-- Stempel lingkar "Temani Ibadahmu" --}}
+                <div class="absolute -top-4 -left-3 grid size-[5.5rem] place-items-center rounded-full bg-ink text-brand-300 shadow-lg sm:-left-6 sm:size-28" aria-hidden="true">
+                    <svg viewBox="0 0 100 100" class="absolute inset-0 size-full motion-safe:animate-[spin_30s_linear_infinite]">
+                        <defs><path id="hero-stamp" d="M50 50m-37 0a37 37 0 1 1 74 0a37 37 0 1 1-74 0"/></defs>
+                        <text class="fill-current font-logo text-[9px] uppercase"><textPath href="#hero-stamp" textLength="228" lengthAdjust="spacing">{{ config('shop.motto', 'Temani Ibadahmu') }} • {{ config('shop.name') }} •</textPath></text>
+                    </svg>
+                    <x-logo variant="mark" class="h-auto w-[38%]" />
+                </div>
+
+                {{-- Produk pilihan (best seller teratas) --}}
+                @if ($pick)
+                    <a href="{{ route('products.show', $pick) }}"
+                       class="group absolute -bottom-5 left-1/2 flex w-[calc(100%-2rem)] max-w-72 -translate-x-1/2 items-center gap-3 rounded-2xl bg-white/95 p-2 pr-4 text-left shadow-xl shadow-ink/10 ring-1 ring-sand-200 backdrop-blur transition hover:-translate-y-0.5 md:-left-8 md:translate-x-0 md:hover:-translate-y-0.5">
+                        <x-product-image :product="$pick" class="size-14 shrink-0 rounded-xl" />
+                        <span class="min-w-0">
+                            <span class="block text-[10px] font-semibold tracking-[0.18em] text-brand-700 uppercase">Paling dicari</span>
+                            <span class="block truncate text-sm font-medium text-ink">{{ $pick->name }}</span>
+                            <span class="block text-sm font-semibold text-ink">@rupiah($pick->price)</span>
+                        </span>
+                        <x-icon name="arrow-right" class="ml-auto size-4 shrink-0 text-stone-400 transition group-hover:translate-x-0.5 group-hover:text-ink" />
+                    </a>
                 @endif
-                <h1 class="display mt-5 text-[2.6rem] leading-[1.02] sm:text-6xl lg:text-[4.75rem] lg:leading-[0.98]">{{ $hero['title'] }}</h1>
+            </div>
+
+            {{-- Teks --}}
+            <div class="min-w-0 text-center md:col-span-6 md:row-start-1 md:text-left lg:col-span-7">
+                @if ($hero['eyebrow'])
+                    <p class="eyebrow text-brand-700">{{ $hero['eyebrow'] }}</p>
+                @endif
+                <h1 class="display mt-3 text-[2.6rem] leading-[1.02] text-ink sm:text-6xl lg:text-7xl xl:text-[5.25rem]">{{ $hero['title'] }}</h1>
                 @if ($hero['subtitle'])
-                    <p @class(['mt-5 max-w-lg text-[15px] leading-relaxed sm:text-lg', 'text-white/75' => $light, 'text-stone-600' => ! $light])>{{ $hero['subtitle'] }}</p>
+                    <p class="mx-auto mt-5 max-w-lg text-[15px] leading-relaxed text-stone-600 sm:text-lg md:mx-0">{{ $hero['subtitle'] }}</p>
                 @endif
                 @if ($hero['primary'] || $hero['secondary'])
-                    <div class="mt-8 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
+                    <div class="mt-8 flex flex-col gap-3 min-[400px]:flex-row min-[400px]:justify-center md:justify-start">
                         @foreach (array_filter([$hero['primary'], $hero['secondary']]) as $cta)
                             <a href="{{ $cta['url'] }}" @class([
-                                'btn btn-pill group min-h-12 px-5 text-[13px] whitespace-nowrap sm:min-w-44 sm:px-7 sm:text-sm',
-                                'btn-brand' => $loop->first,
-                                'btn-glass' => ! $loop->first && $light,
-                                'btn-outline' => ! $loop->first && ! $light,
-                                'col-span-2' => ! ($hero['primary'] && $hero['secondary']),
+                                'btn btn-pill group min-h-12 px-7 whitespace-nowrap',
+                                'btn-ink' => $loop->first,
+                                'btn-outline bg-white/60' => ! $loop->first,
                             ])>{{ $cta['label'] }} @if ($loop->first)<x-icon name="arrow-right" class="size-4 transition group-hover:translate-x-0.5" />@endif</a>
                         @endforeach
                     </div>
                 @endif
-            </div>
 
-            {{-- Rel koleksi: pintasan koleksi/kategori di dasar hero --}}
-            @if ($activities->isNotEmpty() && config('shop.storefront.hero_rail', true))
-                <div @class(['mt-12 border-t pt-5 sm:mt-16', 'border-white/15' => $light, 'border-ink/10' => ! $light])>
-                    <p @class(['eyebrow', 'text-white/50' => $light, 'text-stone-500' => ! $light])>Pilih koleksimu</p>
-                    <ul class="no-scrollbar -mx-4 mt-3 flex snap-x scroll-px-4 gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-                        @foreach ($activities as $tile)
-                            <li class="shrink-0 snap-start">
-                                <a href="{{ $tile['url'] }}"
-                                   @class(['group flex items-center gap-2.5 rounded-full py-2 pr-4 pl-2 text-sm font-medium ring-1 transition', 'bg-white/[0.06] ring-white/15 backdrop-blur-md hover:bg-white hover:text-ink' => $light, 'bg-white/70 ring-ink/10 hover:bg-ink hover:text-white' => ! $light])>
-                                    <span @class(['grid size-8 place-items-center rounded-full transition', 'bg-white/10 group-hover:bg-sand-100' => $light, 'bg-sand-100 group-hover:bg-white/15' => ! $light])>
-                                        <x-category-icon :name="$tile['icon']" :for="$tile['for']" class="size-[18px]" />
-                                    </span>
-                                    {{ $tile['name'] }}
-                                    <span class="text-xs opacity-50">{{ $tile['count'] }}</span>
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+                {{-- Pintasan koleksi --}}
+                @if ($activities->isNotEmpty() && config('shop.storefront.hero_rail', true))
+                    <div class="mt-10 border-t border-ink/10 pt-5 lg:mt-12">
+                        <p class="eyebrow text-stone-500">Pilih koleksimu</p>
+                        <ul class="no-scrollbar -mx-4 mt-3 flex gap-2 overflow-x-auto px-4 md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
+                            @foreach ($activities as $tile)
+                                <li class="shrink-0">
+                                    <a href="{{ $tile['url'] }}" class="group inline-flex min-h-10 items-center gap-2 rounded-full bg-white/80 py-1.5 pr-4 pl-1.5 text-[13px] font-medium text-ink ring-1 ring-sand-300 transition hover:bg-ink hover:text-white hover:ring-ink">
+                                        <span class="grid size-7 place-items-center rounded-full bg-sand-100 text-brand-600 transition group-hover:bg-white/15 group-hover:text-brand-300">
+                                            <x-category-icon :name="$tile['icon']" :for="$tile['for']" class="size-4" />
+                                        </span>
+                                        {{ $tile['name'] }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+            </div>
         </div>
     </section>
 

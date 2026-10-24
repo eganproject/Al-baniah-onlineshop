@@ -33,7 +33,7 @@ class StorefrontTest extends TestCase
         Product::factory()->create(['name' => 'Kabel Data', 'category_id' => $category->id]);
 
         $this->get(route('home'))->assertOk()
-            ->assertSee(asset(Storefront::DEFAULT_IMAGE), false)
+            // Bingkai lengkung hero berbentuk potret: ilustrasi bawaan versi potret dipakai di semua layar.
             ->assertSee(asset(Storefront::DEFAULT_IMAGE_MOBILE), false)
             ->assertSee('Anggun dalam sujud, tenang dalam doa.')
             ->assertSee('Best Seller')

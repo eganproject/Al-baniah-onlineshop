@@ -119,7 +119,18 @@
                         </button>
                     @endif
                     @foreach (array_slice($nav, 1) as $item)
-                        <a href="{{ $item['url'] }}" @mouseenter="cats = false" @class([$navLink, $navActive => $item['active'], $navIdle => ! $item['active']])>{{ $item['label'] }}</a>
+                        @if ($item['label'] === 'Promo')
+                            {{-- Promo dibuat menonjol: warna merah mawar (warna label diskon) + titik berdenyut --}}
+                            <a href="{{ $item['url'] }}" @mouseenter="cats = false" @class([$navLink, 'gap-1.5 font-semibold text-accent-600 hover:!text-accent-700 group-data-[clear]/header:text-accent-300 group-data-[clear]/header:hover:!text-accent-200', 'after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-accent-500' => $item['active']])>
+                                <span class="relative flex size-2" aria-hidden="true">
+                                    <span class="absolute inline-flex size-full rounded-full bg-accent-400 opacity-75 motion-safe:animate-ping"></span>
+                                    <span class="relative inline-flex size-2 rounded-full bg-accent-500"></span>
+                                </span>
+                                {{ $item['label'] }}
+                            </a>
+                        @else
+                            <a href="{{ $item['url'] }}" @mouseenter="cats = false" @class([$navLink, $navActive => $item['active'], $navIdle => ! $item['active']])>{{ $item['label'] }}</a>
+                        @endif
                     @endforeach
                 </nav>
 
@@ -290,8 +301,8 @@
                         @foreach ([['Semua', 'cube', $nav[0]], ['Terbaru', 'sparkles', $nav[1]], ['Promo', 'tag', $nav[3]], ['Artikel', 'newspaper', $nav[4]]] as [$label, $icon, $item])
                             <li>
                                 <a href="{{ $item['url'] }}" class="flex flex-col items-center gap-2 rounded-2xl py-2 text-center text-xs font-medium text-stone-700 active:bg-sand-50">
-                                    <span @class(['grid size-12 place-items-center rounded-2xl', 'bg-ink text-white' => $item['active'], 'bg-sand-100 text-ink' => ! $item['active']])><x-icon :name="$icon" class="size-[22px]" /></span>
-                                    {{ $label }}
+                                    <span @class(['grid size-12 place-items-center rounded-2xl', 'bg-ink text-white' => $item['active'], 'bg-accent-50 text-accent-600 ring-1 ring-accent-200' => ! $item['active'] && $label === 'Promo', 'bg-sand-100 text-ink' => ! $item['active'] && $label !== 'Promo'])><x-icon :name="$icon" class="size-[22px]" /></span>
+                                    <span @class(['font-semibold text-accent-600' => $label === 'Promo'])>{{ $label }}</span>
                                 </a>
                             </li>
                         @endforeach
