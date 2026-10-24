@@ -107,9 +107,9 @@
 
                 {{-- Navigasi utama (desktop) --}}
                 <nav class="hidden h-full flex-1 items-center justify-center gap-7 lg:flex xl:gap-9" aria-label="Navigasi utama">
-                    @if ($navCategories->isNotEmpty())
+                    @if ($navCategories->isNotEmpty() || $navCollections->isNotEmpty())
                         <button type="button" @click="cats = !cats" @mouseenter="cats = true" :aria-expanded="cats" aria-controls="mega-menu"
-                                @class([$navLink, 'gap-1', $navActive => request()->filled('kategori')])>
+                                @class([$navLink, 'gap-1', $navActive => request()->hasAny(['kategori', 'koleksi'])])>
                             Belanja <x-icon name="chevron-down" class="size-3.5 transition" x-bind:class="cats && 'rotate-180'" />
                         </button>
                     @endif
@@ -191,15 +191,23 @@
             </div>
 
             {{-- Mega menu kategori (desktop) --}}
-            @if ($navCategories->isNotEmpty())
+            @if ($navCategories->isNotEmpty() || $navCollections->isNotEmpty())
                 <div id="mega-menu" x-show="cats" x-cloak @click.outside="cats = false"
                      x-transition:enter="transition duration-200 ease-out" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                      x-transition:leave="transition duration-150 ease-in" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
                      class="absolute inset-x-0 top-full hidden border-b border-stone-200 bg-white text-ink shadow-2xl shadow-ink/10 lg:block">
                     <div class="shop-container grid grid-cols-[1fr_300px] gap-10 py-8">
                         <div>
-                            <div class="flex items-center justify-between">
+                            @if ($navCollections->isNotEmpty())
                                 <p class="eyebrow text-stone-400">Belanja sesuai aktivitas</p>
+                                <div class="mt-3 mb-7 flex flex-wrap gap-2">
+                                    @foreach ($navCollections as $collection)
+                                        <a href="{{ $collection->url() }}" class="chip"><x-sport-icon :name="$collection->iconName()" :for="$collection->name.' '.$collection->slug" class="size-4 text-brand-600" /> {{ $collection->name }}</a>
+                                    @endforeach
+                                </div>
+                            @endif
+                            <div class="flex items-center justify-between">
+                                <p class="eyebrow text-stone-400">{{ $navCollections->isNotEmpty() ? 'Kategori' : 'Belanja sesuai aktivitas' }}</p>
                                 <a href="{{ route('products.index') }}" class="link-underline text-sm font-semibold">Lihat semua produk</a>
                             </div>
                             <ul class="mt-5 grid grid-cols-3 gap-x-8 gap-y-6 xl:grid-cols-4">
@@ -255,7 +263,14 @@
                                class="w-full border-0 bg-transparent p-0 font-display text-2xl font-bold tracking-tight placeholder:text-stone-300 focus:ring-0 sm:text-4xl">
                         <button class="btn btn-ink btn-pill hidden shrink-0 sm:inline-flex">Cari</button>
                     </form>
-                    @if ($navCategories->isNotEmpty())
+                    @if ($navCollections->isNotEmpty())
+                        <p class="eyebrow mt-6 text-stone-400">Aktivitas populer</p>
+                        <div class="no-scrollbar -mx-4 mt-3 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
+                            @foreach ($navCollections->take(8) as $collection)
+                                <a href="{{ $collection->url() }}" class="chip"><x-sport-icon :name="$collection->iconName()" :for="$collection->name.' '.$collection->slug" class="size-4 text-brand-600" /> {{ $collection->name }}</a>
+                            @endforeach
+                        </div>
+                    @elseif ($navCategories->isNotEmpty())
                         <p class="eyebrow mt-6 text-stone-400">Aktivitas populer</p>
                         <div class="no-scrollbar -mx-4 mt-3 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
                             @foreach ($navCategories->take(8) as $category)
@@ -298,6 +313,16 @@
                         @endforeach
                     </ul>
 
+                    @if ($navCollections->isNotEmpty())
+                        <p class="eyebrow mt-6 text-stone-400">Aktivitas</p>
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            @foreach ($navCollections as $collection)
+                                <a href="{{ $collection->url() }}" @class(['chip', 'chip-active' => request('koleksi') === $collection->slug])>
+                                    <x-sport-icon :name="$collection->iconName()" :for="$collection->name.' '.$collection->slug" class="size-4 text-brand-600" /> {{ $collection->name }}
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
                     @if ($navCategories->isNotEmpty())
                         <p class="eyebrow mt-6 text-stone-400">Kategori</p>
                         <ul class="mt-1 divide-y divide-stone-100">

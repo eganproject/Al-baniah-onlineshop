@@ -10,6 +10,7 @@ use App\Enums\VoucherType;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\ProductCollection;
 use App\Models\ProductReview;
 use App\Models\User;
 use App\Models\Voucher;
@@ -80,6 +81,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->seedCatalog();
+        $this->seedCollections();
         // Tanpa event model supaya ratusan pesanan contoh tidak mengantrekan email.
         Order::withoutEvents(fn () => $this->call(DemoOrderSeeder::class));
         $this->seedReviews();
@@ -228,6 +230,45 @@ class DatabaseSeeder extends Seeder
                     $this->seedProduct($target, $name, $price, $compare, $weight, $featured);
                 }
             }
+        }
+    }
+
+    /** Koleksi / aktivitas contoh: satu produk bisa masuk beberapa koleksi (mis. botol di Running & Workout). */
+    private function seedCollections(): void
+    {
+        $collections = [
+            ['Running', 'running', 'cyan', 'Lari lebih jauh, tetap nyaman', ['running', 'kaos-kaki-lari-anti-lecet', 'botol-minum-sport-750ml-bpa-free', 'handuk-microfiber-quick-dry', 'kinesiology-tape-5cm-x-5m']],
+            ['Yoga & Pilates', 'yoga', 'ink', null, ['yoga-pilates', 'handuk-microfiber-quick-dry', 'sport-bra-medium-support']],
+            ['Workout', 'workout', 'volt', null, ['workout', 'botol-minum-sport-750ml-bpa-free', 'handuk-microfiber-quick-dry', 'sport-bra-medium-support', 'knee-support-compression']],
+            ['Padel', 'padel', 'orange', null, ['padel', 'rok-olahraga-skort-2-in-1', 'topi-visor-hat-quick-dry']],
+            ['Swimming', 'swimming', 'sky', null, ['swimming', 'travel-pouch-serbaguna']],
+            ['Support & Recovery', 'support', 'sand', null, ['support-recovery']],
+            ['Essentials', 'essentials', 'cyan', null, ['essentials']],
+            ['Apparel', 'apparel', 'ink', null, ['apparel', 'nu-shape-aura-flare-yoga-pants', 'manset-lengan-uv-protection']],
+        ];
+
+        foreach ($collections as $order => [$name, $icon, $tone, $tagline, $members]) {
+            $collection = ProductCollection::updateOrCreate(['slug' => Str::slug($name)], [
+                'name' => $name,
+                'tagline' => $tagline,
+                'description' => "Perlengkapan {$name} pilihan NuFit, dari berbagai kategori.",
+                'icon' => $icon,
+                'tone' => $tone,
+                'is_active' => true,
+                'show_on_home' => true,
+                'sort_order' => $order,
+            ]);
+
+            // Slug kategori = semua produk di kategori itu (termasuk subkategori); selain itu slug produk.
+            $ids = collect($members)->flatMap(function (string $slug) {
+                $category = Category::where('slug', $slug)->first();
+
+                return $category
+                    ? Product::whereIn('category_id', $category->familyIds())->pluck('id')
+                    : Product::where('slug', $slug)->pluck('id');
+            })->unique()->all();
+
+            $collection->products()->sync($ids);
         }
     }
 

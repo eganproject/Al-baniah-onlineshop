@@ -15,6 +15,7 @@
         'Katalog' => [
             ['Produk', 'admin.products.index', 'cube', 'admin.products.*', null],
             ['Kategori', 'admin.categories.index', 'tag', 'admin.categories.*', null],
+            ['Koleksi', 'admin.collections.index', 'swatch', 'admin.collections.*', null],
             ['Stok', 'admin.stock.index', 'archive', 'admin.stock.*', null],
             ['Ulasan', 'admin.reviews.index', 'star', 'admin.reviews.*', $pendingReviews ?: null],
         ],

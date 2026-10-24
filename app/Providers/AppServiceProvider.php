@@ -8,6 +8,7 @@ use App\Contracts\ShippingProvider;
 use App\Enums\OrderStatus;
 use App\Models\Category;
 use App\Models\Order;
+use App\Models\ProductCollection;
 use App\Services\Auth\FirebaseTokenVerifier;
 use App\Services\Cart\CartService;
 use App\Services\Customer\WishlistService;
@@ -80,6 +81,7 @@ class AppServiceProvider extends ServiceProvider
                 'navCategories' => Category::active()->root()->orderBy('sort_order')
                     ->with(['children' => fn ($q) => $q->active()->orderBy('sort_order')->select(['id', 'parent_id', 'name', 'slug'])])
                     ->get(['id', 'name', 'slug']),
+                'navCollections' => ProductCollection::active()->ordered()->get(['id', 'name', 'slug', 'icon']),
             ]);
         });
     }

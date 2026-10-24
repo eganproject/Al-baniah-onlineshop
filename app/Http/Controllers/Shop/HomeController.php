@@ -5,26 +5,34 @@ namespace App\Http\Controllers\Shop;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Banner;
-use App\Models\Category;
 use App\Models\Product;
+use App\Services\Storefront\ActivityTiles;
 use App\Services\Storefront\BestSellers;
+use App\Support\Storefront;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
-    public function __invoke(BestSellers $bestSellers): View
+    public function __invoke(BestSellers $bestSellers, ActivityTiles $activityTiles): View
     {
+        // Data hanya dimuat untuk seksi yang ditampilkan (Admin › Tampilan Beranda).
+        $sections = Storefront::sections();
+        $on = fn (string $section) => in_array($section, $sections, true);
+
+        $activities = $on('activities') || config('shop.storefront.hero_rail', true)
+            ? $activityTiles->forHome()
+            : ['kind' => 'categories', 'tiles' => new Collection];
+
         return view('shop.home', [
-            'banners' => Banner::visible()->take(8)->get(),
-            'categories' => Category::active()->root()
-                ->withCount(['products' => fn ($q) => $q->active()])
-                ->with(['children' => fn ($q) => $q->active()->withCount(['products' => fn ($q) => $q->active()])])
-                ->orderBy('sort_order')->take(12)->get()
-                // Jumlah produk induk termasuk produk di subkategorinya.
-                ->each(fn (Category $c) => $c->products_count += $c->children->sum('products_count')),
-            'bestSellers' => $bestSellers->forHome(),
-            'onSale' => Product::active()->with('category')->onSale()->latest()->take(4)->get(),
-            'latestArticles' => Article::published()->with('category:id,name,slug')->latest('published_at')->take(3)->get(),
+            'activities' => $activities['tiles'],
+            'activitiesKind' => $activities['kind'],
+            'banners' => $on('banners') ? Banner::visible()->take(8)->get() : new Collection,
+            'bestSellers' => $on('best_sellers') ? $bestSellers->forHome() : new Collection,
+            'onSale' => $on('promo') ? Product::active()->with('category')->onSale()->latest()->take(4)->get() : new Collection,
+            'latestArticles' => $on('articles')
+                ? Article::published()->with('category:id,name,slug')->latest('published_at')->take(3)->get()
+                : new Collection,
         ]);
     }
 }

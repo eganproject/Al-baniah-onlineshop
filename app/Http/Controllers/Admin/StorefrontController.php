@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Services\Settings\StoreSettings;
+use App\Services\Storefront\ActivityTiles;
 use App\Services\Storefront\BestSellers;
 use App\Support\Storefront;
 use Illuminate\Http\JsonResponse;
@@ -36,6 +37,25 @@ class StorefrontController extends Controller
         'hero_image_mobile' => 'shop.storefront.hero_image_mobile',
     ];
 
+    /** Teks seksi beranda: nama kolom form => [kunci config, maks. karakter]. */
+    private const SECTION_TEXT = [
+        'ribbon_text' => ['shop.storefront.ribbon_text', 200],
+        'best_eyebrow' => ['shop.storefront.best_eyebrow', 40],
+        'best_title' => ['shop.storefront.best_title', 60],
+        'activities_eyebrow' => ['shop.storefront.activities_eyebrow', 40],
+        'activities_title' => ['shop.storefront.activities_title', 60],
+        'promo_eyebrow' => ['shop.storefront.promo_eyebrow', 40],
+        'promo_title' => ['shop.storefront.promo_title', 60],
+        'promo_text' => ['shop.storefront.promo_text', 200],
+        'promo_badge' => ['shop.storefront.promo_badge', 14],
+        'promo_button' => ['shop.storefront.promo_button', 30],
+        'promo_url' => ['shop.storefront.promo_url', 255],
+        'why_eyebrow' => ['shop.storefront.why_eyebrow', 40],
+        'why_title' => ['shop.storefront.why_title', 90],
+        'why_text' => ['shop.storefront.why_text', 300],
+        'articles_title' => ['shop.storefront.articles_title', 60],
+    ];
+
     public function __construct(private readonly StoreSettings $settings) {}
 
     public function edit(): View
@@ -47,12 +67,70 @@ class StorefrontController extends Controller
                 + ['announcements' => implode("\n", Storefront::announcements())],
             'defaults' => collect(self::TEXT)->map(fn (string $key) => $this->settings->default($key))->all(),
             'images' => collect(self::IMAGES)->map(fn (string $key) => Storefront::url(config($key)))->all(),
+            'sections' => $this->sectionItems(),
+            'sectionText' => collect(self::SECTION_TEXT)->map(fn (array $def) => config($def[0]))->all()
+                + [
+                    'why_points' => implode("\n", (array) config('shop.storefront.why_points', [])),
+                    'activities_source' => config('shop.storefront.activities_source', 'auto'),
+                    'hero_rail' => (bool) config('shop.storefront.hero_rail', true),
+                ],
+            'sectionDefaults' => array_merge(
+                collect(self::SECTION_TEXT)->map(fn (array $def) => $this->settings->default($def[0]))->all(),
+                ['ribbon_text' => implode(' • ', array_filter([config('shop.motto'), config('shop.hashtag')]))],
+            ),
+            'textLimits' => collect(self::SECTION_TEXT)->map(fn (array $def) => $def[1])->all(),
             'bestSeller' => [
                 'mode' => BestSellers::isManual() ? 'manual' : 'auto',
                 'fill' => (bool) config('shop.storefront.best_seller_fill', true),
                 'products' => $this->pickedProducts(BestSellers::pickedIds()),
             ],
         ]);
+    }
+
+    /** Simpan urutan, tampil/sembunyi, dan teks seksi beranda. */
+    public function updateSections(Request $request): RedirectResponse
+    {
+        $rules = collect(self::SECTION_TEXT)->map(fn (array $def) => ['nullable', 'string', 'max:'.$def[1]])->all();
+        $rules['promo_url'][] = 'regex:#^(/(?!/)|https?://)#';
+
+        $data = $request->validate($rules + [
+            'sections' => ['nullable', 'array'],
+            'sections.*' => ['string', 'distinct', Rule::in(array_keys(Storefront::SECTIONS))],
+            'activities_source' => ['required', Rule::in(array_keys(ActivityTiles::SOURCES))],
+            'hero_rail' => ['boolean'],
+            'why_points' => ['nullable', 'string', 'max:1000'],
+        ], [
+            'promo_url.regex' => 'Awali dengan "/" untuk halaman toko (mis. /produk?promo=1) atau https:// untuk link luar.',
+        ], [
+            'sections' => 'seksi', 'promo_url' => 'link tombol promo', 'why_points' => 'poin keunggulan', 'ribbon_text' => 'teks pita',
+        ]);
+
+        $values = collect(self::SECTION_TEXT)->mapWithKeys(fn (array $def, string $field) => [$def[0] => $data[$field] ?? null])->all();
+
+        $values['shop.storefront.sections'] = array_values($data['sections'] ?? []);
+        $values['shop.storefront.activities_source'] = $data['activities_source'];
+        $values['shop.storefront.hero_rail'] = $request->boolean('hero_rail');
+        $values['shop.storefront.why_points'] = collect(preg_split('/\R/', (string) ($data['why_points'] ?? '')))
+            ->map(fn (string $line) => Str::limit(trim($line), 200, ''))
+            ->filter()->take(count(Storefront::WHY_ICONS))->values()->all() ?: null;
+
+        $changes = $this->settings->save($values);
+
+        return redirect()->to(route('admin.storefront.edit').'#seksi')
+            ->with('success', $changes ? 'Seksi beranda disimpan.' : 'Tidak ada perubahan.');
+    }
+
+    /** @return list<array{key: string, label: string, on: bool}> seksi tampil (berurutan) lalu yang disembunyikan */
+    private function sectionItems(): array
+    {
+        $on = Storefront::sections();
+        $off = array_diff(array_keys(Storefront::SECTIONS), $on);
+
+        return array_map(fn (string $key) => [
+            'key' => $key,
+            'label' => Storefront::SECTIONS[$key],
+            'on' => in_array($key, $on, true),
+        ], [...$on, ...$off]);
     }
 
     /** Simpan mode & urutan produk Best Seller (form terpisah dari hero). */
@@ -92,7 +170,7 @@ class StorefrontController extends Controller
             ->orderByDesc('is_active')->orderBy('name')
             ->take(20)->get();
 
-        return response()->json($products->map(fn (Product $p) => $this->productPayload($p))->all());
+        return response()->json($products->map(fn (Product $p) => $p->pickerPayload())->all());
     }
 
     /** @param  list<int>  $ids */
@@ -101,20 +179,7 @@ class StorefrontController extends Controller
         $products = Product::whereIn('id', $ids)->get()->keyBy('id');
 
         return collect($ids)->map(fn (int $id) => $products->get($id))->filter()
-            ->map(fn (Product $p) => $this->productPayload($p))->values()->all();
-    }
-
-    private function productPayload(Product $product): array
-    {
-        return [
-            'id' => $product->id,
-            'name' => $product->name,
-            'sku' => $product->sku,
-            'image' => $product->imageUrl(),
-            'price' => $product->formattedPrice(),
-            'stock' => $product->stock,
-            'active' => $product->is_active,
-        ];
+            ->map(fn (Product $p) => $p->pickerPayload())->values()->all();
     }
 
     public function update(Request $request): RedirectResponse

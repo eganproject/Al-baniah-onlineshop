@@ -62,6 +62,34 @@ return [
         'best_seller_mode' => 'auto',
         'best_seller_products' => [],
         'best_seller_fill' => true,
+
+        // Seksi di bawah hero, berurutan; yang tidak tercantum disembunyikan.
+        'sections' => ['ribbon', 'best_sellers', 'activities', 'banners', 'promo', 'why', 'articles'],
+        // Teks seksi. Kosong (null) = teks bawaan di App\Support\Storefront.
+        'hero_rail' => true,
+        'ribbon_text' => null,
+        'best_eyebrow' => 'Paling diminati',
+        'best_title' => 'Best Seller',
+        'activities_source' => 'auto',
+        'activities_eyebrow' => null,
+        'activities_title' => 'Belanja per aktivitas',
+        'promo_eyebrow' => 'Hemat lebih banyak',
+        'promo_title' => 'Lagi diskon',
+        'promo_text' => 'Perlengkapan latihan favorit dengan harga spesial. Stok promo terbatas.',
+        'promo_badge' => 'Hemat!',
+        'promo_button' => 'Semua promo',
+        'promo_url' => '/produk?promo=1',
+        'why_eyebrow' => null,
+        'why_title' => null,
+        'why_text' => null,
+        // "Judul | deskripsi" per poin, maks. 4.
+        'why_points' => [
+            'Kirim se-Indonesia | Pilih JNE, SiCepat, J&T, POS, dan lainnya. Ongkir terlihat sebelum bayar.',
+            'Produk resmi NuFit | Kualitas terkontrol, dari bahan sampai jahitan.',
+            'Garansi tukar 7 hari | Cacat produksi? Kami bantu tukar tanpa ribet.',
+            'Pembayaran aman | Transfer bank, e-wallet, QRIS, dan kartu kredit.',
+        ],
+        'articles_title' => 'Artikel terbaru',
     ],
 
     /*

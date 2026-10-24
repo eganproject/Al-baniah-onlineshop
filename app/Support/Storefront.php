@@ -43,6 +43,61 @@ class Storefront
         ];
     }
 
+    /** Seksi beranda di bawah hero => label admin, dalam urutan bawaan. */
+    public const SECTIONS = [
+        'ribbon' => 'Pita slogan',
+        'best_sellers' => 'Best Seller',
+        'activities' => 'Belanja per aktivitas',
+        'banners' => 'Banner promo',
+        'promo' => 'Panel diskon',
+        'why' => 'Kenapa NuFit',
+        'articles' => 'Artikel terbaru',
+    ];
+
+    /** Ikon tetap untuk poin "Kenapa NuFit", sesuai urutan. */
+    public const WHY_ICONS = ['truck', 'shield', 'refresh', 'lock'];
+
+    /** @return list<string> seksi yang tampil, berurutan */
+    public static function sections(): array
+    {
+        $sections = config('shop.storefront.sections');
+
+        if (! is_array($sections)) {
+            return array_keys(self::SECTIONS);
+        }
+
+        return array_values(array_unique(array_filter($sections, fn ($key) => is_string($key) && isset(self::SECTIONS[$key]))));
+    }
+
+    /** Teks seksi dari Admin › Tampilan Beranda; kosong = $fallback. */
+    public static function text(string $key, ?string $fallback = null): ?string
+    {
+        $value = config('shop.storefront.'.$key);
+
+        return filled($value) && is_string($value) ? $value : $fallback;
+    }
+
+    /** Kata di pita slogan (dipisah "•"). Bawaan: motto + tagar toko. */
+    public static function ribbonWords(): array
+    {
+        $text = self::text('ribbon_text') ?? implode(' • ', array_filter([config('shop.motto'), config('shop.hashtag')]));
+
+        return array_values(array_filter(array_map('trim', explode('•', $text)), 'filled'));
+    }
+
+    /** @return list<array{icon: string, title: string, text: ?string}> */
+    public static function whyPoints(): array
+    {
+        return collect((array) config('shop.storefront.why_points', []))
+            ->filter(fn ($line) => is_string($line) && filled($line))
+            ->take(count(self::WHY_ICONS))->values()
+            ->map(function (string $line, int $i) {
+                [$title, $text] = array_pad(array_map('trim', explode('|', $line, 2)), 2, null);
+
+                return ['icon' => self::WHY_ICONS[$i], 'title' => $title, 'text' => filled($text) ? $text : null];
+            })->all();
+    }
+
     /** @return list<string> */
     public static function announcements(): array
     {

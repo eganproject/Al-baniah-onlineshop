@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProductRequest;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductCollection;
 use App\Services\Catalog\ProductService;
 use App\Support\AdminList;
 use Illuminate\Http\RedirectResponse;
@@ -56,6 +57,7 @@ class ProductController extends Controller
         return view('admin.products.form', [
             'product' => new Product(['is_active' => true, 'weight' => 100]),
             'categories' => $this->categoryOptions(),
+            'collections' => ProductCollection::ordered()->pluck('name', 'id')->all(),
         ]);
     }
 
@@ -69,8 +71,9 @@ class ProductController extends Controller
     public function edit(Product $product): View
     {
         return view('admin.products.form', [
-            'product' => $product->load('images', 'variants'),
+            'product' => $product->load('images', 'variants', 'collections:id'),
             'categories' => $this->categoryOptions(),
+            'collections' => ProductCollection::ordered()->pluck('name', 'id')->all(),
         ]);
     }
 

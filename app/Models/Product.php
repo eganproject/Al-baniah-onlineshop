@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
@@ -51,6 +52,19 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /** Koleksi / aktivitas (bisa lebih dari satu), di luar kategori utama. */
+    public function collections(): BelongsToMany
+    {
+        return $this->belongsToMany(ProductCollection::class, 'collection_product', 'product_id', 'collection_id');
+    }
+
+    #[Scope]
+    protected function inCollection(Builder $query, ProductCollection|int $collection): void
+    {
+        $id = $collection instanceof ProductCollection ? $collection->id : $collection;
+        $query->whereHas('collections', fn (Builder $q) => $q->whereKey($id));
     }
 
     public function images(): HasMany
@@ -137,6 +151,20 @@ class Product extends Model
 
         $this->save();
         $this->unsetRelation('variants');
+    }
+
+    /** Ringkasan untuk pemilih produk di admin (Best Seller, Koleksi). */
+    public function pickerPayload(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'sku' => $this->sku,
+            'image' => $this->imageUrl(),
+            'price' => $this->formattedPrice(),
+            'stock' => $this->stock,
+            'active' => $this->is_active,
+        ];
     }
 
     public function formattedPrice(): string

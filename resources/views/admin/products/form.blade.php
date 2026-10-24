@@ -50,6 +50,12 @@
                     <x-form.category-select name="category_id" label="Kategori" :categories="$categories" :selected="$product->category_id" placeholder="Tanpa kategori" />
                     <x-form.input name="sku" label="SKU induk" optional :value="$product->sku" maxlength="64" />
                 </div>
+                <div>
+                    <input type="hidden" name="collection_ids" value="">
+                    <x-form.select name="collection_ids[]" multiple label="Koleksi / aktivitas" optional :options="$collections"
+                        :selected="$product->exists ? $product->collections->modelKeys() : []" placeholder="Pilih satu atau lebih koleksi"
+                        hint="Satu produk bisa masuk beberapa koleksi, mis. kaos kaki di Running dan Workout. Kelola koleksi di menu Katalog › Koleksi." />
+                </div>
                 <x-form.textarea name="description" label="Deskripsi" :value="$product->description" rows="7" maxlength="10000"
                                  placeholder="Jelaskan spesifikasi, kompatibilitas, dan isi paket..." />
                 <x-form.input name="slug" label="Slug URL" optional="kosongkan untuk otomatis" :value="$product->slug" />

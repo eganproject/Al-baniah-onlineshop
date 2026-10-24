@@ -4,7 +4,7 @@
         <div class="flex items-end justify-between gap-4">
             <div>
                 <p class="eyebrow text-brand-600">Tips & panduan</p>
-                <h2 id="artikel-terbaru" class="display mt-2 text-3xl leading-none sm:text-5xl">Artikel terbaru</h2>
+                <h2 id="artikel-terbaru" class="display mt-2 text-3xl leading-none sm:text-5xl">{{ \App\Support\Storefront::text('articles_title', 'Artikel terbaru') }}</h2>
             </div>
             <a href="{{ route('articles.index') }}" class="link-underline shrink-0 text-sm font-semibold">Semua artikel</a>
         </div>
