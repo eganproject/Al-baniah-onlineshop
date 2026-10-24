@@ -1,4 +1,4 @@
-@props(['title' => null, 'description' => null, 'image' => null, 'canonical' => null, 'type' => 'website', 'noindex' => false, 'bottomNav' => true, 'transparentHeader' => false])
+@props(['title' => null, 'description' => null, 'image' => null, 'canonical' => null, 'type' => 'website', 'noindex' => false, 'bottomNav' => true, 'transparentHeader' => false, 'whatsappButton' => true, 'whatsappText' => null])
 @php
     $user = auth()->user();
     $announcements = \App\Support\Storefront::announcements();
@@ -470,6 +470,10 @@
                 </div>
             </div>
         </footer>
+
+        @if ($whatsappButton)
+            <x-whatsapp-button :text="$whatsappText" />
+        @endif
 
         @if ($bottomNav)
             <x-bottom-nav :cart-count="$cartCount" :wishlist-count="$wishlistCount" />

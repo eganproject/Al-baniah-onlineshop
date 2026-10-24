@@ -198,6 +198,15 @@
             padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
         }
     }
+    /* Tombol WhatsApp melayang: di HP diangkat di atas navigasi bawah / bar beli. */
+    .wa-float {
+        bottom: calc(5.25rem + env(safe-area-inset-bottom));
+    }
+    @media (width >= 64rem) {
+        .wa-float {
+            bottom: 1.5rem;
+        }
+    }
 
     /*
      * Tipografi. .display = judul besar: Poppins tebal, rapat, tegak (tidak

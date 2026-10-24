@@ -1,4 +1,4 @@
-<x-layouts.shop title="Checkout" :bottom-nav="false">
+<x-layouts.shop title="Checkout" :bottom-nav="false" :whatsapp-button="false">
     <div class="shop-container py-6 sm:py-10 lg:py-14">
         <div class="border-b border-stone-200 pb-5 sm:pb-6">
             <p class="kicker">Langkah terakhir</p>
