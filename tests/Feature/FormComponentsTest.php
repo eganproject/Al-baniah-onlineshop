@@ -75,6 +75,40 @@ class FormComponentsTest extends TestCase
         $this->get(route('admin.reports.index'))->assertOk()->assertSee('x-daterange', false);
     }
 
+    public function test_field_tip_renders_tooltip_next_to_label(): void
+    {
+        view()->share('errors', new ViewErrorBag);
+
+        $html = (string) $this->blade('<x-form.input name="sku" label="SKU induk" tip="Kode unik produk." :tips="[\'Pakai pola konsisten.\']" />');
+        $this->assertStringContainsString('x-data="tip"', $html);
+        $this->assertStringContainsString('class="label-row"', $html);
+        $this->assertStringContainsString('aria-label="Info: SKU induk"', $html);
+        $this->assertStringContainsString('role="tooltip"', $html);
+        $this->assertStringContainsString('Kode unik produk.', $html);
+        $this->assertStringContainsString('Tips agar maksimal', $html);
+        $this->assertStringContainsString('Pakai pola konsisten.', $html);
+
+        $plain = (string) $this->blade('<x-form.input name="name" label="Nama" />');
+        $this->assertStringNotContainsString('x-data="tip"', $plain);
+        $this->assertStringNotContainsString('label-row', $plain);
+    }
+
+    public function test_admin_forms_show_field_tips(): void
+    {
+        $this->actingAs(User::factory()->admin()->create());
+
+        $this->get(route('admin.products.create'))->assertOk()
+            ->assertSee('role="tooltip"', false)
+            ->assertSee('Foto pertama = sampul');
+        $this->get(route('admin.storefront.edit'))->assertOk()->assertSee('Tampil tegak 4:5 di dalam bingkai lengkung');
+        $this->get(route('admin.banners.create'))->assertOk()->assertSee('Gambar khusus HP');
+        $this->get(route('admin.collections.create'))->assertOk()->assertSee('Foto tegak 3:4, minimal 900×1200 px');
+        $this->get(route('admin.vouchers.create'))->assertOk()->assertSee('Batas atas potongan');
+        $this->get(route('admin.articles.create'))->assertOk()->assertSee('Judul biru yang tampil di hasil pencarian Google');
+        $this->get(route('admin.store-settings.edit'))->assertOk()->assertSee('Kecamatan gudang tempat paket dikirim');
+        $this->get(route('admin.integrations.index'))->assertOk()->assertSee('Kunci rahasia untuk membuat transaksi');
+    }
+
     public function test_rupiah_with_thousand_separators_is_accepted(): void
     {
         $admin = User::factory()->admin()->create();

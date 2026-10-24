@@ -25,16 +25,21 @@
             <section class="card space-y-5 p-6">
                 <div class="flex items-center gap-3">
                     <span class="grid size-10 place-items-center rounded-xl bg-brand-50 text-brand-600"><x-icon name="photo" /></span>
-                    <div><h2 class="font-bold text-stone-900">Foto hero</h2><p class="text-xs text-stone-500">Tampil selebar layar. Tanpa foto, beranda memakai ilustrasi bawaan Albaniah.</p></div>
+                    <div><h2 class="font-bold text-stone-900">Foto hero</h2><p class="text-xs text-stone-500">Tampil tegak di dalam bingkai lengkung, di samping judul. Tanpa foto, beranda memakai ilustrasi bawaan Albaniah.</p></div>
                 </div>
                 <x-form.image-upload name="hero_image" label="Foto utama (desktop)" optional :current="$images['hero_image']"
-                    remove-name="remove_hero_image" aspect="aspect-video" :max-kb="5120"
-                    hint="Rasio 16:9, disarankan 2400×1350 px (min. lebar 1200 px). Taruh objek utama di sisi kanan, karena judul tampil di kiri." />
+                    remove-name="remove_hero_image" aspect="aspect-[4/5]" wrapper-class="max-w-64" :max-kb="5120"
+                    hint="Foto tegak rasio 4:5, disarankan 1600×2000 px (min. 1200×1500 px). Objek utama di tengah."
+                    tip="Foto hero di laptop/PC dan tablet. Tampil tegak 4:5 di dalam bingkai lengkung (puncak setengah lingkaran) di samping judul, jadi teks tidak menutupi foto."
+                    :tips="['Pakai foto potret 4:5, ideal 1600×2000 px. Foto mendatar (landscape) akan terpotong banyak di kiri-kanan.', 'Taruh model/produk di tengah, sedikit ke kanan; titik fokus foto ada di ±70% lebar.', 'Sisakan ruang kosong di atas kepala model, karena sudut atas terpotong melengkung.', 'Pojok kiri atas tertutup stempel bulat dan bagian bawah oleh kartu “Paling dicari”: jangan taruh detail penting di sana.', 'Simpan JPG/WebP kualitas ±80% (idealnya di bawah 600 KB).']" />
                 <x-form.image-upload name="hero_image_mobile" label="Foto versi HP" optional :current="$images['hero_image_mobile']"
-                    remove-name="remove_hero_image_mobile" aspect="aspect-[9/16]" wrapper-class="max-w-52" :max-kb="4096"
-                    hint="Rasio 9:16 (mis. 1080×1920 px). Judul tampil di bagian bawah. Tanpa ini, foto utama dipotong otomatis." />
+                    remove-name="remove_hero_image_mobile" aspect="aspect-[5/6]" wrapper-class="max-w-56" :max-kb="4096"
+                    hint="Rasio 5:6 (mis. 1080×1296 px). Tanpa ini, foto utama dipakai dan dipotong sedikit atas-bawahnya."
+                    tip="Foto khusus layar HP (lebar di bawah 768 px). Di HP bingkai lengkung sedikit lebih pendek (5:6) dan tampil di atas judul."
+                    :tips="['Opsional bila foto utama sudah 4:5 dengan objek di tengah; isi bila ingin komposisi berbeda (mis. lebih dekat ke wajah/detail).', 'Ukuran 1080×1296 px (5:6), objek di tengah dengan ruang di atas untuk lengkungan.']" />
                 <x-form.select name="hero_text" label="Warna teks di atas foto" :search="false" :selected="$values['hero_text'] ?? 'light'"
-                    :options="['light' => 'Putih (untuk foto gelap)', 'dark' => 'Gelap (untuk foto terang)']" />
+                    :options="['light' => 'Putih (untuk foto gelap)', 'dark' => 'Gelap (untuk foto terang)']"
+                    tip="Pengaturan untuk tata letak lama yang menaruh teks di atas foto. Pada beranda berbingkai lengkung, judul tampil di samping foto di atas latar krem, jadi pilihan ini tidak mengubah tampilan." />
             </section>
 
             {{-- Teks hero --}}
@@ -43,14 +48,25 @@
                     <span class="grid size-10 place-items-center rounded-xl bg-accent-50 text-accent-600"><x-icon name="sparkles" /></span>
                     <div><h2 class="font-bold text-stone-900">Judul & tombol</h2><p class="text-xs text-stone-500">Teks yang tampil di atas foto hero.</p></div>
                 </div>
-                <x-form.input name="hero_eyebrow" label="Teks kecil di atas judul" :value="$values['hero_eyebrow']" maxlength="60" optional :hint="$hint('hero_eyebrow')" />
-                <x-form.input name="hero_title" label="Judul" :value="$values['hero_title']" maxlength="90" optional :hint="$hint('hero_title')" />
-                <x-form.textarea name="hero_subtitle" label="Deskripsi singkat" :value="$values['hero_subtitle']" rows="2" maxlength="200" optional :hint="$hint('hero_subtitle')" />
+                <x-form.input name="hero_eyebrow" label="Teks kecil di atas judul" :value="$values['hero_eyebrow']" maxlength="60" optional :hint="$hint('hero_eyebrow')"
+                    tip="Label pendek berhuruf kapital di atas judul besar, untuk konteks atau momen, mis. “Koleksi Ramadan 2027”." />
+                <x-form.input name="hero_title" label="Judul" :value="$values['hero_title']" maxlength="90" optional :hint="$hint('hero_title')"
+                    tip="Kalimat paling besar di beranda, yang pertama dibaca pengunjung."
+                    :tips="['Singkat & kuat: 3–7 kata supaya tidak lebih dari 3 baris di HP.', 'Fokus pada manfaat, mis. “Mukena Adem untuk Ibadah Khusyuk”.']" />
+                <x-form.textarea name="hero_subtitle" label="Deskripsi singkat" :value="$values['hero_subtitle']" rows="2" maxlength="200" optional :hint="$hint('hero_subtitle')"
+                    tip="Satu-dua kalimat pendukung di bawah judul."
+                    :tips="['Idealnya di bawah 120 huruf, supaya tombol tetap terlihat tanpa scroll di HP.']" />
                 <div class="grid gap-5 sm:grid-cols-2">
-                    <x-form.input name="hero_primary_label" label="Tombol utama" :value="$values['hero_primary_label']" maxlength="30" optional :hint="$hint('hero_primary_label')" />
-                    <x-form.input name="hero_primary_url" label="Link tombol utama" :value="$values['hero_primary_url']" maxlength="255" optional placeholder="/produk" :hint="$hint('hero_primary_url')" />
-                    <x-form.input name="hero_secondary_label" label="Tombol kedua" :value="$values['hero_secondary_label']" maxlength="30" optional :hint="$hint('hero_secondary_label')" />
-                    <x-form.input name="hero_secondary_url" label="Link tombol kedua" :value="$values['hero_secondary_url']" maxlength="255" optional placeholder="/produk?promo=1" :hint="$hint('hero_secondary_url')" />
+                    <x-form.input name="hero_primary_label" label="Tombol utama" :value="$values['hero_primary_label']" maxlength="30" optional :hint="$hint('hero_primary_label')"
+                        tip="Tombol navy yang paling menonjol. Isi dengan ajakan utama."
+                        :tips="['Pakai kata kerja 1–3 kata, mis. “Belanja Sekarang”.', 'Tombol tampil bila teks dan link-nya sama-sama terisi (atau memakai bawaan).']" />
+                    <x-form.input name="hero_primary_url" label="Link tombol utama" :value="$values['hero_primary_url']" maxlength="255" optional placeholder="/produk" :hint="$hint('hero_primary_url')"
+                        tip="Halaman yang dibuka saat tombol diklik."
+                        :tips="['Halaman toko: awali dengan /, mis. /produk, /produk?kategori=mukena-dewasa, /produk?koleksi=travel-umrah.', 'Link luar (mis. WhatsApp, Shopee): tulis lengkap dengan https://.', 'Cara cepat: buka halamannya di toko, salin alamat dari browser, lalu hapus bagian domain.']" />
+                    <x-form.input name="hero_secondary_label" label="Tombol kedua" :value="$values['hero_secondary_label']" maxlength="30" optional :hint="$hint('hero_secondary_label')"
+                        tip="Tombol bergaris di samping tombol utama, untuk ajakan alternatif, mis. “Lihat Promo” atau “Best Seller”." />
+                    <x-form.input name="hero_secondary_url" label="Link tombol kedua" :value="$values['hero_secondary_url']" maxlength="255" optional placeholder="/produk?promo=1" :hint="$hint('hero_secondary_url')"
+                        tip="Sama seperti link tombol utama: awali / untuk halaman toko atau https:// untuk link luar." />
                 </div>
             </section>
         </div>
@@ -63,7 +79,9 @@
                     <div><h2 class="font-bold text-stone-900">Pengumuman topbar</h2><p class="text-xs text-stone-500">Bergantian tiap beberapa detik di bar paling atas.</p></div>
                 </div>
                 <x-form.textarea name="announcements" label="Pengumuman" :value="$values['announcements']" rows="5" maxlength="1000" optional
-                    hint="Satu pengumuman per baris, maks. 6. Kosongkan untuk memakai teks bawaan." />
+                    hint="Satu pengumuman per baris, maks. 6. Kosongkan untuk memakai teks bawaan."
+                    tip="Bar tipis navy paling atas di semua halaman toko. Tiap baris tampil bergantian beberapa detik."
+                    :tips="['Singkat, di bawah ±50 huruf, supaya tidak terpotong di HP.', 'Taruh info paling menarik di baris pertama: gratis ongkir, promo, atau voucher.', 'Hapus pengumuman yang promonya sudah berakhir.']" />
             </section>
 
             <div class="flex gap-3 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-800">
@@ -97,9 +115,12 @@
                     <summary class="flex cursor-pointer list-none items-center justify-between font-semibold text-stone-800">Pita slogan & Best Seller <x-icon name="chevron-down" class="size-4 transition group-open:rotate-180" /></summary>
                     <div class="mt-4 space-y-5">
                         <x-form.input name="ribbon_text" label="Teks pita berjalan" optional :value="$sectionText['ribbon_text']" :maxlength="$textLimits['ribbon_text']"
-                            :hint="$sHint('ribbon_text', 'Pisahkan kata/kalimat dengan tanda •')" />
+                            :hint="$sHint('ribbon_text', 'Pisahkan kata/kalimat dengan tanda •')"
+                            tip="Pita navy berisi deret kata/nilai toko berhuruf kapital, dipisah belah ketupat rose gold, sebagai penyela antarseksi beranda."
+                            :tips="['Isi 3–5 frasa pendek (1–3 kata), mis. Adem • Tidak menerawang • Jahitan rapi.']" />
                         <div class="grid gap-5 sm:grid-cols-2">
-                            <x-form.input name="best_eyebrow" label="Teks kecil Best Seller" optional :value="$sectionText['best_eyebrow']" :maxlength="$textLimits['best_eyebrow']" :hint="$sHint('best_eyebrow')" />
+                            <x-form.input name="best_eyebrow" label="Teks kecil Best Seller" optional :value="$sectionText['best_eyebrow']" :maxlength="$textLimits['best_eyebrow']" :hint="$sHint('best_eyebrow')"
+                                tip="Teks pendek huruf kapital dengan garis rose gold di atas judul seksi. Gunanya memberi konteks singkat, mis. “Pilihan pelanggan”." />
                             <x-form.input name="best_title" label="Judul Best Seller" optional :value="$sectionText['best_title']" :maxlength="$textLimits['best_title']" :hint="$sHint('best_title')" />
                         </div>
                     </div>
@@ -110,16 +131,20 @@
                     <div class="mt-4 space-y-5">
                         <x-form.select name="activities_source" label="Isi ubin" :search="false" :selected="$sectionText['activities_source']"
                             :options="\App\Services\Storefront\ActivityTiles::SOURCES"
-                            hint="Ubin & urutannya diatur di menu Koleksi (atau Kategori). Maks. {{ \App\Services\Storefront\ActivityTiles::LIMIT }} ubin, yang pertama jadi ubin besar." />
+                            hint="Ubin & urutannya diatur di menu Koleksi (atau Kategori). Maks. {{ \App\Services\Storefront\ActivityTiles::LIMIT }} ubin, yang pertama jadi ubin besar."
+                            tip="Sumber ubin seksi “Belanja per koleksi”. Otomatis = koleksi yang dicentang “Tampil di beranda”; bila belum ada, dipakai kategori induk."
+                            :tips="['Isi foto di tiap koleksi; tanpa foto, ubin memakai foto produk di dalamnya (atau ikon bila kosong).', 'Ubin bisa digeser menyamping; taruh koleksi terlaris di urutan awal.']" />
                         <div class="grid gap-5 sm:grid-cols-2">
                             <x-form.input name="activities_eyebrow" label="Teks kecil" optional :value="$sectionText['activities_eyebrow']" :maxlength="$textLimits['activities_eyebrow']"
-                                hint="Kosongkan: &quot;Koleksi&quot; untuk koleksi, &quot;Kategori&quot; untuk kategori." />
+                                hint="Kosongkan: &quot;Koleksi&quot; untuk koleksi, &quot;Kategori&quot; untuk kategori."
+                                tip="Teks pendek huruf kapital dengan garis rose gold di atas judul seksi. Gunanya memberi konteks singkat, mis. “Pilihan pelanggan”." />
                             <x-form.input name="activities_title" label="Judul" optional :value="$sectionText['activities_title']" :maxlength="$textLimits['activities_title']" :hint="$sHint('activities_title')" />
                         </div>
                         <label class="flex items-start gap-3 text-sm text-stone-700">
                             <input type="hidden" name="hero_rail" value="0">
                             <input type="checkbox" name="hero_rail" value="1" @checked(old('hero_rail', $sectionText['hero_rail'])) class="mt-0.5 rounded text-brand-600 focus:ring-brand-500">
-                            <span>Tampilkan pintasan "Pilih koleksimu" di bawah hero<span class="block text-xs text-stone-500">Deretan tombol koleksi berlapis kaca di bagian bawah foto hero.</span></span>
+                            <span><span class="inline-flex items-center gap-1.5">Tampilkan pintasan "Pilih koleksimu" di bawah hero <x-tip title="Pintasan koleksi" text="Deretan tombol kecil di bawah tombol hero berisi koleksi yang sama dengan ubin “Belanja per koleksi”, supaya pengunjung langsung bisa memilih tanpa scroll."
+                                :tips="['Matikan bila koleksi yang tampil di beranda belum lengkap isinya.']" /></span><span class="block text-xs text-stone-500">Deretan tombol koleksi di bawah tombol hero.</span></span>
                         </label>
                     </div>
                 </details>
@@ -129,14 +154,18 @@
                     <div class="mt-4 space-y-5">
                         <p class="text-xs text-stone-500">Tampil bila ada produk yang sedang diskon (harga coret), bersama 4 produk diskon terbaru.</p>
                         <div class="grid gap-5 sm:grid-cols-2">
-                            <x-form.input name="promo_eyebrow" label="Teks kecil" optional :value="$sectionText['promo_eyebrow']" :maxlength="$textLimits['promo_eyebrow']" :hint="$sHint('promo_eyebrow')" />
+                            <x-form.input name="promo_eyebrow" label="Teks kecil" optional :value="$sectionText['promo_eyebrow']" :maxlength="$textLimits['promo_eyebrow']" :hint="$sHint('promo_eyebrow')"
+                                tip="Teks pendek huruf kapital dengan garis rose gold di atas judul seksi. Gunanya memberi konteks singkat, mis. “Pilihan pelanggan”." />
                             <x-form.input name="promo_title" label="Judul" optional :value="$sectionText['promo_title']" :maxlength="$textLimits['promo_title']" :hint="$sHint('promo_title')" />
                         </div>
                         <x-form.textarea name="promo_text" label="Deskripsi" optional :value="$sectionText['promo_text']" rows="2" :maxlength="$textLimits['promo_text']" :hint="$sHint('promo_text')" />
                         <div class="grid gap-5 sm:grid-cols-3">
-                            <x-form.input name="promo_badge" label="Stiker bulat" optional :value="$sectionText['promo_badge']" :maxlength="$textLimits['promo_badge']" :hint="$sHint('promo_badge')" />
+                            <x-form.input name="promo_badge" label="Stiker bulat" optional :value="$sectionText['promo_badge']" :maxlength="$textLimits['promo_badge']" :hint="$sHint('promo_badge')"
+                                tip="Label kecil merah di samping teks kecil panel diskon, untuk menonjolkan angka promo."
+                                :tips="['1–3 kata, mis. “Hemat 30%” atau “Hari ini”.']" />
                             <x-form.input name="promo_button" label="Tombol" optional :value="$sectionText['promo_button']" :maxlength="$textLimits['promo_button']" :hint="$sHint('promo_button')" />
-                            <x-form.input name="promo_url" label="Link tombol" optional :value="$sectionText['promo_url']" :maxlength="$textLimits['promo_url']" placeholder="/produk?promo=1" :hint="$sHint('promo_url')" />
+                            <x-form.input name="promo_url" label="Link tombol" optional :value="$sectionText['promo_url']" :maxlength="$textLimits['promo_url']" placeholder="/produk?promo=1" :hint="$sHint('promo_url')"
+                                tip="Halaman tujuan tombol panel diskon. /produk?promo=1 = katalog yang hanya berisi produk diskon." />
                         </div>
                     </div>
                 </details>
@@ -146,13 +175,18 @@
                     <div class="mt-4 space-y-5">
                         <div class="grid gap-5 sm:grid-cols-2">
                             <x-form.input name="why_eyebrow" label="Teks kecil" optional :value="$sectionText['why_eyebrow']" :maxlength="$textLimits['why_eyebrow']"
-                                hint="Kosongkan: &quot;Kenapa {{ config('shop.name') }}&quot;." />
+                                hint="Kosongkan: &quot;Kenapa {{ config('shop.name') }}&quot;."
+                                tip="Teks pendek huruf kapital dengan garis rose gold di atas judul seksi. Gunanya memberi konteks singkat, mis. “Pilihan pelanggan”." />
                             <x-form.input name="why_title" label="Judul besar" optional :value="$sectionText['why_title']" :maxlength="$textLimits['why_title']"
-                                hint="Pisahkan baris dengan •. Baris ke-2 berwarna biru. Kosongkan untuk motto toko." />
+                                hint="Pisahkan baris dengan •. Baris ke-2 berwarna rose gold. Kosongkan untuk motto toko."
+                                tip="Judul besar seksi keunggulan toko. Tanda • memecah judul jadi beberapa baris, dan baris kedua diberi warna aksen."
+                                :tips="['Contoh: Temani ibadahmu • dengan nyaman', 'Maksimal 2–3 baris pendek agar tetap elegan.']" />
                         </div>
                         <x-form.textarea name="why_text" label="Paragraf" optional :value="$sectionText['why_text']" rows="2" :maxlength="$textLimits['why_text']" />
                         <x-form.textarea name="why_points" label="Poin keunggulan" optional :value="$sectionText['why_points']" rows="4" maxlength="1000"
-                            hint="Satu poin per baris, format: Judul | deskripsi. Maks. 4 (ikon: truk, perisai, tukar, gembok). Kosongkan untuk poin bawaan." />
+                            hint="Satu poin per baris, format: Judul | deskripsi. Maks. 4 (ikon: truk, perisai, tukar, gembok). Kosongkan untuk poin bawaan."
+                            tip="Daftar alasan berbelanja di toko ini, masing-masing dengan ikon bulat. Ikon mengikuti urutan baris: 1 truk, 2 perisai, 3 tukar, 4 gembok."
+                            :tips="['Contoh baris: Gratis ongkir | Untuk belanja di atas Rp300.000', 'Urutkan sesuai ikonnya: pengiriman, jaminan kualitas, tukar ukuran/retur, pembayaran aman.', 'Deskripsi cukup satu kalimat pendek.']" />
                         <x-form.input name="articles_title" label="Judul seksi artikel" optional :value="$sectionText['articles_title']" :maxlength="$textLimits['articles_title']" :hint="$sHint('articles_title')" />
                     </div>
                 </details>

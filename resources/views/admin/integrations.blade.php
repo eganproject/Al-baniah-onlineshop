@@ -56,9 +56,15 @@
                         @if ($key === 'midtrans')
                             <div class="grid gap-5 sm:grid-cols-2">
                                 <x-form.select name="midtrans[driver]" id="midtrans_driver" label="Driver pembayaran" :selected="$value('midtrans', 'driver')"
-                                               :options="['fake' => 'Simulasi (fake)', 'midtrans' => 'Midtrans']" :hint="$source('midtrans', 'driver')" />
+                                               :options="['fake' => 'Simulasi (fake)', 'midtrans' => 'Midtrans']" :hint="$source('midtrans', 'driver')"
+                                               tip="Simulasi: pembayaran pura-pura untuk mencoba alur checkout tanpa uang sungguhan. Midtrans: pembeli membayar lewat halaman Midtrans (VA bank, e-wallet, QRIS, kartu)."
+                                               :tips="['Pakai Simulasi saat toko masih disiapkan; ganti ke Midtrans setelah kunci diisi dan Tes koneksi berhasil.']" />
                                 <div>
-                                    <p class="label">Mode</p>
+                                    <div class="label-row">
+                                        <p class="label">Mode</p>
+                                        <x-tip title="Mode Midtrans" text="Sandbox = lingkungan uji coba Midtrans, tidak ada uang yang berpindah. Production = transaksi sungguhan ke rekening toko."
+                                            :tips="['Kunci Sandbox dan Production berbeda; pastikan kunci yang diisi sesuai mode.', 'Uji dulu satu transaksi di Sandbox sebelum pindah ke Production.']" />
+                                    </div>
                                     @php($production = (bool) old('midtrans.is_production', $value('midtrans', 'is_production')))
                                     <div class="grid grid-cols-2 gap-2">
                                         @foreach (['0' => 'Sandbox', '1' => 'Production'] as $mode => $text)
@@ -70,13 +76,18 @@
                                     </div>
                                     <p class="hint">Production = uang sungguhan. Kunci Sandbox berawalan "SB-".</p>
                                 </div>
-                                <x-form.input name="midtrans[merchant_id]" id="midtrans_merchant_id" label="Merchant ID" :value="$value('midtrans', 'merchant_id')" placeholder="G123456789" optional :hint="$source('midtrans', 'merchant_id')" />
-                                <x-form.input name="midtrans[client_key]" id="midtrans_client_key" label="Client key" :value="$value('midtrans', 'client_key')" placeholder="SB-Mid-client-..." :hint="$source('midtrans', 'client_key')" spellcheck="false" />
+                                <x-form.input name="midtrans[merchant_id]" id="midtrans_merchant_id" label="Merchant ID" :value="$value('midtrans', 'merchant_id')" placeholder="G123456789" optional :hint="$source('midtrans', 'merchant_id')"
+                                    tip="ID akun merchant Midtrans (diawali G). Ada di Midtrans Dashboard › Settings › Access Keys. Hanya sebagai catatan, tidak wajib untuk pembayaran." />
+                                <x-form.input name="midtrans[client_key]" id="midtrans_client_key" label="Client key" :value="$value('midtrans', 'client_key')" placeholder="SB-Mid-client-..." :hint="$source('midtrans', 'client_key')" spellcheck="false"
+                                    tip="Kunci publik untuk membuka jendela pembayaran Midtrans (Snap) di browser pembeli. Ada di Midtrans Dashboard › Settings › Access Keys." />
                             </div>
-                            @include('admin.partials.secret-input', ['integration' => 'midtrans', 'name' => 'server_key', 'label' => 'Server key', 'placeholder' => 'SB-Mid-server-...'])
+                            @include('admin.partials.secret-input', ['integration' => 'midtrans', 'name' => 'server_key', 'label' => 'Server key', 'placeholder' => 'SB-Mid-server-...',
+                                'tip' => 'Kunci rahasia untuk membuat transaksi dan memverifikasi notifikasi pembayaran dari Midtrans. Ada di Midtrans Dashboard › Settings › Access Keys.',
+                                'tips' => ['Jangan pernah dibagikan atau ditempel di chat; siapa pun yang memegangnya bisa membuat transaksi atas nama toko.']])
 
                             <div>
-                                <p class="text-xs font-semibold text-stone-500 uppercase">URL notifikasi (webhook)</p>
+                                <p class="flex items-center gap-1.5 text-xs font-semibold text-stone-500 uppercase">URL notifikasi (webhook) <x-tip title="URL notifikasi" text="Alamat yang dihubungi Midtrans setiap status pembayaran berubah, supaya pesanan otomatis jadi “Dibayar” tanpa dicek manual."
+                                    :tips="['Wajib diisi di Midtrans agar status pesanan ter-update.', 'Hanya bisa dihubungi bila situs sudah online (punya domain). Di Laragon/lokal, webhook tidak akan sampai.']" /></p>
                                 <div class="mt-2 flex items-center gap-2" x-data="{ copied: false }">
                                     <code class="min-w-0 flex-1 truncate rounded-xl bg-stone-50 px-3 py-2 text-xs text-stone-700 ring-1 ring-stone-200">{{ $webhook }}</code>
                                     <button type="button" class="btn btn-secondary btn-sm" x-on:click="navigator.clipboard.writeText(@js($webhook)); copied = true; setTimeout(() => copied = false, 1500)">
@@ -87,8 +98,12 @@
                             </div>
                         @elseif ($key === 'rajaongkir')
                             <x-form.select name="rajaongkir[driver]" id="rajaongkir_driver" label="Driver ongkir" :selected="$value('rajaongkir', 'driver')"
-                                           :options="['fake' => 'Simulasi (tarif contoh)', 'rajaongkir' => 'RajaOngkir (Komerce)']" :hint="$source('rajaongkir', 'driver')" />
-                            @include('admin.partials.secret-input', ['integration' => 'rajaongkir', 'name' => 'api_key', 'label' => 'API key', 'placeholder' => 'API key dari dashboard Komerce'])
+                                           :options="['fake' => 'Simulasi (tarif contoh)', 'rajaongkir' => 'RajaOngkir (Komerce)']" :hint="$source('rajaongkir', 'driver')"
+                                           tip="Simulasi: ongkir memakai tarif contoh (tidak akurat). RajaOngkir: tarif asli kurir sesuai berat & alamat, plus lacak resi."
+                                           :tips="['Pakai RajaOngkir sebelum toko dibuka untuk umum supaya ongkir tidak rugi.']" />
+                            @include('admin.partials.secret-input', ['integration' => 'rajaongkir', 'name' => 'api_key', 'label' => 'API key', 'placeholder' => 'API key dari dashboard Komerce',
+                                'tip' => 'Kunci akses RajaOngkir untuk cek tarif & lacak resi. Didapat dari dashboard Komerce (layanan RajaOngkir) setelah mendaftar.',
+                                'tips' => ['Perhatikan kuota panggilan paket RajaOngkir Anda; tiap checkout memakai beberapa panggilan.']])
                             <div class="rounded-xl bg-stone-50 p-3 text-sm">
                                 <p class="text-xs text-stone-500">Kecamatan asal pengiriman</p>
                                 <p class="font-semibold text-stone-800">{{ $originLabel ?? 'Belum diatur' }}</p>
@@ -97,18 +112,23 @@
                         @else
                             <label class="flex items-start justify-between gap-4 rounded-xl border border-stone-200 p-4">
                                 <span>
-                                    <span class="block text-sm font-semibold text-stone-800">Tampilkan tombol "Lanjutkan dengan Google"</span>
+                                    <span class="flex items-center gap-1.5 text-sm font-semibold text-stone-800">Tampilkan tombol "Lanjutkan dengan Google" <x-tip title="Login Google" text="Pelanggan bisa daftar/masuk sekali klik dengan akun Google, tanpa membuat password. Akun staf tetap login dengan email & password."
+                                        :tips="['Mempercepat pendaftaran dan biasanya menaikkan jumlah pembeli yang menyelesaikan checkout.', 'Tambahkan domain toko di Firebase › Authentication › Authorized domains.']" /></span>
                                     <span class="text-xs text-stone-500">Di halaman masuk & daftar pelanggan. Butuh API key dan Project ID.</span>
                                 </span>
                                 <input type="hidden" name="firebase[login_enabled]" value="0">
                                 <input type="checkbox" name="firebase[login_enabled]" value="1" class="checkbox mt-0.5 size-5 shrink-0" @checked(old('firebase.login_enabled', $value('firebase', 'login_enabled')))>
                             </label>
                             <div class="grid gap-5 sm:grid-cols-2">
-                                <x-form.input name="firebase[api_key]" id="firebase_api_key" label="API key (apiKey)" :value="$value('firebase', 'api_key')" placeholder="AIza..." :hint="$source('firebase', 'api_key')" spellcheck="false" />
-                                <x-form.input name="firebase[project_id]" id="firebase_project_id" label="Project ID (projectId)" :value="$value('firebase', 'project_id')" placeholder="albaniah-shop" :hint="$source('firebase', 'project_id')" spellcheck="false" />
+                                <x-form.input name="firebase[api_key]" id="firebase_api_key" label="API key (apiKey)" :value="$value('firebase', 'api_key')" placeholder="AIza..." :hint="$source('firebase', 'api_key')" spellcheck="false"
+                                              tip="Nilai apiKey dari konfigurasi Web app Firebase (diawali AIza). Bukan rahasia, tapi tetap batasi domainnya di Google Cloud Console." />
+                                <x-form.input name="firebase[project_id]" id="firebase_project_id" label="Project ID (projectId)" :value="$value('firebase', 'project_id')" placeholder="albaniah-shop" :hint="$source('firebase', 'project_id')" spellcheck="false"
+                                              tip="ID proyek Firebase (projectId). Dipakai server untuk memastikan token login Google memang berasal dari proyek Anda." />
                                 <x-form.input name="firebase[auth_domain]" id="firebase_auth_domain" label="Auth domain (authDomain)" :value="$value('firebase', 'auth_domain')" placeholder="albaniah-shop.firebaseapp.com" optional
-                                              :hint="$source('firebase', 'auth_domain') ?? 'Kosong = <project-id>.firebaseapp.com.'" spellcheck="false" />
-                                <x-form.input name="firebase[app_id]" id="firebase_app_id" label="App ID (appId)" :value="$value('firebase', 'app_id')" placeholder="1:1234:web:abcd" optional :hint="$source('firebase', 'app_id')" spellcheck="false" />
+                                              :hint="$source('firebase', 'auth_domain') ?? 'Kosong = <project-id>.firebaseapp.com.'" spellcheck="false"
+                                              tip="Domain halaman login Google milik Firebase. Biasanya cukup dikosongkan." />
+                                <x-form.input name="firebase[app_id]" id="firebase_app_id" label="App ID (appId)" :value="$value('firebase', 'app_id')" placeholder="1:1234:web:abcd" optional :hint="$source('firebase', 'app_id')" spellcheck="false"
+                                              tip="ID aplikasi web Firebase (appId). Opsional, hanya untuk melengkapi konfigurasi." />
                             </div>
                             <p class="hint">Nilai ini dari Firebase Console › Project settings › Your apps (Web app). Bukan rahasia: ikut terkirim ke browser pelanggan.</p>
                         @endif

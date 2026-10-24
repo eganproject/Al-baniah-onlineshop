@@ -17,7 +17,10 @@
                 <x-form.category-select name="kategori" label="Kategori" :categories="$categories" placeholder="Semua kategori" />
                 <x-form.select name="status" label="Status" :options="['aktif' => 'Hanya aktif', 'nonaktif' => 'Hanya nonaktif']" placeholder="Semua produk" />
                 <fieldset>
-                    <legend class="label">Format</legend>
+                    <legend class="label-row"><span class="label">Format</span>
+                        <x-tip title="Format file" text="Excel (.xlsx) paling nyaman dibuka & diedit di Excel atau Google Sheets. CSV adalah teks biasa untuk aplikasi lain (mis. Shopee/WMS)."
+                            :tips="['Bila ragu, pilih Excel: angka & huruf depan nol (mis. SKU 0012) tidak berubah.']" />
+                    </legend>
                     <div class="grid grid-cols-2 gap-2">
                         @foreach (['xlsx' => 'Excel (.xlsx)', 'csv' => 'CSV'] as $value => $label)
                             <label class="flex cursor-pointer items-center gap-2 rounded-xl border border-stone-200 px-3 py-2 text-sm has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50">
@@ -65,7 +68,9 @@
             <form method="POST" action="{{ route('admin.imports.store') }}" enctype="multipart/form-data" class="mt-5 space-y-3" x-data="{ busy: false }" @submit="busy = true">
                 @csrf
                 <input type="hidden" name="type" value="products">
-                <x-form.file name="file" label="File produk" :extensions="['xlsx', 'csv']" :max-kb="$maxUploadKb" :bag="old('type', 'products') === 'products' ? 'default' : 'none'" required />
+                <x-form.file name="file" label="File produk" :extensions="['xlsx', 'csv']" :max-kb="$maxUploadKb" :bag="old('type', 'products') === 'products' ? 'default' : 'none'" required
+                    tip="File berisi daftar produk dengan format template. Setelah diunggah, isinya diperiksa dulu dan ditampilkan pratinjaunya; belum ada yang tersimpan sampai Anda menekan proses."
+                    :tips="['Mulai dari Template atau hasil Ekspor supaya nama kolom tepat.', 'Baris dengan SKU/slug yang sudah ada akan memperbarui produk itu, bukan membuat produk baru.']" />
                 <button class="btn btn-primary w-full" :disabled="busy">
                     <x-icon name="download" class="size-4 rotate-180" /> <span x-text="busy ? 'Memeriksa file...' : 'Unggah & periksa'">Unggah & periksa</span>
                 </button>
@@ -91,7 +96,10 @@
                 @csrf
                 <input type="hidden" name="type" value="stock">
                 <fieldset>
-                    <legend class="label">Cara update</legend>
+                    <legend class="label-row"><span class="label">Cara update</span>
+                        <x-tip title="Cara update" text="Ganti: cocok untuk stock opname, stok jadi persis angka di file. Tambah: cocok untuk barang masuk, angka di file dijumlahkan ke stok sekarang."
+                            :tips="['Ekspor produk dulu supaya kolom sku & stok terisi rapi, lalu ubah angkanya saja.', 'Setelah unggah, periksa pratinjau baris yang error sebelum menekan proses.']" />
+                    </legend>
                     <div class="space-y-2">
                         @foreach ($modes as $value => $label)
                             <label class="flex cursor-pointer items-start gap-2 rounded-xl border border-stone-200 px-3 py-2 text-sm has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50">

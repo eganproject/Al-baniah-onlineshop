@@ -80,12 +80,20 @@
                             @endforeach
                         </div>
                         <div x-show="status === 'shipped'" x-cloak>
-                            <label for="tracking_number" class="label">Nomor resi {{ $order->courierLabel() }}</label>
+                            <div class="label-row">
+                                <label for="tracking_number" class="label">Nomor resi {{ $order->courierLabel() }}</label>
+                                <x-tip title="Nomor resi" text="Nomor pengiriman dari kurir. Dikirim ke pelanggan lewat email & halaman pesanan supaya paketnya bisa dilacak."
+                                    :tips="['Salin langsung dari aplikasi/struk kurir agar tidak salah ketik, tanpa spasi.', 'Pastikan kurirnya sama dengan pilihan pembeli, supaya pelacakan otomatis berjalan.']" />
+                            </div>
                             <input id="tracking_number" name="tracking_number" value="{{ old('tracking_number', $order->tracking_number) }}" class="input font-mono @error('tracking_number') input-error @enderror" autocomplete="off">
                             <x-input-error for="tracking_number" />
                         </div>
                         <div>
-                            <label for="note" class="label" x-text="status === 'cancelled' ? 'Alasan pembatalan' : 'Catatan (opsional)'">Catatan (opsional)</label>
+                            <div class="label-row">
+                                <label for="note" class="label" x-text="status === 'cancelled' ? 'Alasan pembatalan' : 'Catatan (opsional)'">Catatan (opsional)</label>
+                                <x-tip title="Catatan status" text="Catatan ini tampil di riwayat status pesanan yang dilihat pelanggan, jadi tulis dengan bahasa yang sopan dan jelas."
+                                    :tips="['Untuk pembatalan, sebutkan alasannya dan langkah berikutnya, mis. dana dikembalikan dalam 1x24 jam.']" />
+                            </div>
                             <x-form.textarea name="note" rows="2" maxlength="250"
                                              x-bind:required="status === 'cancelled'"
                                              x-bind:placeholder="status === 'cancelled' ? 'Mis. stok habis, permintaan pelanggan' : 'Tampil di riwayat pesanan pelanggan'" />

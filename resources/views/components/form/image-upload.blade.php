@@ -10,6 +10,8 @@
     'id' => null,
     'label' => null,
     'hint' => null,
+    'tip' => null,
+    'tips' => [],
     'optional' => false,
     'current' => null,
     'removeName' => null,
@@ -24,7 +26,7 @@
     $invalid = FormField::hasError($name, $bag);
     $maxLabel = $maxKb >= 1024 ? rtrim(rtrim(number_format($maxKb / 1024, 1, ',', ''), '0'), ',').' MB' : $maxKb.' KB';
 @endphp
-<x-form.field :label="$label" :for="$id" :name="$name" :hint="$hint" :optional="$optional" :bag="$bag" :class="$wrapperClass">
+<x-form.field :label="$label" :for="$id" :name="$name" :hint="$hint" :tip="$tip" :tips="$tips" :optional="$optional" :bag="$bag" :class="$wrapperClass">
     <div x-data="imageUpload({ current: @js($current), maxKb: @js((int) $maxKb), maxLabel: @js($maxLabel) })">
         <label for="{{ $id }}"
                @dragover.prevent="dragging = true" @dragleave.prevent="dragging = false" @drop.prevent="drop($event)"
