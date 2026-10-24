@@ -75,8 +75,8 @@
             <div class="card p-6">
                 <div class="flex flex-wrap items-center justify-between gap-2">
                     <h2 class="flex items-center gap-1.5 font-bold text-stone-900">Foto produk
-                        <x-tip title="Foto produk" text="Foto tampil persegi (1:1) di kartu produk katalog & beranda, galeri halaman produk (bisa diperbesar), keranjang, dan checkout."
-                            :tips="['Pakai foto persegi 1:1, minimal 1200×1200 px, supaya tajam saat diperbesar. Foto non-persegi otomatis terpotong di tepinya.', 'Foto pertama = sampul: produk utuh, posisi di tengah, latar polos terang.', 'Foto berikutnya: dipakai model, detail renda/bahan, ukuran, isi paket.', 'Kompres dulu di bawah 2 MB (mis. squoosh.app) agar toko tetap cepat dibuka.']" />
+                        <x-tip title="Foto produk" text="Foto tampil di dua bentuk: tegak 4:5 berkubah landai di kartu produk (katalog & beranda), dan persegi 1:1 di galeri halaman produk (bisa diperbesar), keranjang, serta checkout."
+                            :tips="['Pakai foto tegak 4:5, ideal 1200×1500 px. Di halaman produk foto dipotong jadi persegi, jadi sisakan ruang ±10% di atas & bawah objek.', 'Objek di tengah; sudut atas kartu melengkung, jadi jangan taruh detail di pojok atas.', 'Foto pertama = sampul: mukena utuh dipakai model atau tertata rapi, latar polos terang.', 'Foto berikutnya: detail renda/bahan, ukuran, isi paket. Kompres di bawah 2 MB (mis. squoosh.app).']" />
                     </h2>
                     <p class="text-xs text-stone-500">Foto pertama jadi sampul. Maks {{ $formConfig['maxImages'] }} foto, JPG/PNG/WebP 2 MB.</p>
                 </div>

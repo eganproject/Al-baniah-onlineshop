@@ -100,9 +100,9 @@ class FormComponentsTest extends TestCase
         $this->get(route('admin.products.create'))->assertOk()
             ->assertSee('role="tooltip"', false)
             ->assertSee('Foto pertama = sampul');
-        $this->get(route('admin.storefront.edit'))->assertOk()->assertSee('Foto khusus layar HP');
+        $this->get(route('admin.storefront.edit'))->assertOk()->assertSee('Tampil tegak 4:5 di dalam bingkai lengkung');
         $this->get(route('admin.banners.create'))->assertOk()->assertSee('Gambar khusus HP');
-        $this->get(route('admin.collections.create'))->assertOk()->assertSee('Foto 4:3, minimal 1200×900 px');
+        $this->get(route('admin.collections.create'))->assertOk()->assertSee('Foto tegak 3:4, minimal 900×1200 px');
         $this->get(route('admin.vouchers.create'))->assertOk()->assertSee('Batas atas potongan');
         $this->get(route('admin.articles.create'))->assertOk()->assertSee('Judul biru yang tampil di hasil pencarian Google');
         $this->get(route('admin.store-settings.edit'))->assertOk()->assertSee('Kecamatan gudang tempat paket dikirim');

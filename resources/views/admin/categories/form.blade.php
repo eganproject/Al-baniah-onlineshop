@@ -40,11 +40,11 @@
                     <input type="checkbox" name="is_active" value="1" class="checkbox size-5" @checked(old('is_active', $category->is_active))>
                 </label>
                 <x-form.number name="sort_order" label="Urutan tampil" :value="$category->sort_order ?? 0" min="0"
-                    tip="Urutan di menu toko & ubin beranda: angka kecil tampil lebih dulu. Angka sama diurutkan sesuai abjad."
+                    tip="Urutan di menu toko, filter katalog & ubin beranda: angka kecil tampil lebih dulu. Angka sama diurutkan sesuai abjad."
                     :tips="['Pakai kelipatan 10 supaya mudah menyisipkan kategori baru.']" />
-                <x-form.image-upload name="image" label="Gambar" optional :current="$category->imageUrl()" remove-name="remove_image" aspect="aspect-[4/3]"
-                    tip="Dipakai sebagai foto ubin “Belanja per koleksi” di beranda saat ubin diisi dari kategori (belum ada koleksi yang tampil di beranda)."
-                    :tips="['Foto 4:3, minimal 1200×900 px. Ubin dipotong otomatis: lebih melebar di laptop, hampir persegi di HP.', 'Taruh objek di tengah; bagian atas & bawah ubin tertimpa nama dan jumlah produk.', 'Foto bernuansa senada (mis. latar krem/netral) membuat deretan ubin terlihat rapi.', 'Kompres di bawah 500 KB agar beranda cepat.']" />
+                <x-form.image-upload name="image" label="Gambar" optional :current="$category->imageUrl()" remove-name="remove_image" aspect="aspect-[3/4]" wrapper-class="max-w-48"
+                    tip="Dipakai sebagai foto ubin “Belanja per koleksi” di beranda saat ubin diisi dari kategori (belum ada koleksi yang tampil di beranda). Tanpa gambar, ubin memakai foto produk di kategori ini."
+                    :tips="['Foto tegak 3:4, minimal 900×1200 px. Ubin berbentuk lengkung (puncak setengah lingkaran) dengan nama di bawahnya.', 'Taruh objek di tengah dan sisakan ruang di atas, karena sudut atas terpotong melengkung.', 'Foto bernuansa senada (latar krem/netral) membuat deretan ubin terlihat rapi.', 'Kompres di bawah 400 KB agar beranda cepat.']" />
             </div>
             <button class="btn btn-primary w-full py-3">{{ $editing ? 'Simpan perubahan' : 'Simpan kategori' }}</button>
         </div>
