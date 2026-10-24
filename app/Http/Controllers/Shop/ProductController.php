@@ -47,8 +47,11 @@ class ProductController extends Controller
         return view('shop.products.index', [
             'products' => $products,
             'categories' => Category::active()->root()
-                ->with(['children' => fn ($q) => $q->active()])
-                ->orderBy('sort_order')->orderBy('name')->get(),
+                ->withCount(['products' => fn ($q) => $q->active()])
+                ->with(['children' => fn ($q) => $q->active()->withCount(['products' => fn ($q) => $q->active()])])
+                ->orderBy('sort_order')->orderBy('name')->get()
+                // Jumlah produk induk termasuk produk di subkategorinya.
+                ->each(fn (Category $c) => $c->products_count += $c->children->sum('products_count')),
             'activeCategory' => $category,
             'sort' => $sort,
             'sorts' => self::SORTS,
@@ -70,7 +73,7 @@ class ProductController extends Controller
                 ->with('category')
                 ->whereKeyNot($product->id)
                 ->inRandomOrder()
-                ->take(4)
+                ->take(8)
                 ->get(),
             'reviews' => $product->reviews()->approved()->with('user:id,name')
                 ->latest('approved_at')->latest('id')

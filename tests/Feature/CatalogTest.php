@@ -221,7 +221,7 @@ class CatalogTest extends TestCase
         ProductVariant::factory()->for($product)->create(['name' => 'Rahasia', 'is_active' => false]);
 
         $this->get(route('products.show', $product))->assertOk()
-            ->assertSee('Tipe HP')->assertSee('iPhone 15 Pro')->assertSee('(habis)', false)
+            ->assertSee('Tipe HP')->assertSee('iPhone 15 Pro')->assertSee('no-underline">Habis</span>', false)
             ->assertDontSee('Rahasia')->assertSee('Mulai')->assertSee('Lihat foto 2');
     }
 
