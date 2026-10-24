@@ -11,6 +11,7 @@ import firebaseLogin from './components/firebase-login';
 import articleEditor from './components/article-editor';
 import shareButtons from './components/share-buttons';
 import bestSellerPicker from './components/best-seller-picker';
+import cartAdd from './components/cart-add';
 
 window.Alpine = Alpine;
 
@@ -30,5 +31,7 @@ Alpine.data('firebaseLogin', firebaseLogin);
 Alpine.data('articleEditor', articleEditor);
 Alpine.data('shareButtons', shareButtons);
 Alpine.data('bestSellerPicker', bestSellerPicker);
+
+cartAdd();
 
 Alpine.start();
