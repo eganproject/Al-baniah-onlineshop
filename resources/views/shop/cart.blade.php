@@ -1,7 +1,10 @@
 <x-layouts.shop title="Keranjang">
     <div class="shop-container py-10 lg:py-14">
         <div class="flex items-end justify-between gap-4 border-b border-stone-200 pb-6">
-            <h1 class="display text-4xl leading-none sm:text-6xl">Keranjang</h1>
+            <div>
+                <p class="kicker">Belanjaanmu</p>
+                <h1 class="display mt-3 text-3xl leading-none sm:text-5xl">Keranjang</h1>
+            </div>
             @if ($lines->isNotEmpty())
                 <p class="text-sm text-stone-500">{{ $lines->sum('quantity') }} item</p>
             @endif
@@ -20,15 +23,15 @@
                         <li class="flex gap-4 py-6 sm:gap-6">
                             <a href="{{ route('products.show', $line->product) }}" class="group w-24 shrink-0 sm:w-32">
                                 @if ($line->variant?->image)
-                                    <img src="{{ $line->imageUrl() }}" alt="{{ $line->product->name }}" class="aspect-[4/5] w-full rounded-2xl object-cover">
+                                    <img src="{{ $line->imageUrl() }}" alt="{{ $line->product->name }}" class="aspect-square w-full rounded-2xl bg-sand-100 object-cover">
                                 @else
-                                    <x-product-image :product="$line->product" class="aspect-[4/5] rounded-2xl" />
+                                    <x-product-image :product="$line->product" class="aspect-square rounded-2xl" />
                                 @endif
                             </a>
                             <div class="flex min-w-0 flex-1 flex-col">
                                 <div class="flex items-start justify-between gap-3">
                                     <div class="min-w-0">
-                                        <a href="{{ route('products.show', $line->product) }}" class="font-semibold leading-snug line-clamp-2 hover:underline hover:underline-offset-4">{{ $line->product->name }}</a>
+                                        <a href="{{ route('products.show', $line->product) }}" class="font-medium leading-snug line-clamp-2 hover:underline hover:decoration-stone-300 hover:underline-offset-4">{{ $line->product->name }}</a>
                                         @if ($line->variant)
                                             <p class="mt-1 text-xs font-medium text-stone-600">{{ $line->product->variant_label ?: 'Varian' }}: {{ $line->variant->name }}</p>
                                         @endif
@@ -41,7 +44,7 @@
                                 </div>
                                 <div class="mt-auto flex items-center justify-between pt-4">
                                     <div class="flex items-center gap-3">
-                                    <form method="POST" action="{{ route('cart.update', $line->key()) }}" class="inline-flex items-center rounded-full border border-stone-300">
+                                    <form method="POST" action="{{ route('cart.update', $line->key()) }}" class="inline-flex items-center rounded-full border border-stone-200">
                                         @csrf
                                         @method('PATCH')
                                         <button name="quantity" value="{{ $line->quantity - 1 }}" class="grid size-10 place-items-center rounded-full hover:bg-sand-100 lg:size-9" aria-label="Kurangi"><x-icon name="minus" class="size-3.5" /></button>
@@ -64,8 +67,8 @@
                 </ul>
 
                 <div class="lg:col-span-4">
-                    <div class="rounded-3xl bg-sand-50 p-6 lg:sticky lg:top-28 lg:mt-6">
-                        <h2 class="font-display text-lg font-extrabold tracking-tight uppercase">Ringkasan</h2>
+                    <div class="rounded-2xl bg-sand-50 p-6 lg:sticky lg:top-28 lg:mt-6">
+                        <h2 class="text-lg font-semibold tracking-tight">Ringkasan</h2>
                         <dl class="mt-5 space-y-3 text-sm">
                             <div class="flex justify-between"><dt class="text-stone-500">Subtotal</dt><dd class="font-semibold">@rupiah($subtotal)</dd></div>
                             <div class="flex justify-between"><dt class="text-stone-500">Berat total</dt><dd class="text-stone-700">{{ number_format(max($weight, 1) / 1000, 2, ',', '.') }} kg</dd></div>

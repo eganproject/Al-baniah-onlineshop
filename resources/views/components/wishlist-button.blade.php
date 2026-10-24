@@ -10,7 +10,7 @@
     $on = $user?->isCustomer() && app(\App\Services\Customer\WishlistService::class)->has($product);
     $iconClasses = $variant === 'icon' ? 'size-[18px]' : 'size-5';
     $buttonClasses = match ($variant) {
-        'icon' => 'grid size-10 lg:size-9 place-items-center rounded-full bg-white/90 text-ink shadow-sm transition hover:scale-105 hover:bg-white',
+        'icon' => 'grid size-10 lg:size-9 place-items-center rounded-full text-ink transition hover:bg-white/80',
         'plain' => 'grid size-10 lg:size-9 place-items-center rounded-full text-stone-500 transition hover:scale-110 hover:text-ink',
         'outline' => 'grid size-14 place-items-center rounded-full border border-stone-300 text-ink transition hover:border-ink',
         default => 'btn btn-outline btn-pill w-full py-4 text-[15px]',
@@ -23,7 +23,7 @@
         @csrf
         <button type="submit" class="{{ $buttonClasses }}" :aria-pressed="on.toString()" aria-pressed="{{ $on ? 'true' : 'false' }}"
                 :aria-label="on ? 'Hapus dari wishlist' : 'Simpan ke wishlist'" aria-label="{{ $on ? 'Hapus dari wishlist' : 'Simpan ke wishlist' }}">
-            <x-icon name="heart" class="{{ $iconClasses }} transition {{ $on ? 'fill-accent-500 text-accent-500' : '' }}" x-bind:class="{ 'fill-accent-500 text-accent-500': on }" />
+            <x-icon name="heart" class="{{ $iconClasses }} transition {{ $on ? 'fill-ink text-ink' : '' }}" x-bind:class="{ 'fill-ink text-ink': on }" />
             @if ($variant === 'button')
                 <span x-text="on ? 'Tersimpan di wishlist' : 'Simpan ke wishlist'">{{ $on ? 'Tersimpan di wishlist' : 'Simpan ke wishlist' }}</span>
             @endif

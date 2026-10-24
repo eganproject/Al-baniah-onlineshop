@@ -23,70 +23,67 @@
 @source '../../app';
 
 /*
- * Warna brand NuFit ada di satu tempat ini (diambil dari logo "nü fit"):
- *   brand  = cyan #3BCFEB (brand-400, warna logo) -> aksen utama. Untuk
- *            teks/tombol berlatar putih pakai brand-600/700 supaya kontras.
- *   accent = coral #FF5A36 (accent-500) -> promo, diskon, badge sale
- *   volt   = hijau stabilo #D8FF3D -> sentuhan sporty (label "Baru", sorotan)
- *   ink    = navy gelap #0B1B2B -> teks utama, tombol gelap, footer
- * `stone` ditimpa jadi abu-abu dingin supaya serasi dengan cyan & navy.
- * Ganti nilai di sini untuk rebranding tanpa menyentuh view.
+ * Sistem warna NuFit (tenang & sporty): netral + SATU aksen.
+ *   ink    = hitam kebiruan #11161D -> teks utama, tombol utama, footer
+ *   sand   = abu netral sangat muda -> permukaan/latar kartu & foto produk
+ *   brand  = cyan logo #3BCFEB (brand-400) -> satu-satunya aksen: garis aktif,
+ *            tombol beli, sorotan kecil. Teks cyan di latar putih pakai brand-700.
+ *   accent = merah lembut -> HANYA label diskon / harga coret.
+ *   volt   = (lama) dipetakan ke cyan muda supaya sisa pemakaian tetap kalem.
+ * `stone` ditimpa jadi abu-abu netral dingin. Ganti nilai di sini untuk
+ * rebranding tanpa menyentuh view.
  */
 @theme {
     --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
 
-    --color-brand-50: #ebfbfe;
-    --color-brand-100: #cdf4fc;
-    --color-brand-200: #a1e9f9;
-    --color-brand-300: #6ddcf3;
+    --color-brand-50: #effbfe;
+    --color-brand-100: #d6f5fc;
+    --color-brand-200: #aeeaf7;
+    --color-brand-300: #74dcf1;
     --color-brand-400: #3bcfeb;
-    --color-brand-500: #17b4d3;
-    --color-brand-600: #0b8fae;
-    --color-brand-700: #0e728c;
-    --color-brand-800: #135d72;
-    --color-brand-900: #154d60;
-    --color-brand-950: #073243;
+    --color-brand-500: #19b3d2;
+    --color-brand-600: #0d8fae;
+    --color-brand-700: #10728b;
+    --color-brand-800: #155d71;
+    --color-brand-900: #164d5f;
+    --color-brand-950: #083242;
 
-    --color-accent-50: #fff3f0;
-    --color-accent-100: #ffe3dc;
-    --color-accent-200: #ffcabd;
-    --color-accent-300: #ffa38f;
-    --color-accent-400: #ff7a5c;
-    --color-accent-500: #ff5a36;
-    --color-accent-600: #ed3d18;
-    --color-accent-700: #c72f10;
-    --color-accent-800: #a42912;
-    --color-accent-900: #872715;
+    --color-accent-50: #fdf3f2;
+    --color-accent-100: #fbe4e1;
+    --color-accent-200: #f6cbc6;
+    --color-accent-300: #eea69d;
+    --color-accent-400: #e2786b;
+    --color-accent-500: #d4574a;
+    --color-accent-600: #bb4235;
+    --color-accent-700: #9c352a;
+    --color-accent-800: #812f26;
+    --color-accent-900: #6b2b24;
 
-    --color-volt: #d8ff3d;
-    --color-volt-dark: #b5dc12;
+    --color-volt: #aeeaf7;
+    --color-volt-dark: #74dcf1;
 
     --color-stone-50: oklch(98.5% 0.002 247.839);
     --color-stone-100: oklch(96.7% 0.003 264.542);
     --color-stone-200: oklch(92.8% 0.006 264.531);
     --color-stone-300: oklch(87.2% 0.01 258.338);
-    --color-stone-400: oklch(70.7% 0.022 261.325);
-    --color-stone-500: oklch(55.1% 0.027 264.364);
-    --color-stone-600: oklch(44.6% 0.03 256.802);
-    --color-stone-700: oklch(37.3% 0.034 259.733);
-    --color-stone-800: oklch(27.8% 0.033 256.848);
-    --color-stone-900: oklch(21% 0.034 264.665);
-    --color-stone-950: oklch(13% 0.028 261.692);
+    --color-stone-400: oklch(70.7% 0.015 261.325);
+    --color-stone-500: oklch(55.1% 0.018 264.364);
+    --color-stone-600: oklch(44.6% 0.02 256.802);
+    --color-stone-700: oklch(37.3% 0.022 259.733);
+    --color-stone-800: oklch(27.8% 0.02 256.848);
+    --color-stone-900: oklch(21% 0.02 264.665);
+    --color-stone-950: oklch(13% 0.018 261.692);
 
-    --color-cream: #f5f8fa;
+    --color-cream: #f7f8f9;
 
-    /*
-     * Storefront: netral dingin + tinta navy untuk tampilan sporty yang
-     * bersih. Judul besar (.display) memakai Poppins tebal miring.
-     */
     --font-display: 'Poppins', ui-sans-serif, system-ui, sans-serif;
-    --color-ink: #0b1b2b;
-    --color-sand-50: #f6f9fb;
-    --color-sand-100: #eef3f7;
-    --color-sand-200: #dfe7ee;
-    --color-sand-300: #c9d5df;
+    --color-ink: #11161d;
+    --color-sand-50: #f7f8f9;
+    --color-sand-100: #f0f2f4;
+    --color-sand-200: #e4e7eb;
+    --color-sand-300: #cfd4da;
 
-    --animate-marquee: marquee 30s linear infinite;
+    --animate-marquee: marquee 40s linear infinite;
 
     @keyframes marquee {
         from { transform: translateX(0); }
@@ -167,7 +164,7 @@
 
     /* ---------- Storefront ---------- */
     .shop-container {
-        @apply mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10;
+        @apply mx-auto w-full max-w-[1360px] px-4 sm:px-6 lg:px-10;
     }
     /* HP landscape (viewport-fit=cover): jangan sampai isi tertutup notch. */
     @supports (padding: max(0px)) {
@@ -193,7 +190,7 @@
         @apply font-semibold text-ink;
     }
     .bottom-nav-item.is-active::before {
-        @apply absolute top-0 left-1/2 h-[3px] w-8 -translate-x-1/2 rounded-b-full bg-brand-400 content-[''];
+        @apply absolute top-0 left-1/2 h-0.5 w-6 -translate-x-1/2 rounded-b-full bg-brand-400 content-[''];
     }
     /* Ruang kosong di bawah halaman supaya tidak tertutup navigasi bawah / bar beli. */
     @media (width < 64rem) {
@@ -201,50 +198,94 @@
             padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
         }
     }
-    /* Judul besar gaya sporty: Poppins tebal, miring, kapital. */
+
+    /*
+     * Tipografi. .display = judul besar: Poppins tebal, rapat, tegak (tidak
+     * berteriak). .display-sport = varian miring kapital, hanya untuk aksen kecil.
+     */
     .display {
+        @apply font-display font-bold tracking-[-0.035em] text-balance;
+    }
+    .display-sport {
         @apply font-display font-extrabold tracking-tight uppercase italic;
     }
     .eyebrow {
-        @apply text-[11px] font-semibold tracking-[0.18em] uppercase;
+        @apply text-[11px] font-semibold tracking-[0.16em] uppercase;
     }
+    /* Label seksi: garis cyan pendek miring + teks kecil kapital. */
+    .kicker {
+        @apply inline-flex items-center gap-2.5 text-[11px] font-semibold tracking-[0.18em] text-stone-500 uppercase;
+    }
+    .kicker::before {
+        @apply h-[3px] w-5 -skew-x-[30deg] rounded-[1px] bg-brand-400 content-[''];
+    }
+    .section-title {
+        @apply font-display font-bold tracking-[-0.035em] text-balance mt-2 text-[1.75rem] leading-[1.05] text-ink sm:text-4xl lg:text-[2.75rem];
+    }
+    .section-gap {
+        @apply mt-16 lg:mt-28;
+    }
+
     .btn-pill {
         @apply rounded-full px-6 py-3;
     }
     .btn-ink {
-        @apply bg-ink text-white hover:bg-brand-900 focus-visible:outline-ink;
+        @apply bg-ink text-white hover:bg-stone-800 focus-visible:outline-ink;
     }
-    /* Tombol cyan khas NuFit (teks navy supaya kontras). */
+    /* Tombol cyan khas NuFit (teks gelap supaya kontras). Pakai hemat: aksi utama. */
     .btn-brand {
         @apply bg-brand-400 text-ink hover:bg-brand-300 focus-visible:outline-brand-500;
     }
     .btn-outline {
-        @apply bg-transparent text-ink ring-1 ring-ink ring-inset hover:bg-ink hover:text-white focus-visible:outline-ink;
+        @apply bg-transparent text-ink ring-1 ring-stone-300 ring-inset hover:ring-ink focus-visible:outline-ink;
     }
     .btn-light {
         @apply bg-white text-ink hover:bg-sand-100 focus-visible:outline-white;
     }
+    .btn-glass {
+        @apply bg-white/10 text-white ring-1 ring-white/25 ring-inset backdrop-blur hover:bg-white hover:text-ink focus-visible:outline-white;
+    }
+    .icon-btn {
+        @apply grid size-10 place-items-center rounded-full transition hover:bg-sand-100;
+    }
     .link-underline {
-        @apply underline decoration-1 underline-offset-4 transition hover:decoration-2;
+        @apply underline decoration-stone-300 decoration-1 underline-offset-4 transition hover:decoration-ink;
+    }
+    .link-arrow {
+        @apply inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition hover:text-brand-700;
     }
     .chip {
-        @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border border-stone-200 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:border-brand-400 hover:text-ink max-lg:min-h-11;
+        @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border border-stone-200 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:border-stone-400 hover:text-ink max-lg:min-h-11;
     }
     .chip-active {
         @apply border-ink bg-ink text-white hover:border-ink hover:text-white;
     }
-    /* Chip di atas latar navy (header katalog). */
+    /* Chip di atas latar gelap. */
     .chip-dark {
-        @apply border-white/15 bg-white/5 text-white/85 hover:border-brand-400 hover:text-white;
+        @apply border-white/15 bg-white/5 text-white/85 hover:border-white/40 hover:text-white;
     }
     .chip-dark.chip-active {
-        @apply border-brand-400 bg-brand-400 text-ink hover:text-ink;
+        @apply border-white bg-white text-ink hover:text-ink;
+    }
+    /* Panel/kotak bagian di halaman pelanggan (checkout, akun). */
+    .panel {
+        @apply rounded-2xl border border-stone-200/80 bg-white;
+    }
+    .panel-title {
+        @apply flex items-center gap-2 text-base font-semibold tracking-tight text-ink;
+    }
+    .tag {
+        @apply inline-flex items-center rounded-md px-2 py-1 text-[10px] leading-none font-semibold tracking-[0.08em] uppercase;
     }
     .no-scrollbar {
         scrollbar-width: none;
     }
     .no-scrollbar::-webkit-scrollbar {
         display: none;
+    }
+    /* Garis-garis lintasan lari tipis (latar dekoratif gelap). */
+    .track-lines {
+        background-image: repeating-linear-gradient(-62deg, transparent 0 46px, rgb(255 255 255 / 0.05) 46px 47px);
     }
 
     .table-base {

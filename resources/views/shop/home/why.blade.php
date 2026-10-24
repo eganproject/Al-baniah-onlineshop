@@ -4,27 +4,29 @@
     $whyTitle = Storefront::text('why_title') ?? (string) config('shop.motto');
     $points = Storefront::whyPoints();
 @endphp
-<section class="shop-container mt-14 lg:mt-24" aria-labelledby="home-why">
-    <div class="grid gap-8 lg:grid-cols-12 lg:items-center lg:gap-14">
+<section class="section-gap border-y border-stone-200 bg-sand-50" aria-labelledby="home-why">
+    <div class="shop-container grid gap-10 py-14 lg:grid-cols-12 lg:gap-16 lg:py-20">
         <div class="lg:col-span-5">
-            <p class="eyebrow text-brand-600">{{ Storefront::text('why_eyebrow', 'Kenapa '.config('shop.name')) }}</p>
-            <h2 id="home-why" class="display mt-3 text-4xl leading-[0.95] sm:text-6xl">
+            <p class="kicker">{{ Storefront::text('why_eyebrow', 'Kenapa '.config('shop.name')) }}</p>
+            <h2 id="home-why" class="display mt-4 text-[2rem] leading-[1.05] sm:text-5xl">
                 @foreach (array_map('trim', explode('•', $whyTitle)) as $line)
-                    <span @class(['block', 'text-brand-500' => $loop->iteration === 2])>{{ $line }}</span>
+                    <span @class(['block', 'text-brand-600' => $loop->iteration === 2])>{{ $line }}</span>
                 @endforeach
             </h2>
             <p class="mt-5 max-w-md leading-relaxed text-stone-600">{{ Storefront::text('why_text', config('shop.tagline').'. Kami memilih bahan yang nyaman dan awet supaya kamu fokus ke latihan, bukan ke perlengkapan.') }}</p>
         </div>
         @if ($points)
-        <ul class="grid grid-cols-2 gap-3 sm:gap-4 lg:col-span-7">
-            @foreach ($points as ['icon' => $icon, 'title' => $title, 'text' => $desc])
-                <li @class(['rounded-3xl p-5 sm:p-6', 'bg-ink text-white' => $loop->first, 'bg-sand-100' => ! $loop->first])>
-                    <span @class(['grid size-11 place-items-center rounded-2xl', 'bg-brand-400 text-ink' => $loop->first, 'bg-white text-brand-600' => ! $loop->first])><x-icon :name="$icon" class="size-5" /></span>
-                    <h3 class="mt-5 text-sm font-bold sm:text-base">{{ $title }}</h3>
-                    @if ($desc)<p @class(['mt-1.5 text-xs leading-relaxed sm:text-sm', 'text-white/65' => $loop->first, 'text-stone-600' => ! $loop->first])>{{ $desc }}</p>@endif
-                </li>
-            @endforeach
-        </ul>
+            <ul class="grid gap-px overflow-hidden rounded-2xl border border-stone-200 bg-stone-200 sm:grid-cols-2 lg:col-span-7">
+                @foreach ($points as ['icon' => $icon, 'title' => $title, 'text' => $desc])
+                    <li class="flex gap-4 bg-white p-5 sm:flex-col sm:p-7">
+                        <span class="grid size-11 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-700"><x-icon :name="$icon" class="size-5" /></span>
+                        <div>
+                            <h3 class="text-[15px] font-semibold text-ink sm:mt-1">{{ $title }}</h3>
+                            @if ($desc)<p class="mt-1 text-sm leading-relaxed text-stone-500">{{ $desc }}</p>@endif
+                        </div>
+                    </li>
+                @endforeach
+            </ul>
         @endif
     </div>
 </section>

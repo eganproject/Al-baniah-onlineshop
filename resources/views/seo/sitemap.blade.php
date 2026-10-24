@@ -12,6 +12,11 @@
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>
+    <url>
+        <loc>{{ route('products.best-sellers') }}</loc>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
 @foreach ($categories as $category)
     <url>
         <loc>{{ route('products.index', ['kategori' => $category->slug]) }}</loc>

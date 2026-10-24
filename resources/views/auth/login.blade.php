@@ -1,4 +1,4 @@
-<x-layouts.auth title="Masuk" heading="Selamat datang kembali 👋" subheading="Masuk untuk melanjutkan belanja dan melihat pesananmu.">
+<x-layouts.auth title="Masuk" heading="Selamat datang kembali" subheading="Masuk untuk melanjutkan belanja dan melihat pesananmu.">
     <x-firebase-login />
     <form method="POST" action="{{ route('login') }}" class="space-y-5" x-data="{ show: false }">
         @csrf

@@ -24,7 +24,7 @@
         ],
     ];
 @endphp
-<nav class="bottom-nav fixed inset-x-0 bottom-0 z-40 border-t border-stone-200/80 bg-white/95 shadow-[0_-6px_24px_-12px_rgb(15_23_42/0.18)] backdrop-blur lg:hidden"
+<nav class="bottom-nav fixed inset-x-0 bottom-0 z-40 border-t border-stone-200/70 bg-white/95 backdrop-blur-md lg:hidden"
      aria-label="Navigasi bawah">
     <ul class="mx-auto grid h-16 max-w-xl grid-cols-5 items-stretch px-1">
         @foreach ($left as $item)
@@ -49,18 +49,18 @@
             <a href="{{ route('cart.index') }}" class="group -mt-5 flex flex-col items-center gap-1 focus-visible:outline-none"
                aria-label="Keranjang ({{ $cartCount }} barang)" @if ($cartActive) aria-current="page" @endif>
                 <span @class([
-                    'relative grid size-14 place-items-center rounded-full shadow-lg ring-4 ring-white transition group-active:scale-95 group-focus-visible:ring-brand-200',
-                    'bg-brand-400 text-ink shadow-brand-500/40' => $cartActive,
-                    'bg-ink text-brand-400 shadow-ink/30' => ! $cartActive,
+                    'relative grid size-14 place-items-center rounded-full shadow-lg shadow-ink/20 ring-4 ring-white transition group-active:scale-95 group-focus-visible:ring-brand-200',
+                    'bg-brand-400 text-ink' => $cartActive,
+                    'bg-ink text-white' => ! $cartActive,
                 ])>
                     <x-icon name="bag" class="size-6" />
                     @if ($cartCount > 0)
-                        <span class="absolute -right-0.5 -top-0.5 grid min-w-5 place-items-center rounded-full bg-accent-500 px-1 text-[11px] leading-5 font-bold text-white ring-2 ring-white">
+                        <span class="absolute -right-0.5 -top-0.5 grid min-w-5 place-items-center rounded-full bg-brand-400 px-1 text-[11px] leading-5 font-bold text-ink ring-2 ring-white">
                             {{ $cartCount > 99 ? '99+' : $cartCount }}
                         </span>
                     @endif
                 </span>
-                <span @class(['text-[11px] leading-none', 'font-semibold text-brand-700' => $cartActive, 'font-medium text-stone-500' => ! $cartActive])>Keranjang</span>
+                <span @class(['text-[11px] leading-none', 'font-semibold text-ink' => $cartActive, 'font-medium text-stone-500' => ! $cartActive])>Keranjang</span>
             </a>
         </li>
 

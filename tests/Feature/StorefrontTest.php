@@ -159,6 +159,25 @@ class StorefrontTest extends TestCase
         $this->get(route('home'))->assertOk()->assertSeeInOrder(['Laris Otomatis', 'Pilihan']);
     }
 
+    public function test_best_seller_page_follows_admin_order_then_lists_the_rest(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $first = Product::factory()->create(['name' => 'Pilihan Pertama']);
+        $second = Product::factory()->create(['name' => 'Pilihan Kedua']);
+        Product::factory()->create(['name' => 'Produk Biasa']);
+
+        $this->actingAs($admin)->put(route('admin.storefront.best-sellers'), [
+            'best_seller_mode' => 'manual', 'best_seller_fill' => '0', 'best_seller_products' => [$second->id, $first->id],
+        ])->assertSessionHasNoErrors();
+        auth()->logout();
+
+        $this->get(route('home'))->assertOk()->assertSee(route('products.best-sellers'));
+
+        $this->get(route('products.best-sellers'))->assertOk()
+            ->assertSee('Best Seller')
+            ->assertSeeInOrder(['Pilihan Kedua', 'Pilihan Pertama', 'Produk lainnya', 'Produk Biasa']);
+    }
+
     public function test_best_seller_product_search_returns_json(): void
     {
         Product::factory()->create(['name' => 'Casing Bening', 'sku' => 'CS-01']);

@@ -1,91 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1600" width="900" height="1600" preserveAspectRatio="xMidYMid slice">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200" width="800" height="1200" preserveAspectRatio="xMidYMid slice">
 <title>NuFit Indonesia</title>
 <defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="0.6">
-    <stop offset="0" stop-color="#07131f"/><stop offset="0.55" stop-color="#0b1b2b"/><stop offset="1" stop-color="#0d3346"/>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#0b0f14"/><stop offset="0.55" stop-color="#121820"/><stop offset="1" stop-color="#17212b"/>
   </linearGradient>
   <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
-    <stop offset="0" stop-color="#3bcfeb" stop-opacity="0.45"/><stop offset="1" stop-color="#3bcfeb" stop-opacity="0"/>
+    <stop offset="0" stop-color="#3bcfeb" stop-opacity="0.16"/><stop offset="1" stop-color="#3bcfeb" stop-opacity="0"/>
   </radialGradient>
-  <linearGradient id="bottle" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="#17b4d3"/><stop offset="0.35" stop-color="#6ddcf3"/><stop offset="0.6" stop-color="#3bcfeb"/><stop offset="1" stop-color="#0b8fae"/>
-  </linearGradient>
-  <linearGradient id="cap" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="#0b1b2b"/><stop offset="0.4" stop-color="#2a3d50"/><stop offset="1" stop-color="#0b1b2b"/>
-  </linearGradient>
-  <linearGradient id="mat" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#ff9a80"/><stop offset="0.45" stop-color="#ff5a36"/><stop offset="1" stop-color="#c72f10"/>
-  </linearGradient>
-  <linearGradient id="matend" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#ffcabd"/><stop offset="1" stop-color="#ff7a5c"/>
-  </linearGradient>
-  <radialGradient id="ball" cx="0.35" cy="0.3" r="0.75">
-    <stop offset="0" stop-color="#f1ff9e"/><stop offset="0.55" stop-color="#d8ff3d"/><stop offset="1" stop-color="#9cc00a"/>
-  </radialGradient>
-  <linearGradient id="weight" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#c9d5df"/>
-  </linearGradient>
-  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-    <feDropShadow dx="0" dy="24" stdDeviation="22" flood-color="#000" flood-opacity="0.35"/>
-  </filter>
 </defs>
-<rect width="900" height="1600" fill="url(#bg)"/>
-<circle cx="466.5" cy="500.0" r="532.0" fill="url(#glow)"/>
-<g transform="translate(20 120) scale(0.95)">
-<g opacity="0.9">
-  <circle cx="470" cy="400" r="330" fill="none" stroke="#3bcfeb" stroke-width="54"/>
-  <circle cx="470" cy="400" r="250" fill="none" stroke="#3bcfeb" stroke-opacity="0.18" stroke-width="2" stroke-dasharray="10 14"/>
-</g>
-<circle cx="760" cy="150" r="70" fill="#d8ff3d"/>
-<g fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="6" stroke-linecap="round">
-  <path d="M40 520h120"/><path d="M80 560h140"/><path d="M20 600h90"/>
-</g>
-
-<!-- skipping rope -->
-<path d="M150 690 C 260 520, 420 760, 560 600 S 800 640, 860 520" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" opacity="0.9"/>
-<g transform="rotate(-35 150 690)"><rect x="96" y="676" width="70" height="28" rx="14" fill="#0b1b2b" stroke="#3bcfeb" stroke-width="4"/></g>
-<g transform="rotate(-60 860 520)"><rect x="852" y="506" width="70" height="28" rx="14" fill="#0b1b2b" stroke="#3bcfeb" stroke-width="4"/></g>
-
-<!-- rolled yoga mat -->
-<g filter="url(#shadow)" transform="rotate(-18 420 560)">
-  <rect x="170" y="500" width="460" height="130" rx="20" fill="url(#mat)"/>
-  <path d="M190 520h420" stroke="#ffffff" stroke-opacity="0.35" stroke-width="6" stroke-linecap="round"/>
-  <rect x="300" y="498" width="22" height="134" fill="#0b1b2b" opacity="0.85"/>
-  <rect x="480" y="498" width="22" height="134" fill="#0b1b2b" opacity="0.85"/>
-  <ellipse cx="630" cy="565" rx="38" ry="65" fill="url(#matend)"/>
-  <ellipse cx="630" cy="565" rx="24" ry="44" fill="none" stroke="#ff5a36" stroke-width="5"/>
-  <ellipse cx="630" cy="565" rx="11" ry="21" fill="none" stroke="#ff5a36" stroke-width="4"/>
-</g>
-
-<!-- water bottle -->
-<g filter="url(#shadow)">
-  <rect x="455" y="120" width="70" height="44" rx="12" fill="url(#cap)"/>
-  <rect x="478" y="96" width="24" height="30" rx="8" fill="#d8ff3d"/>
-  <path d="M440 170 Q440 160 452 160 H528 Q540 160 540 170 V190 Q575 210 575 250 V470 Q575 500 545 500 H435 Q405 500 405 470 V250 Q405 210 440 190 Z" fill="url(#bottle)"/>
-  <rect x="405" y="300" width="170" height="90" fill="#0b1b2b" opacity="0.88"/>
-  <path d="M430 262 V460" stroke="#ffffff" stroke-opacity="0.5" stroke-width="10" stroke-linecap="round"/>
-  <text x="490" y="356" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-weight="700" font-size="34" fill="#3bcfeb">nü fit</text>
-</g>
-
-<!-- ankle weight bangle -->
-<g filter="url(#shadow)">
-  <circle cx="250" cy="330" r="96" fill="none" stroke="url(#weight)" stroke-width="46"/>
-  <circle cx="250" cy="330" r="96" fill="none" stroke="#0b1b2b" stroke-opacity="0.12" stroke-width="2" stroke-dasharray="4 18"/>
-  <rect x="226" y="208" width="48" height="30" rx="8" fill="#3bcfeb"/>
-</g>
-
-<!-- padel ball -->
-<g filter="url(#shadow)">
-  <circle cx="700" cy="380" r="72" fill="url(#ball)"/>
-  <path d="M640 335 C 690 365, 690 410, 650 440" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
-  <path d="M760 325 C 715 355, 712 405, 752 438" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
-</g>
-
-<!-- sparkles -->
-<g fill="#d8ff3d">
-  <path d="M120 170 l8 22 22 8 -22 8 -8 22 -8 -22 -22 -8 22 -8z"/>
-  <path d="M860 660 l6 16 16 6 -16 6 -6 16 -6 -16 -16 -6 16 -6z"/>
-</g>
-<g fill="#3bcfeb"><circle cx="620" cy="90" r="8"/><circle cx="90" cy="430" r="6"/><circle cx="820" cy="260" r="5"/></g>
+<rect width="800" height="1200" fill="url(#bg)"/>
+<ellipse cx="560" cy="300" rx="420" ry="216" fill="url(#glow)"/>
+<g transform="translate(560 300) rotate(-14) scale(1 0.62)">
+<rect x="-350" y="-120" width="700" height="240" rx="120" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.1"/><rect x="-376" y="-146" width="752" height="292" rx="146" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.07"/><rect x="-402" y="-172" width="804" height="344" rx="172" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.07"/><rect x="-428" y="-198" width="856" height="396" rx="198" fill="none" stroke="#3bcfeb" stroke-width="3" stroke-opacity="0.9"/><rect x="-454" y="-224" width="908" height="448" rx="224" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.07"/><rect x="-480" y="-250" width="960" height="500" rx="250" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.07"/><rect x="-506" y="-276" width="1012" height="552" rx="276" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.1"/>
+<line x1="-170.0" y1="120.0" x2="-170.0" y2="146.0" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2"/><line x1="-170.0" y1="146.0" x2="-170.0" y2="172.0" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2"/><line x1="-170.0" y1="172.0" x2="-170.0" y2="198.0" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2"/><line x1="-170.0" y1="198.0" x2="-170.0" y2="224.0" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2"/><line x1="-170.0" y1="224.0" x2="-170.0" y2="250.0" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2"/><line x1="-170.0" y1="250.0" x2="-170.0" y2="276.0" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2"/>
+<g fill="#ffffff" fill-opacity="0.3" font-family="Poppins, Arial, sans-serif" font-weight="600"><text x="-156.0" y="139" font-size="14">1</text><text x="-156.0" y="165" font-size="14">2</text><text x="-156.0" y="191" font-size="14">3</text><text x="-156.0" y="217" font-size="14">4</text><text x="-156.0" y="243" font-size="14">5</text><text x="-156.0" y="269" font-size="14">6</text></g>
 </g>
 </svg>

@@ -22,14 +22,18 @@ class ProductCollection extends Model
 
     protected $table = 'collections';
 
-    /** Warna ubin di beranda => [kelas ubin, kelas gelembung, label admin]. */
+    /**
+     * Warna ubin di beranda => [kelas ubin, kelas ikon, label admin].
+     * Palet sengaja kalem (netral + cyan NuFit); kunci lama tetap dipakai
+     * supaya pilihan yang sudah tersimpan tidak hilang.
+     */
     public const TONES = [
-        'cyan' => ['bg-brand-400 text-ink', 'bg-white/30', 'Biru NuFit'],
-        'ink' => ['bg-ink text-white', 'bg-brand-400/20', 'Navy gelap'],
-        'volt' => ['bg-volt text-ink', 'bg-white/40', 'Hijau stabilo'],
-        'orange' => ['bg-accent-500 text-white', 'bg-white/15', 'Oranye'],
-        'sky' => ['bg-brand-100 text-brand-900', 'bg-white/60', 'Biru muda'],
-        'sand' => ['bg-sand-200 text-ink', 'bg-white/60', 'Abu pasir'],
+        'sand' => ['bg-sand-100 text-ink', 'text-ink/10', 'Abu muda'],
+        'ink' => ['bg-ink text-white', 'text-brand-400/50', 'Gelap'],
+        'cyan' => ['bg-brand-400 text-ink', 'text-ink/20', 'Cyan NuFit'],
+        'sky' => ['bg-brand-50 text-ink', 'text-brand-600/30', 'Cyan lembut'],
+        'volt' => ['bg-sand-200 text-ink', 'text-ink/15', 'Abu'],
+        'orange' => ['bg-stone-700 text-white', 'text-white/20', 'Abu gelap'],
     ];
 
     /** Ikon garis yang tersedia di <x-sport-icon> => label admin. */

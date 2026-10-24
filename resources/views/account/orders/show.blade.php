@@ -12,7 +12,7 @@
     <a href="{{ route('account.orders.index') }}" class="mb-1 inline-flex min-h-11 items-center gap-1 text-sm lg:mb-3 lg:min-h-0 font-medium text-stone-500 hover:text-stone-800"><x-icon name="arrow-left" class="size-4" /> Semua pesanan</a>
     <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-            <h1 class="text-2xl font-extrabold tracking-tight text-stone-900">{{ $order->code }}</h1>
+            <h1 class="display text-2xl text-ink">{{ $order->code }}</h1>
             <p class="text-sm text-stone-500">Dipesan {{ $order->created_at->translatedFormat('d F Y, H:i') }}</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
@@ -24,9 +24,9 @@
     </div>
 
     @if ($order->status->canBeConfirmedByCustomer())
-        <div class="mb-6 flex flex-col gap-4 rounded-3xl border border-teal-200 bg-teal-50 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+        <div class="mb-6 flex flex-col gap-4 rounded-2xl border border-brand-200 bg-brand-50 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <div>
-                <p class="flex items-center gap-2 font-bold text-stone-900"><x-icon name="truck" class="size-5 text-teal-600" /> {{ $order->status === OrderStatus::Delivered ? 'Paket sudah sampai' : 'Paket sedang dikirim' }}</p>
+                <p class="flex items-center gap-2 font-bold text-stone-900"><x-icon name="truck" class="size-5 text-brand-700" /> {{ $order->status === OrderStatus::Delivered ? 'Paket sudah sampai' : 'Paket sedang dikirim' }}</p>
                 <p class="mt-1 text-sm text-stone-600">
                     Sudah terima paketnya dan isinya sesuai? Tekan tombol di samping.
                     @if ($order->status === OrderStatus::Delivered && config('shop.orders.auto_complete_days') > 0)
@@ -46,7 +46,7 @@
     {{-- Pembayaran --}}
     @if ($order->status === OrderStatus::PendingPayment)
         @php($previousFailed = $payment && $payment->status->isUnpaidFinal())
-        <div class="mb-6 rounded-3xl border border-amber-200 bg-gradient-to-br from-amber-50 to-brand-50 p-5 sm:p-6">
+        <div class="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 sm:p-6">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <p class="flex items-center gap-2 font-bold text-stone-900"><x-icon name="clock" class="size-5 text-amber-600" /> Selesaikan pembayaran</p>

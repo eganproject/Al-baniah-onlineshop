@@ -6,17 +6,15 @@
             <img src="{{ $article->coverUrl() }}" alt="" @unless ($eager) loading="lazy" @endunless decoding="async"
                  class="size-full object-cover transition duration-700 group-hover:scale-[1.03]">
         @else
-            <div class="relative grid size-full place-items-center overflow-hidden bg-ink">
-                <span class="absolute -top-10 -right-10 size-40 rounded-full border-[18px] border-brand-400/80" aria-hidden="true"></span>
-                <span class="absolute bottom-6 left-8 size-8 rounded-full bg-volt" aria-hidden="true"></span>
-                <x-logo variant="mark" class="relative h-12" aria-hidden="true" />
+            <div class="track-lines relative grid size-full place-items-center overflow-hidden bg-ink">
+                <x-logo variant="mark" class="relative h-10" aria-hidden="true" />
             </div>
         @endif
     </div>
     <div @class(['flex flex-1 flex-col pt-4', 'lg:col-span-5 lg:pt-0' => $large])>
         <p class="flex flex-wrap items-center gap-x-2 text-xs text-stone-500">
             @if ($article->category)
-                <span class="font-semibold tracking-wide text-brand-700 uppercase">{{ $article->category->name }}</span>
+                <span class="font-semibold tracking-wide text-ink uppercase">{{ $article->category->name }}</span>
                 <span aria-hidden="true">·</span>
             @endif
             <time datetime="{{ $article->published_at?->toAtomString() }}">{{ $article->published_at?->translatedFormat('j M Y') }}</time>
@@ -24,7 +22,7 @@
             <span>{{ $article->reading_minutes }} menit baca</span>
         </p>
         <h3 @class([
-            'mt-2 font-semibold tracking-tight text-ink text-balance transition group-hover:text-brand-700',
+            'mt-2 font-semibold tracking-tight text-ink text-balance transition group-hover:text-stone-600',
             'text-lg leading-snug sm:text-xl' => ! $large,
             'text-2xl leading-tight sm:text-3xl lg:text-4xl' => $large,
         ])>

@@ -89,7 +89,7 @@
 
         <aside class="lg:col-span-2">
             <div class="border border-stone-200">
-                <h2 class="border-b border-stone-200 p-5 font-display text-base font-extrabold tracking-tight uppercase">Ringkasan</h2>
+                <h2 class="border-b border-stone-200 p-5 text-base font-semibold tracking-tight">Ringkasan</h2>
                 <ul class="divide-y divide-stone-100">
                     @foreach ($order->items as $item)
                         <li class="flex justify-between gap-3 px-5 py-3 text-sm">

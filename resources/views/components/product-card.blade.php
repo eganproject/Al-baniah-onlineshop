@@ -1,72 +1,71 @@
 {{--
-    Kartu produk NuFit: kartu putih membulat, foto di dalam bingkai, info &
-    tombol tambah cepat (+) selalu terlihat (juga di HP). Produk bervarian
-    diarahkan ke halaman produk untuk memilih varian dulu.
-    rank: nomor peringkat besar di pojok foto (dipakai di Best Seller beranda).
+    Kartu produk NuFit: foto di atas latar abu lembut, info ringkas di bawah.
+    Tombol tambah cepat (+) di pojok foto: selalu terlihat di layar sentuh,
+    muncul saat hover di desktop. Produk bervarian diarahkan ke halaman produk.
+    rank: nomor peringkat di pojok foto (dipakai di Best Seller beranda).
 --}}
 @props(['product', 'quickAdd' => true, 'eager' => false, 'rank' => null])
-<article {{ $attributes->merge(['class' => 'group relative flex flex-col rounded-3xl border border-stone-200/80 bg-white p-2 transition duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-xl hover:shadow-ink/10']) }}>
-    <div class="relative">
-        <x-product-image :product="$product" :eager="$eager" class="aspect-square rounded-2xl" />
+<article {{ $attributes->merge(['class' => 'group relative flex flex-col']) }}>
+    <div class="relative overflow-hidden rounded-2xl bg-sand-100">
+        <x-product-image :product="$product" :eager="$eager" class="aspect-square" />
 
-        <div class="pointer-events-none absolute left-2 top-2 flex flex-col items-start gap-1.5">
+        <div class="pointer-events-none absolute top-2.5 left-2.5 flex flex-col items-start gap-1.5 sm:top-3 sm:left-3">
             @if ($product->isOnSale())
-                <span class="rounded-full bg-accent-500 px-2.5 py-1 text-[10px] font-bold tracking-wider text-white uppercase">-{{ $product->discountPercent() }}%</span>
+                <span class="tag bg-accent-500 text-white">-{{ $product->discountPercent() }}%</span>
             @elseif ($product->created_at?->gt(now()->subDays(30)))
-                <span class="rounded-full bg-volt px-2.5 py-1 text-[10px] font-bold tracking-wider text-ink uppercase">Baru</span>
+                <span class="tag bg-white text-ink shadow-xs">Baru</span>
             @endif
             @unless ($product->inStock())
-                <span class="rounded-full bg-ink/80 px-2.5 py-1 text-[10px] font-bold tracking-wider text-white uppercase backdrop-blur">Stok habis</span>
+                <span class="tag bg-ink/85 text-white">Stok habis</span>
             @endunless
         </div>
 
         @if ($rank)
-            <span class="pointer-events-none absolute bottom-1 left-3 font-display text-5xl leading-none font-black text-ink italic [paint-order:stroke_fill] [-webkit-text-stroke:6px_#fff] sm:text-6xl" aria-hidden="true">{{ $rank }}</span>
+            <span class="pointer-events-none absolute bottom-2 left-3 font-display text-4xl leading-none font-extrabold tracking-tighter text-ink/90 italic [paint-order:stroke_fill] [-webkit-text-stroke:5px_#fff] sm:text-5xl" aria-hidden="true">{{ $rank }}</span>
         @endif
 
-        <div class="absolute right-2 top-2 z-10">
+        <div class="absolute top-2 right-2 z-10">
             <x-wishlist-button :product="$product" />
         </div>
-    </div>
 
-    <div class="flex flex-1 flex-col px-1.5 pb-1.5 pt-3 sm:px-2">
-        @if ($product->relationLoaded('category') && $product->category)
-            <p class="truncate text-[10px] font-bold tracking-[0.14em] text-brand-700 uppercase sm:text-[11px]">{{ $product->category->name }}</p>
-        @endif
-        <h3 class="mt-0.5 text-[13px] leading-snug font-semibold text-ink line-clamp-2 sm:text-sm">
-            <a href="{{ route('products.show', $product) }}" class="after:absolute after:inset-0 after:rounded-3xl">{{ $product->name }}</a>
-        </h3>
-        @if ($product->review_count > 0)
-            <p class="mt-1 flex items-center gap-1 text-xs text-stone-500">
-                <x-icon name="star" class="size-3.5 fill-amber-400 text-amber-400" />
-                <span class="font-semibold text-ink">{{ number_format($product->rating_avg, 1, ',', '.') }}</span>
-                <span>({{ $product->review_count }})</span>
-            </p>
-        @endif
-
-        <div class="mt-auto flex items-end justify-between gap-2 pt-2.5">
-            <div class="min-w-0">
-                @if ($product->isOnSale())
-                    <p class="text-[11px] leading-none text-stone-400 line-through">@rupiah($product->compare_at_price)</p>
-                @endif
-                <p @class(['mt-1 text-sm font-extrabold tracking-tight sm:text-base', 'text-accent-600' => $product->isOnSale(), 'text-ink' => ! $product->isOnSale()])>@rupiah($product->price)</p>
-            </div>
-
-            @if ($quickAdd && $product->inStock())
-                @php($addClasses = 'relative z-10 grid size-9 shrink-0 place-items-center rounded-full bg-ink text-white transition hover:bg-brand-400 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 sm:size-10')
+        @if ($quickAdd && $product->inStock())
+            @php($addClasses = 'grid size-10 place-items-center rounded-full bg-white text-ink shadow-md shadow-ink/10 transition hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500')
+            <div class="absolute right-2.5 bottom-2.5 z-10 transition duration-200 lg:translate-y-1 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 lg:group-focus-within:translate-y-0 lg:group-focus-within:opacity-100 [@media(pointer:coarse)]:translate-y-0 [@media(pointer:coarse)]:opacity-100">
                 @if ($product->has_variants)
                     <a href="{{ route('products.show', $product) }}" class="{{ $addClasses }}" aria-label="Pilih {{ \Illuminate\Support\Str::lower($product->variant_label ?: 'varian') }} {{ $product->name }}">
-                        <x-icon name="plus" class="size-4" />
+                        <x-icon name="plus" class="size-[18px]" />
                     </a>
                 @else
-                    <form method="POST" action="{{ route('cart.store', $product) }}" class="relative z-10">
+                    <form method="POST" action="{{ route('cart.store', $product) }}">
                         @csrf
                         <button class="{{ $addClasses }}" aria-label="Tambah {{ $product->name }} ke keranjang">
-                            <x-icon name="plus" class="size-4" />
+                            <x-icon name="plus" class="size-[18px]" />
                         </button>
                     </form>
                 @endif
+            </div>
+        @endif
+    </div>
+
+    <div class="flex flex-1 flex-col pt-3 sm:pt-3.5">
+        @if ($product->relationLoaded('category') && $product->category)
+            <p class="truncate text-[11px] font-medium text-stone-500 sm:text-xs">{{ $product->category->name }}</p>
+        @endif
+        <h3 class="mt-0.5 text-[13px] leading-snug font-medium text-ink line-clamp-2 sm:text-sm">
+            <a href="{{ route('products.show', $product) }}" class="after:absolute after:inset-0 after:rounded-2xl">{{ $product->name }}</a>
+        </h3>
+        <div class="mt-auto flex flex-wrap items-baseline gap-x-2 pt-2">
+            <p class="text-sm font-semibold tracking-tight text-ink sm:text-[15px]">@rupiah($product->price)</p>
+            @if ($product->isOnSale())
+                <p class="text-xs text-stone-400 line-through">@rupiah($product->compare_at_price)</p>
             @endif
         </div>
+        @if ($product->review_count > 0)
+            <p class="mt-1 flex items-center gap-1 text-xs text-stone-500">
+                <x-icon name="star" class="size-3.5 fill-ink text-ink" />
+                <span class="font-medium text-ink">{{ number_format($product->rating_avg, 1, ',', '.') }}</span>
+                <span>({{ $product->review_count }})</span>
+            </p>
+        @endif
     </div>
 </article>

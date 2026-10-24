@@ -1,6 +1,9 @@
 <x-layouts.shop title="Checkout" :bottom-nav="false">
     <div class="shop-container py-6 sm:py-10 lg:py-14">
-        <h1 class="display border-b border-stone-200 pb-5 text-4xl leading-none sm:pb-6 sm:text-6xl">Checkout</h1>
+        <div class="border-b border-stone-200 pb-5 sm:pb-6">
+            <p class="kicker">Langkah terakhir</p>
+            <h1 class="display mt-3 text-3xl leading-none sm:text-5xl">Checkout</h1>
+        </div>
 
         <x-cart-notices :notices="$adjustments" class="mt-4" />
 
@@ -32,28 +35,28 @@
             @csrf
             <div class="min-w-0 space-y-6 lg:col-span-2">
                 {{-- Alamat --}}
-                <section class="rounded-3xl border border-stone-200 p-4 sm:p-6">
+                <section class="panel p-4 sm:p-6">
                     <div class="flex items-center justify-between gap-3">
-                        <h2 class="flex items-center gap-2 font-display text-base font-extrabold tracking-tight uppercase sm:text-lg"><x-icon name="map-pin" class="size-5 text-ink" /> Alamat pengiriman</h2>
+                        <h2 class="panel-title"><x-icon name="map-pin" class="size-5 text-ink" /> Alamat pengiriman</h2>
                         @if ($addresses->isNotEmpty())
                             <a href="{{ route('account.addresses.create', ['redirect_to' => 'checkout']) }}" class="-my-2 shrink-0 py-2.5 text-sm font-semibold text-ink lg:my-0 lg:py-0 hover:underline hover:underline-offset-4">+ Baru</a>
                         @endif
                     </div>
                     @if ($addresses->isEmpty())
-                        <div class="mt-4 border border-dashed border-stone-300 p-6 text-center">
+                        <div class="mt-4 rounded-xl border border-dashed border-stone-300 p-6 text-center">
                             <p class="text-sm text-stone-600">Kamu belum punya alamat pengiriman.</p>
                             <a href="{{ route('account.addresses.create', ['redirect_to' => 'checkout']) }}" class="btn btn-ink btn-pill mt-3">Tambah alamat</a>
                         </div>
                     @else
                         <div class="mt-4 grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Alamat pengiriman">
                             @foreach ($addresses as $item)
-                                <label class="relative block cursor-pointer rounded-2xl border-2 p-4 text-sm transition"
-                                       :class="addressId === '{{ $item->id }}' ? 'border-brand-400 bg-brand-50/60' : 'border-stone-200 hover:border-stone-300'">
+                                <label class="relative block cursor-pointer rounded-xl border p-4 text-sm transition"
+                                       :class="addressId === '{{ $item->id }}' ? 'border-ink bg-sand-50' : 'border-stone-200 hover:border-stone-300'">
                                     <input type="radio" name="address_id" value="{{ $item->id }}" class="sr-only"
                                            @checked($address?->is($item)) @change="changeAddress({{ $item->id }})">
                                     <span class="flex items-center gap-2 font-semibold text-stone-900">
                                         {{ $item->label }}
-                                        @if ($item->is_default)<span class="badge bg-brand-100 text-brand-700 ring-brand-600/20">Utama</span>@endif
+                                        @if ($item->is_default)<span class="badge bg-sand-100 text-ink ring-stone-200">Utama</span>@endif
                                     </span>
                                     <span class="mt-1 block text-stone-700">{{ $item->recipient_name }} · {{ $item->phone }}</span>
                                     <span class="block text-stone-500 line-clamp-2">{{ $item->fullAddress() }}</span>
@@ -71,9 +74,9 @@
                 </section>
 
                 {{-- Pengiriman --}}
-                <section class="rounded-3xl border border-stone-200 p-4 sm:p-6" aria-live="polite">
+                <section class="panel p-4 sm:p-6" aria-live="polite">
                     <div class="flex flex-wrap items-end justify-between gap-2">
-                        <h2 class="flex items-center gap-2 font-display text-base font-extrabold tracking-tight uppercase sm:text-lg"><x-icon name="truck" class="size-5 text-ink" /> Pilih pengiriman</h2>
+                        <h2 class="panel-title"><x-icon name="truck" class="size-5 text-ink" /> Pilih pengiriman</h2>
                         <p class="text-xs text-stone-500">Total berat {{ number_format(max($weight, 1) / 1000, 2, ',', '.') }} kg</p>
                     </div>
 
@@ -83,7 +86,7 @@
                         {{-- Memuat --}}
                         <div x-show="loading" x-cloak class="mt-4 grid gap-2">
                             @for ($i = 0; $i < 3; $i++)
-                                <div class="h-[70px] animate-pulse bg-stone-100"></div>
+                                <div class="h-[70px] animate-pulse rounded-xl bg-sand-100"></div>
                             @endfor
                         </div>
 
@@ -109,15 +112,15 @@
 
                             <div class="mt-3 grid gap-2" role="radiogroup" aria-label="Layanan pengiriman">
                                 <template x-for="item in visibleRates" :key="item.key">
-                                    <label class="flex min-w-0 cursor-pointer items-center gap-3 rounded-2xl border p-3 transition sm:p-4"
-                                           :class="selected === item.key ? 'border-brand-400 bg-brand-50/60' : 'border-stone-200 hover:border-stone-300'">
-                                        <input type="radio" name="shipping" :value="item.key" x-model="selected" class="text-brand-600 focus:ring-brand-400/30">
+                                    <label class="flex min-w-0 cursor-pointer items-center gap-3 rounded-xl border p-3 transition sm:p-4"
+                                           :class="selected === item.key ? 'border-ink bg-sand-50' : 'border-stone-200 hover:border-stone-300'">
+                                        <input type="radio" name="shipping" :value="item.key" x-model="selected" class="text-ink focus:ring-ink/20">
                                         <span class="hidden size-10 shrink-0 place-items-center rounded-full bg-stone-100 text-[11px] min-[400px]:grid sm:grid font-bold tracking-tight text-stone-700 uppercase" x-text="item.courier.slice(0, 4)"></span>
                                         <span class="min-w-0 flex-1">
                                             <span class="flex flex-wrap items-center gap-1.5 text-sm font-semibold text-stone-900">
                                                 <span x-text="`${item.courier_name} · ${item.service}`"></span>
-                                                <span x-show="item.key === cheapestKey" class="badge bg-emerald-50 text-emerald-700 ring-emerald-600/20">Termurah</span>
-                                                <span x-show="item.key === fastestKey" class="badge bg-sky-50 text-sky-700 ring-sky-600/20">Tercepat</span>
+                                                <span x-show="item.key === cheapestKey" class="badge bg-sand-100 text-ink ring-stone-200">Termurah</span>
+                                                <span x-show="item.key === fastestKey" class="badge bg-brand-50 text-brand-800 ring-brand-200">Tercepat</span>
                                             </span>
                                             <span class="block text-xs text-stone-500" x-text="[item.description, item.etd ? `Estimasi ${item.etd}` : null].filter(Boolean).join(' · ')"></span>
                                         </span>
@@ -143,7 +146,7 @@
                     <x-input-error for="shipping" />
                 </section>
 
-                <section class="rounded-3xl border border-stone-200 p-4 sm:p-6">
+                <section class="panel p-4 sm:p-6">
                     <x-form.textarea name="notes" label="Catatan untuk penjual" optional rows="2" maxlength="500" placeholder="Contoh: warna cadangan hitam" />
                 </section>
             </div>
@@ -157,15 +160,15 @@
                 $initialTotal = max(\App\Services\Promo\VoucherService::MIN_PAYABLE, $subtotal - $initialDiscount + $initialShipping - $initialShippingDiscount);
             @endphp
             <div class="min-w-0 lg:sticky lg:top-24 lg:self-start">
-                <div class="rounded-3xl border border-stone-200 p-4 sm:p-6">
-                    <h2 class="font-display text-lg font-extrabold tracking-tight uppercase">Ringkasan pesanan</h2>
+                <div class="rounded-2xl bg-sand-50 p-4 sm:p-6">
+                    <h2 class="text-lg font-semibold tracking-tight">Ringkasan pesanan</h2>
                     <ul class="mt-4 max-h-64 space-y-3 overflow-y-auto">
                         @foreach ($lines as $line)
                             <li class="flex gap-3">
                                 @if ($line->variant?->image)
-                                    <img src="{{ $line->imageUrl() }}" alt="" class="size-12 shrink-0 rounded-lg object-cover">
+                                    <img src="{{ $line->imageUrl() }}" alt="" class="size-14 shrink-0 rounded-xl object-cover">
                                 @else
-                                    <x-product-image :product="$line->product" class="size-12 shrink-0 rounded-lg" />
+                                    <x-product-image :product="$line->product" class="size-14 shrink-0 rounded-xl" />
                                 @endif
                                 <div class="min-w-0 flex-1 text-sm">
                                     <p class="truncate font-medium text-stone-800">{{ $line->product->name }}</p>
@@ -177,10 +180,10 @@
                         @endforeach
                     </ul>
                     {{-- Voucher --}}
-                    <div class="mt-4 border-t border-stone-100 pt-4" aria-live="polite">
+                    <div class="mt-4 border-t border-stone-200 pt-4" aria-live="polite">
                         <p class="flex items-center gap-2 text-sm font-semibold text-stone-900"><x-icon name="ticket" class="size-4" /> Voucher</p>
 
-                        <div x-show="voucher" @if (! $voucher) x-cloak @endif class="mt-3 flex items-center gap-3 border-2 border-dashed border-emerald-300 bg-emerald-50/70 p-3">
+                        <div x-show="voucher" @if (! $voucher) x-cloak @endif class="mt-3 flex items-center gap-3 rounded-xl border border-dashed border-emerald-300 bg-emerald-50/70 p-3">
                             <x-icon name="check-circle" class="size-5 shrink-0 text-emerald-600" />
                             <div class="min-w-0 flex-1">
                                 <p class="truncate font-mono text-sm font-bold tracking-wide text-stone-900" x-text="voucher?.code">{{ $voucher['code'] ?? '' }}</p>
@@ -192,8 +195,8 @@
                         <div x-show="!voucher" @if ($voucher) x-cloak @endif class="mt-3 flex gap-2">
                             <label for="voucher-code" class="sr-only">Kode voucher</label>
                             <input id="voucher-code" name="code" form="voucher-form" x-model="voucherCode" value="{{ old('code') }}" maxlength="32" autocomplete="off" autocapitalize="characters" spellcheck="false"
-                                   placeholder="Masukkan kode voucher" class="input min-w-0 flex-1 uppercase placeholder:normal-case">
-                            <button form="voucher-form" class="btn btn-outline shrink-0" :disabled="voucherLoading || !voucherCode.trim()">
+                                   placeholder="Masukkan kode voucher" class="input min-w-0 flex-1 bg-white uppercase placeholder:normal-case">
+                            <button form="voucher-form" class="btn btn-outline shrink-0 rounded-xl bg-white" :disabled="voucherLoading || !voucherCode.trim()">
                                 <span x-text="voucherLoading ? '...' : 'Pakai'">Pakai</span>
                             </button>
                         </div>
@@ -206,8 +209,8 @@
                                 <p class="text-xs text-stone-500">Voucher tersedia</p>
                                 @foreach ($suggestions as ['voucher' => $item, 'error' => $itemError])
                                     <button type="button" @click="applyVoucher(@js($item->code))" :disabled="voucherLoading" @disabled($itemError)
-                                            @class(['flex w-full items-center gap-3 rounded-xl border p-3 text-left transition', 'border-stone-200 hover:border-brand-400' => ! $itemError, 'cursor-not-allowed border-stone-100 opacity-60' => $itemError])>
-                                        <span class="grid size-9 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600"><x-icon :name="$item->type === \App\Enums\VoucherType::FreeShipping ? 'truck' : 'ticket'" class="size-4" /></span>
+                                            @class(['flex w-full items-center gap-3 rounded-xl border p-3 text-left transition', 'border-stone-200 bg-white hover:border-stone-400' => ! $itemError, 'cursor-not-allowed border-stone-100 opacity-60' => $itemError])>
+                                        <span class="grid size-9 shrink-0 place-items-center rounded-full bg-sand-100 text-ink"><x-icon :name="$item->type === \App\Enums\VoucherType::FreeShipping ? 'truck' : 'ticket'" class="size-4" /></span>
                                         <span class="min-w-0 flex-1">
                                             <span class="block text-sm font-semibold text-stone-900">{{ $item->benefitLabel() }}</span>
                                             <span class="block text-xs text-stone-500">{{ $itemError ?: $item->termsLabel() }}</span>
@@ -219,7 +222,7 @@
                         @endif
                     </div>
 
-                    <dl class="mt-4 space-y-2 border-t border-stone-100 pt-4 text-sm">
+                    <dl class="mt-4 space-y-2 border-t border-stone-200 pt-4 text-sm">
                         <div class="flex justify-between"><dt class="text-stone-500">Subtotal ({{ $lines->sum('quantity') }} item)</dt><dd>@rupiah($subtotal)</dd></div>
                         <div class="flex justify-between gap-3">
                             <dt class="text-stone-500">Ongkir <span x-show="rate" x-cloak class="text-xs" x-text="rate ? `(${rate.courier_name} ${rate.service})` : ''"></span></dt>
@@ -231,9 +234,9 @@
                         <div x-show="shippingDiscount > 0" @unless ($initialShippingDiscount) x-cloak @endunless class="flex justify-between text-emerald-700">
                             <dt>Potongan ongkir</dt><dd x-text="'−' + rupiah(shippingDiscount)">−@rupiah($initialShippingDiscount)</dd>
                         </div>
-                        <div class="flex justify-between border-t border-stone-100 pt-2 text-base font-bold text-stone-900"><dt>Total</dt><dd x-text="rupiah(total)">@rupiah($initialTotal)</dd></div>
+                        <div class="flex justify-between border-t border-stone-200 pt-2 text-base font-bold text-stone-900"><dt>Total</dt><dd x-text="rupiah(total)">@rupiah($initialTotal)</dd></div>
                     </dl>
-                    <button class="btn btn-ink btn-pill mt-6 w-full py-4 disabled:cursor-not-allowed disabled:opacity-50" :disabled="!canSubmit" @disabled(! $address || empty($quote['rates']))>
+                    <button class="btn btn-brand btn-pill mt-6 w-full py-4 disabled:cursor-not-allowed disabled:opacity-50" :disabled="!canSubmit" @disabled(! $address || empty($quote['rates']))>
                         <x-icon name="lock" class="size-4" />
                         <span x-text="submitting ? 'Memproses...' : 'Buat pesanan & bayar'">Buat pesanan & bayar</span>
                     </button>
@@ -242,13 +245,13 @@
             </div>
 
             {{-- Bar bayar di mobile: total selalu terlihat --}}
-            <div class="fixed inset-x-0 bottom-0 z-30 border-t border-stone-200 bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-6px_24px_-12px_rgb(15_23_42/0.18)] backdrop-blur lg:hidden">
+            <div class="fixed inset-x-0 bottom-0 z-30 border-t border-stone-200/70 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden">
                 <div class="flex items-center gap-3 px-4 py-3">
                     <div class="min-w-0 flex-1">
                         <p class="text-xs text-stone-500">Total bayar</p>
                         <p class="truncate text-base font-bold text-stone-900" x-text="rupiah(total)">@rupiah($initialTotal)</p>
                     </div>
-                    <button class="btn btn-ink shrink-0 rounded-full px-6 py-3.5 disabled:cursor-not-allowed disabled:opacity-50" :disabled="!canSubmit" @disabled(! $address || empty($quote['rates']))>
+                    <button class="btn btn-brand shrink-0 rounded-full px-6 py-3.5 disabled:cursor-not-allowed disabled:opacity-50" :disabled="!canSubmit" @disabled(! $address || empty($quote['rates']))>
                         <x-icon name="lock" class="size-4" />
                         <span x-text="submitting ? 'Memproses...' : 'Buat pesanan'">Buat pesanan</span>
                     </button>

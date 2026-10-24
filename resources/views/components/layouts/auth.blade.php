@@ -3,18 +3,16 @@
     <div class="grid min-h-screen lg:grid-cols-2">
         {{-- Panel brand --}}
         <div class="relative hidden overflow-hidden bg-ink lg:block">
-            <span class="pointer-events-none absolute -top-32 -right-32 size-[30rem] rounded-full border-[56px] border-brand-400" aria-hidden="true"></span>
-            <span class="pointer-events-none absolute top-72 right-24 size-20 rounded-full bg-volt" aria-hidden="true"></span>
-            <x-logo variant="mark" mono class="pointer-events-none absolute -bottom-10 -left-10 h-72 text-white/[0.05]" aria-hidden="true" />
+            <img src="{{ asset(\App\Support\Storefront::DEFAULT_IMAGE_MOBILE) }}" alt="" class="pointer-events-none absolute inset-0 size-full object-cover opacity-90" aria-hidden="true">
             <div class="relative flex h-full flex-col justify-between p-12 text-white">
                 <a href="{{ route('home') }}" class="self-start"><x-wordmark dark size="lg" /></a>
                 <div class="max-w-md">
-                    <p class="eyebrow text-brand-300">{{ config('shop.hashtag', '#BEFITWITHNUFIT') }}</p>
-                    <h2 class="display mt-4 text-5xl leading-[0.92]">Healthy body, healthy mind, happy life.</h2>
+                    <p class="kicker text-white/60">{{ config('shop.hashtag', '#BEFITWITHNUFIT') }}</p>
+                    <h2 class="display mt-5 text-5xl leading-[1.02]">Healthy body, healthy mind, happy life.</h2>
                     <p class="mt-5 text-base text-white/60">Perlengkapan lari, yoga, pilates, renang, padel, dan workout yang menemani setiap latihanmu.</p>
-                    <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/80">
+                    <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/75">
                         @foreach ([['shield', 'Produk resmi'], ['truck', 'Kirim se-Indonesia'], ['lock', 'Bayar aman']] as [$icon, $label])
-                            <li class="flex items-center gap-2"><x-icon :name="$icon" class="size-4 text-brand-300" /> {{ $label }}</li>
+                            <li class="flex items-center gap-2"><x-icon :name="$icon" class="size-4 text-brand-400" /> {{ $label }}</li>
                         @endforeach
                     </ul>
                 </div>
@@ -31,7 +29,7 @@
                 </a>
             </div>
             <div class="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-8 sm:py-10">
-                <h1 class="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{{ $heading }}</h1>
+                <h1 class="display text-3xl sm:text-4xl">{{ $heading }}</h1>
                 @if ($subheading)
                     <p class="mt-2 text-sm text-stone-500">{{ $subheading }}</p>
                 @endif

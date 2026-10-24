@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductCollection;
 use App\Services\Reviews\ReviewService;
+use App\Services\Storefront\BestSellers;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -77,6 +78,28 @@ class ProductController extends Controller
             'sorts' => self::SORTS,
             'minPrice' => $minPrice,
             'maxPrice' => $maxPrice,
+        ]);
+    }
+
+    /**
+     * Halaman Best Seller: daftar berperingkat sesuai pengaturan admin (otomatis/manual),
+     * lalu sisa katalog di bawahnya.
+     */
+    public function bestSellers(Request $request, BestSellers $bestSellers): View
+    {
+        $ranked = $bestSellers->forHome();
+
+        return view('shop.products.best-sellers', [
+            'ranked' => $request->integer('page', 1) > 1 ? collect() : $ranked,
+            'manual' => BestSellers::isManual(),
+            'others' => Product::active()
+                ->with('category')
+                ->whereNotIn('id', $ranked->pluck('id'))
+                ->orderByDesc('is_featured')
+                ->latest()
+                ->paginate(12)
+                ->withQueryString()
+                ->fragment('lainnya'),
         ]);
     }
 

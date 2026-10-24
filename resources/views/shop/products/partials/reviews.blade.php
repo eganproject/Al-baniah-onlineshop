@@ -3,10 +3,11 @@
     <div class="grid gap-10 lg:grid-cols-12 lg:gap-14">
         {{-- Ringkasan --}}
         <div class="lg:col-span-4">
-            <h2 class="display text-3xl leading-none sm:text-5xl">Ulasan</h2>
+            <p class="kicker">Kata pembeli</p>
+            <h2 class="section-title">Ulasan</h2>
             @if ($product->hasReviews())
                 <div class="mt-6 flex items-end gap-4">
-                    <p class="font-display text-6xl leading-none font-extrabold tracking-tight">{{ number_format($product->rating_avg, 1, ',', '.') }}</p>
+                    <p class="font-display text-6xl leading-none font-bold tracking-tight">{{ number_format($product->rating_avg, 1, ',', '.') }}</p>
                     <div class="pb-1">
                         <x-star-rating :rating="$product->rating_avg" size="size-5" />
                         <p class="mt-1 text-sm text-stone-500">dari {{ $product->review_count }} ulasan</p>
@@ -32,7 +33,7 @@
             <div id="tulis-ulasan" class="mt-8 scroll-mt-28">
                 @if ($canReview)
                     @php($reviewErrors = $errors->getBag('review'))
-                    <form method="POST" action="{{ route('reviews.store', $product) }}" class="bg-sand-50 p-5"
+                    <form method="POST" action="{{ route('reviews.store', $product) }}" class="rounded-2xl bg-sand-50 p-5"
                           x-data="{ rating: {{ (int) old('rating', $myReview?->rating ?? 0) }}, hover: 0 }">
                         @csrf
                         <p class="text-sm font-semibold">{{ $myReview ? 'Edit ulasanmu' : 'Tulis ulasan' }}</p>
@@ -49,7 +50,7 @@
                                     <label class="cursor-pointer" @mouseenter="hover = {{ $i }}">
                                         <input type="radio" name="rating" value="{{ $i }}" x-model.number="rating" class="peer sr-only" @checked(old('rating', $myReview?->rating) == $i) required>
                                         <span class="sr-only">{{ $i }} bintang</span>
-                                        <x-icon name="star" class="size-8 text-amber-400 transition peer-focus-visible:scale-110" x-bind:class="{ 'fill-amber-400': (hover || rating) >= {{ $i }} }" />
+                                        <x-icon name="star" class="size-8 text-ink transition peer-focus-visible:scale-110" x-bind:class="{ 'fill-ink': (hover || rating) >= {{ $i }} }" />
                                     </label>
                                 @endfor
                             </div>
@@ -91,14 +92,14 @@
                         @endif
                     </p>
                     @if ($review->admin_reply)
-                        <div class="mt-4 border-l-2 border-ink bg-sand-50 p-4 text-sm">
+                        <div class="mt-4 rounded-r-xl border-l-2 border-brand-400 bg-sand-50 p-4 text-sm">
                             <p class="text-xs font-semibold tracking-wide uppercase">Balasan {{ config('shop.name') }}</p>
                             <p class="mt-1 whitespace-pre-line text-stone-600">{{ $review->admin_reply }}</p>
                         </div>
                     @endif
                 </article>
             @empty
-                <div class="bg-sand-50 p-8 text-center">
+                <div class="rounded-2xl bg-sand-50 p-8 text-center">
                     <x-icon name="star" class="mx-auto size-8 text-stone-400" />
                     <p class="mt-3 text-sm font-semibold">Jadilah yang pertama mengulas</p>
                     <p class="mt-1 text-sm text-stone-500">Ulasan ditulis oleh pembeli yang pesanannya sudah selesai.</p>

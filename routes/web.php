@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', Shop\HomeController::class)->name('home');
 Route::get('/produk', [Shop\ProductController::class, 'index'])->name('products.index');
+Route::get('/best-seller', [Shop\ProductController::class, 'bestSellers'])->name('products.best-sellers');
 Route::get('/produk/{product}', [Shop\ProductController::class, 'show'])->name('products.show');
 
 Route::get('/artikel', [Shop\ArticleController::class, 'index'])->name('articles.index');

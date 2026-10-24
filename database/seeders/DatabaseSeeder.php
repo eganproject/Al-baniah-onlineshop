@@ -233,18 +233,18 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-    /** Koleksi / aktivitas contoh: satu produk bisa masuk beberapa koleksi (mis. botol di Running & Workout). */
+    /** Koleksi / aktivitas contoh (warna ubin kosong = palet kalem bawaan beranda): satu produk bisa masuk beberapa koleksi (mis. botol di Running & Workout). */
     private function seedCollections(): void
     {
         $collections = [
-            ['Running', 'running', 'cyan', 'Lari lebih jauh, tetap nyaman', ['running', 'kaos-kaki-lari-anti-lecet', 'botol-minum-sport-750ml-bpa-free', 'handuk-microfiber-quick-dry', 'kinesiology-tape-5cm-x-5m']],
-            ['Yoga & Pilates', 'yoga', 'ink', null, ['yoga-pilates', 'handuk-microfiber-quick-dry', 'sport-bra-medium-support']],
-            ['Workout', 'workout', 'volt', null, ['workout', 'botol-minum-sport-750ml-bpa-free', 'handuk-microfiber-quick-dry', 'sport-bra-medium-support', 'knee-support-compression']],
-            ['Padel', 'padel', 'orange', null, ['padel', 'rok-olahraga-skort-2-in-1', 'topi-visor-hat-quick-dry']],
-            ['Swimming', 'swimming', 'sky', null, ['swimming', 'travel-pouch-serbaguna']],
-            ['Support & Recovery', 'support', 'sand', null, ['support-recovery']],
-            ['Essentials', 'essentials', 'cyan', null, ['essentials']],
-            ['Apparel', 'apparel', 'ink', null, ['apparel', 'nu-shape-aura-flare-yoga-pants', 'manset-lengan-uv-protection']],
+            ['Running', 'running', 'ink', 'Lari lebih jauh, tetap nyaman', ['running', 'kaos-kaki-lari-anti-lecet', 'botol-minum-sport-750ml-bpa-free', 'handuk-microfiber-quick-dry', 'kinesiology-tape-5cm-x-5m']],
+            ['Yoga & Pilates', 'yoga', null, null, ['yoga-pilates', 'handuk-microfiber-quick-dry', 'sport-bra-medium-support']],
+            ['Workout', 'workout', null, null, ['workout', 'botol-minum-sport-750ml-bpa-free', 'handuk-microfiber-quick-dry', 'sport-bra-medium-support', 'knee-support-compression']],
+            ['Padel', 'padel', null, null, ['padel', 'rok-olahraga-skort-2-in-1', 'topi-visor-hat-quick-dry']],
+            ['Swimming', 'swimming', null, null, ['swimming', 'travel-pouch-serbaguna']],
+            ['Support & Recovery', 'support', null, null, ['support-recovery']],
+            ['Essentials', 'essentials', null, null, ['essentials']],
+            ['Apparel', 'apparel', null, null, ['apparel', 'nu-shape-aura-flare-yoga-pants', 'manset-lengan-uv-protection']],
         ];
 
         foreach ($collections as $order => [$name, $icon, $tone, $tagline, $members]) {
