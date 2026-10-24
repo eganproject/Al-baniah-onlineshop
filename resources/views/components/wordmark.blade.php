@@ -1,4 +1,4 @@
-{{-- Logo lengkap NuFit untuk header/halaman publik. Lihat <x-logo>. --}}
+{{-- Logo lengkap Albaniah untuk header/halaman publik. Lihat <x-logo>. --}}
 @props(['dark' => false, 'size' => 'md'])
 <x-logo :dark="$dark" {{ $attributes->class([
     'h-8 lg:h-9' => $size === 'md',

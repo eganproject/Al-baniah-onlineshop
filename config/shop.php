@@ -8,12 +8,12 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'name' => 'NuFit',
-    'full_name' => 'NuFit Indonesia',
-    'tagline' => 'Aksesoris olahraga untuk hidup yang lebih aktif',
+    'name' => 'Albaniah',
+    'full_name' => 'Albaniah Mukena',
+    'tagline' => 'Mukena nyaman dan anggun untuk menemani setiap ibadahmu',
     // Slogan brand, tampil di beranda & footer.
-    'motto' => 'Healthy Body • Healthy Mind • Happy Life',
-    'hashtag' => '#BEFITWITHNUFIT',
+    'motto' => 'Temani Ibadahmu',
+    'hashtag' => '#TemaniIbadahmu',
     'whatsapp' => env('SHOP_WHATSAPP'),
     // Alamat gudang/pengirim, dicetak di invoice dan packing slip.
     'address' => env('SHOP_ADDRESS'),
@@ -36,7 +36,7 @@ return [
     | Semua nilai di sini bisa diubah dari Admin › Tampilan Beranda; isi di
     | sini/.env hanya nilai bawaan.
     | hero_image / hero_image_mobile: path di disk public, path di folder
-    | public/, atau URL. Kosong = ilustrasi bawaan NuFit.
+    | public/, atau URL. Kosong = ilustrasi bawaan Albaniah.
     | hero_text: "light" (teks putih, untuk foto gelap) atau "dark".
     | announcements: teks yang bergantian di bar paling atas.
     |
@@ -45,17 +45,17 @@ return [
     'storefront' => [
         'hero_image' => env('SHOP_HERO_IMAGE'),
         'hero_image_mobile' => env('SHOP_HERO_IMAGE_MOBILE'),
-        'hero_eyebrow' => 'Koleksi baru NuFit',
-        'hero_title' => 'Gerak lebih bebas, hidup lebih sehat.',
-        'hero_subtitle' => 'Perlengkapan lari, yoga, pilates, renang, padel, dan workout yang nyaman dipakai setiap latihan.',
-        'hero_primary_label' => 'Belanja sekarang',
+        'hero_eyebrow' => 'Koleksi Albaniah',
+        'hero_title' => 'Anggun dalam sujud, tenang dalam doa.',
+        'hero_subtitle' => 'Mukena renda, bordir, travel, dan tutup dagu dari bahan adem pilihan. Dijahit rapi di Tasikmalaya untuk menemani ibadahmu setiap hari.',
+        'hero_primary_label' => 'Lihat koleksi',
         'hero_primary_url' => '/produk',
         'hero_secondary_label' => 'Lihat promo',
         'hero_secondary_url' => '/produk?promo=1',
         'hero_text' => 'light',
         'announcements' => [
-            'Gratis ongkir untuk belanja minimal Rp75.000 pakai kode ONGKIRGRATIS',
-            'Diskon 10% untuk pembelian pertama: pakai kode HEMAT10',
+            'Gratis ongkir untuk belanja minimal Rp150.000 pakai kode ONGKIRGRATIS',
+            'Diskon 10% untuk pembelian pertama: pakai kode BERKAH10',
             'Bayar mudah: transfer bank, e-wallet & QRIS',
         ],
         // Tab Best Seller: "auto" (terlaris 90 hari) atau "manual" (pilihan admin, berurutan).
@@ -67,27 +67,27 @@ return [
         'sections' => ['ribbon', 'best_sellers', 'activities', 'banners', 'promo', 'why', 'articles'],
         // Teks seksi. Kosong (null) = teks bawaan di App\Support\Storefront.
         'hero_rail' => true,
-        'ribbon_text' => null,
-        'best_eyebrow' => 'Paling diminati',
+        'ribbon_text' => 'Temani Ibadahmu • Adem & Nyaman • Jahitan Rapi • Anggun di Setiap Sujud',
+        'best_eyebrow' => 'Paling banyak dipilih',
         'best_title' => 'Best Seller',
         'activities_source' => 'auto',
         'activities_eyebrow' => null,
-        'activities_title' => 'Belanja per aktivitas',
-        'promo_eyebrow' => 'Hemat lebih banyak',
-        'promo_title' => 'Lagi diskon',
-        'promo_text' => 'Perlengkapan latihan favorit dengan harga spesial. Stok promo terbatas.',
+        'activities_title' => 'Belanja per koleksi',
+        'promo_eyebrow' => 'Harga spesial',
+        'promo_title' => 'Promo berkah',
+        'promo_text' => 'Mukena favorit dengan harga spesial, cocok juga untuk hadiah orang tersayang. Stok promo terbatas.',
         'promo_badge' => 'Hemat!',
         'promo_button' => 'Semua promo',
         'promo_url' => '/produk?promo=1',
         'why_eyebrow' => null,
-        'why_title' => null,
+        'why_title' => 'Lembut di kulit • tenang di hati.',
         'why_text' => null,
         // "Judul | deskripsi" per poin, maks. 4.
         'why_points' => [
-            'Kirim se-Indonesia | Pilih JNE, SiCepat, J&T, POS, dan lainnya. Ongkir terlihat sebelum bayar.',
-            'Produk resmi NuFit | Kualitas terkontrol, dari bahan sampai jahitan.',
-            'Garansi tukar 7 hari | Cacat produksi? Kami bantu tukar tanpa ribet.',
-            'Pembayaran aman | Transfer bank, e-wallet, QRIS, dan kartu kredit.',
+            'Bahan adem & jatuh | Katun, crinkle airflow, jersey, dan sutra velvet yang nyaman dipakai lama.',
+            'Jahitan rapi Tasikmalaya | Dibuat pengrajin berpengalaman, dicek satu per satu sebelum dikirim.',
+            'Garansi tukar 7 hari | Ada cacat jahitan? Kami bantu tukar tanpa ribet.',
+            'Kirim se-Indonesia | JNE, SiCepat, J&T, POS, dan lainnya. Bisa dibungkus kado.',
         ],
         'articles_title' => 'Artikel terbaru',
     ],
@@ -187,7 +187,7 @@ return [
 
     'seo' => [
         'indexing' => (bool) env('SEO_INDEXING', true),
-        'description' => env('SEO_DESCRIPTION', 'NuFit Indonesia: aksesoris olahraga untuk lari, yoga, pilates, renang, padel, hiking, dan workout. Nyaman, berkualitas, kirim ke seluruh Indonesia.'),
+        'description' => env('SEO_DESCRIPTION', 'Albaniah Mukena: mukena dewasa renda, bordir, travel, dan tutup dagu dari bahan adem pilihan. Temani ibadahmu, kirim ke seluruh Indonesia.'),
         'default_image' => env('SEO_DEFAULT_IMAGE') ?: 'images/brand/og-default.png',
     ],
 

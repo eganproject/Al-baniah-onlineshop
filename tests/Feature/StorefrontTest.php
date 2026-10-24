@@ -35,12 +35,12 @@ class StorefrontTest extends TestCase
         $this->get(route('home'))->assertOk()
             ->assertSee(asset(Storefront::DEFAULT_IMAGE), false)
             ->assertSee(asset(Storefront::DEFAULT_IMAGE_MOBILE), false)
-            ->assertSee('Gerak lebih bebas, hidup lebih sehat.')
+            ->assertSee('Anggun dalam sujud, tenang dalam doa.')
             ->assertSee('Best Seller')
             ->assertSee('Kategori')
             ->assertSee('Casing HP')
             ->assertSee('Kabel Data')
-            ->assertSee('Diskon 10% untuk pembelian pertama: pakai kode HEMAT10', false);
+            ->assertSee('Diskon 10% untuk pembelian pertama: pakai kode BERKAH10', false);
     }
 
     public function test_best_sellers_are_ordered_by_paid_sales_and_filled_with_other_products(): void
@@ -100,7 +100,7 @@ class StorefrontTest extends TestCase
         $this->put(route('admin.storefront.update'), ['hero_text' => 'light', 'remove_hero_image' => 1])->assertSessionHasNoErrors();
         Storage::disk('public')->assertMissing($image);
         $this->assertNull(config('shop.storefront.hero_image'));
-        $this->assertSame('Gerak lebih bebas, hidup lebih sehat.', config('shop.storefront.hero_title'));
+        $this->assertSame('Anggun dalam sujud, tenang dalam doa.', config('shop.storefront.hero_title'));
     }
 
     public function test_storefront_page_requires_promo_permission(): void
@@ -215,8 +215,8 @@ class StorefrontTest extends TestCase
 
         $this->get(route('home'))->assertOk()
             ->assertSeeInOrder(['Cuci Gudang', 'Bahagia', 'Paling Laris'])
-            ->assertDontSee('Belanja per aktivitas')
-            ->assertDontSee('Pilih aktivitasmu');
+            ->assertDontSee('Belanja per koleksi')
+            ->assertDontSee('Pilih koleksimu');
 
         $this->put(route('admin.storefront.sections'), [
             'sections' => ['why'], 'activities_source' => 'auto', 'hero_rail' => '1',

@@ -47,15 +47,15 @@ class Storefront
     public const SECTIONS = [
         'ribbon' => 'Pita slogan',
         'best_sellers' => 'Best Seller',
-        'activities' => 'Belanja per aktivitas',
+        'activities' => 'Belanja per koleksi',
         'banners' => 'Banner promo',
         'promo' => 'Panel diskon',
-        'why' => 'Kenapa NuFit',
+        'why' => 'Kenapa Albaniah',
         'articles' => 'Artikel terbaru',
     ];
 
-    /** Ikon tetap untuk poin "Kenapa NuFit", sesuai urutan. */
-    public const WHY_ICONS = ['truck', 'shield', 'refresh', 'lock'];
+    /** Ikon tetap untuk poin "Kenapa Albaniah", sesuai urutan. */
+    public const WHY_ICONS = ['sparkles', 'shield', 'refresh', 'truck'];
 
     /** @return list<string> seksi yang tampil, berurutan */
     public static function sections(): array

@@ -6,7 +6,7 @@
                 <x-icon name="arrow-left" class="size-4" /> Kembali
             </a>
         @endif
-        <h1 class="text-2xl font-extrabold tracking-tight text-stone-900">{{ $title }}</h1>
+        <h1 class="font-display text-[1.9rem] leading-tight font-semibold text-ink">{{ $title }}</h1>
         @if ($description)
             <p class="mt-1 text-sm text-stone-500">{{ $description }}</p>
         @endif

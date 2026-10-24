@@ -17,7 +17,7 @@
                     <div>
                         <label for="code" class="label">Kode voucher</label>
                         <input id="code" name="code" value="{{ old('code', $voucher->code) }}" required maxlength="32" autocomplete="off"
-                               placeholder="HEMAT10" class="input font-mono uppercase placeholder:normal-case @error('code') input-error @enderror">
+                               placeholder="BERKAH10" class="input font-mono uppercase placeholder:normal-case @error('code') input-error @enderror">
                         <p class="mt-1.5 text-xs text-stone-400">Huruf, angka, - dan _. Otomatis huruf besar.</p>
                         <x-input-error for="code" />
                     </div>

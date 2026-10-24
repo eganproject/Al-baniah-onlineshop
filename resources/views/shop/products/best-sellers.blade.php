@@ -1,8 +1,8 @@
 @php
     $title = \App\Support\Storefront::text('best_title', 'Best Seller');
     $intro = $manual
-        ? 'Pilihan favorit tim NuFit, perlengkapan yang paling sering dicari pelanggan kami.'
-        : 'Perlengkapan yang paling banyak dibeli pelanggan NuFit dalam 90 hari terakhir.';
+        ? 'Pilihan favorit tim Albaniah, mukena yang paling sering dicari pelanggan kami.'
+        : 'Mukena yang paling banyak dibeli pelanggan Albaniah dalam 90 hari terakhir.';
     $rankFor = fn ($product, int $position) => $position <= 10 && ($manual || ($product->sold_count ?? 0) > 0) ? $position : null;
 @endphp
 <x-layouts.shop :title="$title" :description="$intro">

@@ -13,7 +13,7 @@
         <x-cart-notices :notices="$adjustments" class="mt-6" />
 
         @if ($lines->isEmpty())
-            <x-empty-state icon="bag" title="Keranjangmu masih kosong" description="Yuk, temukan perlengkapan latihan favoritmu dan tambahkan ke keranjang." class="py-20">
+            <x-empty-state icon="bag" title="Keranjangmu masih kosong" description="Yuk, temukan mukena favoritmu dan tambahkan ke keranjang." class="py-20">
                 <a href="{{ route('products.index') }}" class="btn btn-ink btn-pill">Mulai belanja</a>
             </x-empty-state>
         @else
@@ -23,7 +23,7 @@
                         <li class="flex gap-4 py-6 sm:gap-6">
                             <a href="{{ route('products.show', $line->product) }}" class="group w-24 shrink-0 sm:w-32">
                                 @if ($line->variant?->image)
-                                    <img src="{{ $line->imageUrl() }}" alt="{{ $line->product->name }}" class="aspect-square w-full rounded-2xl bg-sand-100 object-cover">
+                                    <img src="{{ $line->imageUrl() }}" referrerpolicy="no-referrer" alt="{{ $line->product->name }}" class="aspect-square w-full rounded-2xl bg-sand-100 object-cover">
                                 @else
                                     <x-product-image :product="$line->product" class="aspect-square rounded-2xl" />
                                 @endif

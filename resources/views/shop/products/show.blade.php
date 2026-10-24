@@ -69,7 +69,7 @@
                                             class="aspect-square w-full shrink-0 overflow-hidden rounded-xl bg-sand-100 ring-1 transition"
                                             :class="active === {{ $index }} ? 'ring-ink' : 'ring-transparent opacity-60 hover:opacity-100'"
                                             aria-label="Lihat foto {{ $index + 1 }}">
-                                        <img src="{{ $image->url() }}" alt="" loading="lazy" class="size-full object-cover">
+                                        <img src="{{ $image->url() }}" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'" alt="" loading="lazy" class="size-full object-cover">
                                     </button>
                                 @endforeach
                             </div>
@@ -84,7 +84,7 @@
                                      @scroll.debounce.80ms="active = Math.round($el.scrollLeft / $el.clientWidth)"
                                      x-effect="const i = active; $nextTick(() => { if (Math.round($el.scrollLeft / $el.clientWidth) !== i) $el.scrollTo({ left: i * $el.clientWidth, behavior: 'smooth' }) })">
                                     @foreach ($images as $index => $image)
-                                        <img src="{{ $image->url() }}" alt="{{ $product->name }} — foto {{ $index + 1 }}" @if ($index > 0) loading="lazy" @endif decoding="async"
+                                        <img src="{{ $image->url() }}" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'" alt="{{ $product->name }} — foto {{ $index + 1 }}" @if ($index > 0) loading="lazy" @endif decoding="async"
                                              class="aspect-square w-full shrink-0 snap-center object-cover">
                                     @endforeach
                                 </div>
@@ -92,7 +92,7 @@
                                 {{-- Desktop: foto utama --}}
                                 <div class="relative hidden aspect-square overflow-hidden rounded-2xl bg-sand-100 lg:block">
                                     @foreach ($images as $index => $image)
-                                        <img src="{{ $image->url() }}" alt="{{ $product->name }} — foto {{ $index + 1 }}"
+                                        <img src="{{ $image->url() }}" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'" alt="{{ $product->name }} — foto {{ $index + 1 }}"
                                              @if ($index > 0) loading="lazy" x-cloak @endif decoding="async"
                                              x-show="active === {{ $index }}" x-transition.opacity.duration.200ms
                                              class="absolute inset-0 size-full object-cover">
@@ -178,7 +178,7 @@
                                                     :class="selectedId === {{ $variant->id }} ? 'border-ink ring-1 ring-ink' : 'border-stone-200 hover:border-stone-400'"
                                                     class="relative flex min-h-11 items-center gap-2 rounded-xl border bg-white px-3.5 py-2 text-left text-sm font-medium transition disabled:cursor-not-allowed disabled:border-dashed disabled:text-stone-300">
                                                 @if ($variant->image)
-                                                    <img src="{{ $variant->image->url() }}" alt="" class="size-7 shrink-0 rounded-md object-cover">
+                                                    <img src="{{ $variant->image->url() }}" referrerpolicy="no-referrer" alt="" class="size-7 shrink-0 rounded-md object-cover">
                                                 @endif
                                                 <span class="min-w-0 leading-tight">
                                                     <span @class(['block truncate', 'line-through' => ! $variant->inStock()])>{{ $variant->name }}</span>
@@ -282,7 +282,7 @@
                                         <div class="rounded-2xl bg-sand-50 p-5"><x-icon name="credit-card" class="size-6 text-brand-600" /><p class="mt-3 font-semibold text-ink">Pembayaran</p><p class="mt-1 text-sm">Bayar dengan transfer bank, e-wallet, atau QRIS. Pesanan diproses setelah pembayaran terkonfirmasi.</p></div>
                                     </div>
                                 @else
-                                    <div class="max-w-3xl rounded-2xl bg-sand-50 p-5"><x-icon name="refresh" class="size-6 text-brand-600" /><p class="mt-3 text-sm">Produk resmi NuFit. Produk cacat produksi bisa ditukar dalam 7 hari setelah diterima, cukup hubungi CS kami dengan menyertakan nomor pesanan.</p></div>
+                                    <div class="max-w-3xl rounded-2xl bg-sand-50 p-5"><x-icon name="refresh" class="size-6 text-brand-600" /><p class="mt-3 text-sm">Produk resmi Albaniah. Produk cacat produksi bisa ditukar dalam 7 hari setelah diterima, cukup hubungi CS kami dengan menyertakan nomor pesanan.</p></div>
                                 @endif
                             </div>
                         @endforeach
@@ -290,13 +290,13 @@
                 </div>
 
                 <aside class="rounded-2xl border border-stone-200 p-6 lg:col-span-4 lg:self-start lg:p-7">
-                    <span class="grid size-11 place-items-center rounded-full bg-sand-100 text-ink"><x-sport-icon :for="$sportFor" class="size-[22px]" /></span>
-                    <p class="mt-5 text-lg font-semibold tracking-tight text-ink">Butuh saran perlengkapan?</p>
-                    <p class="mt-1.5 text-sm text-stone-500">Tim NuFit siap bantu memilih yang pas untuk latihanmu.</p>
+                    <span class="grid size-11 place-items-center rounded-full bg-sand-100 text-ink"><x-category-icon :for="$sportFor" class="size-[22px]" /></span>
+                    <p class="mt-5 text-lg font-semibold tracking-tight text-ink">Bingung pilih ukuran atau bahan?</p>
+                    <p class="mt-1.5 text-sm text-stone-500">Tim Albaniah siap bantu memilih mukena yang pas untukmu.</p>
                     @if (config('shop.whatsapp'))
-                        <a href="https://wa.me/{{ config('shop.whatsapp') }}?text={{ urlencode('Halo NuFit, saya mau tanya tentang '.$product->name) }}" target="_blank" rel="noopener" class="btn btn-outline btn-pill mt-5"><x-icon name="chat" class="size-4" /> Chat WhatsApp</a>
+                        <a href="https://wa.me/{{ config('shop.whatsapp') }}?text={{ urlencode('Halo Albaniah, saya mau tanya tentang '.$product->name) }}" target="_blank" rel="noopener" class="btn btn-outline btn-pill mt-5"><x-icon name="chat" class="size-4" /> Chat WhatsApp</a>
                     @else
-                        <a href="{{ route('articles.index') }}" class="btn btn-outline btn-pill mt-5">Baca tips latihan <x-icon name="arrow-right" class="size-4" /></a>
+                        <a href="{{ route('articles.index') }}" class="btn btn-outline btn-pill mt-5">Baca tips & inspirasi <x-icon name="arrow-right" class="size-4" /></a>
                     @endif
                     <p class="kicker mt-6">{{ config('shop.hashtag') }}</p>
                 </aside>
@@ -313,7 +313,7 @@
                 <div class="shop-container flex items-end justify-between gap-4">
                     <div>
                         <p class="kicker">{{ $product->category?->name ?? 'Rekomendasi' }}</p>
-                        <h2 id="related-title" class="section-title">Lengkapi latihanmu</h2>
+                        <h2 id="related-title" class="section-title">Mungkin kamu suka</h2>
                     </div>
                     <div class="flex items-center gap-2">
                         @if ($product->category)

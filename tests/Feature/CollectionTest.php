@@ -24,7 +24,7 @@ class CollectionTest extends TestCase
                 'name' => 'Running',
                 'tagline' => 'Lari lebih nyaman',
                 'tone' => 'volt',
-                'icon' => 'running',
+                'icon' => 'travel',
                 'is_active' => '1',
                 'show_on_home' => '1',
                 'products' => [$socks->id, $bottle->id],
@@ -58,7 +58,7 @@ class CollectionTest extends TestCase
         $workout = ProductCollection::factory()->create(['name' => 'Workout']);
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)->get(route('admin.products.create'))->assertOk()->assertSee('Koleksi / aktivitas');
+        $this->actingAs($admin)->get(route('admin.products.create'))->assertOk()->assertSee('Koleksi');
 
         $this->actingAs($admin)->post(route('admin.products.store'), [
             'name' => 'Kaos Kaki', 'price' => '39.000', 'stock' => 5, 'weight' => 60, 'is_active' => '1',

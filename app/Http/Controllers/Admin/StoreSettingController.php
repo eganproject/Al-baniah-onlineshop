@@ -97,8 +97,8 @@ class StoreSettingController extends Controller
             'auto_complete_days' => ['required', 'integer', 'min:1', 'max:30'],
         ], [
             'whatsapp.regex' => 'Nomor WhatsApp tidak valid. Contoh: 081234567890.',
-            'instagram.regex' => 'Isi username saja, tanpa spasi. Contoh: nufit.official.',
-            'tiktok.regex' => 'Isi username saja, tanpa spasi. Contoh: nufit.official.',
+            'instagram.regex' => 'Isi username saja, tanpa spasi. Contoh: albaniah.official.',
+            'tiktok.regex' => 'Isi username saja, tanpa spasi. Contoh: albaniah.official.',
             'couriers.required' => 'Pilih minimal satu kurir.',
         ], [
             'name' => 'nama singkat', 'full_name' => 'nama lengkap', 'district_id' => 'kecamatan asal',
@@ -167,7 +167,7 @@ class StoreSettingController extends Controller
         };
     }
 
-    /** "@nufit.official" atau URL profil → "nufit.official". */
+    /** "@albaniah.official" atau URL profil → "albaniah.official". */
     private function normalizeHandle(?string $value): ?string
     {
         $value = trim((string) $value);

@@ -1,13 +1,13 @@
-# Contoh server block Nginx untuk NuFit Online Shop (VPS).
-# Salin ke /etc/nginx/sites-available/nufit, sesuaikan domain & path,
-# lalu: ln -s /etc/nginx/sites-available/nufit /etc/nginx/sites-enabled/
-# SSL gratis: sudo certbot --nginx -d nufit.id -d www.nufit.id
+# Contoh server block Nginx untuk Albaniah Online Shop (VPS).
+# Salin ke /etc/nginx/sites-available/albaniah, sesuaikan domain & path,
+# lalu: ln -s /etc/nginx/sites-available/albaniah /etc/nginx/sites-enabled/
+# SSL gratis: sudo certbot --nginx -d albaniah.id -d www.albaniah.id
 
 server {
     listen 80;
     listen [::]:80;
-    server_name nufit.id www.nufit.id;
-    root /var/www/nufit-onlineshop/public;
+    server_name albaniah.id www.albaniah.id;
+    root /var/www/albaniah-onlineshop/public;
 
     index index.php;
     charset utf-8;

@@ -3,20 +3,21 @@
     <div class="grid min-h-screen lg:grid-cols-2">
         {{-- Panel brand --}}
         <div class="relative hidden overflow-hidden bg-ink lg:block">
-            <img src="{{ asset(\App\Support\Storefront::DEFAULT_IMAGE_MOBILE) }}" alt="" class="pointer-events-none absolute inset-0 size-full object-cover opacity-90" aria-hidden="true">
+            <img src="{{ asset(\App\Support\Storefront::DEFAULT_IMAGE_MOBILE) }}" alt="" class="pointer-events-none absolute inset-0 size-full object-cover object-top opacity-90" aria-hidden="true">
+            <div class="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-ink via-ink/90 to-transparent" aria-hidden="true"></div>
             <div class="relative flex h-full flex-col justify-between p-12 text-white">
                 <a href="{{ route('home') }}" class="self-start"><x-wordmark dark size="lg" /></a>
-                <div class="max-w-md">
-                    <p class="kicker text-white/60">{{ config('shop.hashtag', '#BEFITWITHNUFIT') }}</p>
-                    <h2 class="display mt-5 text-5xl leading-[1.02]">Healthy body, healthy mind, happy life.</h2>
-                    <p class="mt-5 text-base text-white/60">Perlengkapan lari, yoga, pilates, renang, padel, dan workout yang menemani setiap latihanmu.</p>
+                <div class="mt-auto max-w-md">
+                    <p class="kicker text-white/60">{{ config('shop.hashtag', '#TemaniIbadahmu') }}</p>
+                    <h2 class="display mt-5 text-5xl leading-[1.02]">Anggun dalam sujud, tenang dalam doa.</h2>
+                    <p class="mt-5 text-base text-white/60">Mukena renda, bordir, travel, dan tutup dagu yang adem dan anggun untuk menemani setiap ibadahmu.</p>
                     <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/75">
                         @foreach ([['shield', 'Produk resmi'], ['truck', 'Kirim se-Indonesia'], ['lock', 'Bayar aman']] as [$icon, $label])
                             <li class="flex items-center gap-2"><x-icon :name="$icon" class="size-4 text-brand-400" /> {{ $label }}</li>
                         @endforeach
                     </ul>
                 </div>
-                <p class="text-xs text-white/40">&copy; {{ date('Y') }} {{ config('shop.full_name') }}</p>
+                <p class="mt-12 text-xs text-white/40">&copy; {{ date('Y') }} {{ config('shop.full_name') }}</p>
             </div>
         </div>
 

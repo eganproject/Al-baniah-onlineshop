@@ -12,7 +12,7 @@
     $accountUrl = $user ? $user->homeRoute() : route('login');
     $instagram = config('shop.instagram') ? ltrim(config('shop.instagram'), '@') : null;
     $whatsapp = config('shop.whatsapp');
-    $hashtag = config('shop.hashtag', '#BEFITWITHNUFIT');
+    $hashtag = config('shop.hashtag', '#TemaniIbadahmu');
     $hasMega = $navCategories->isNotEmpty() || $navCollections->isNotEmpty();
 
     // Header transparan (menyatu dengan hero gelap) saat halaman di paling atas; jadi putih solid saat di-scroll.
@@ -100,14 +100,14 @@
             <div class="shop-container flex h-16 items-center gap-3 lg:h-[72px] lg:gap-10">
                 {{-- Logo --}}
                 <a href="{{ route('home') }}" class="shrink-0 py-1 lg:py-0" aria-label="{{ config('shop.full_name') }}">
-                    <x-logo class="h-7 lg:h-8" />
+                    <x-logo :tagline="false" adaptive class="h-8 lg:h-10" />
                 </a>
 
                 {{-- Mobile: kolom cari (menu utama ada di navigasi bawah) --}}
                 <button type="button" @click="search = true"
                         class="flex h-11 min-w-0 flex-1 items-center gap-2.5 rounded-full bg-sand-100 px-4 text-left text-sm text-stone-500 transition active:bg-sand-200 group-data-[clear]/header:bg-white/10 group-data-[clear]/header:text-white/70 group-data-[clear]/header:ring-1 group-data-[clear]/header:ring-white/15 lg:hidden">
                     <x-icon name="search" class="size-[18px] shrink-0" />
-                    <span class="truncate">{{ request('q') ?: 'Cari perlengkapan latihan...' }}</span>
+                    <span class="truncate">{{ request('q') ?: 'Cari mukena, sajadah...' }}</span>
                 </button>
 
                 {{-- Navigasi utama (desktop) --}}
@@ -197,22 +197,22 @@
                     <div class="shop-container grid grid-cols-[1fr_280px] gap-12 py-9">
                         <div>
                             @if ($navCollections->isNotEmpty())
-                                <p class="eyebrow text-stone-400">Belanja sesuai aktivitas</p>
+                                <p class="eyebrow text-stone-400">Koleksi pilihan</p>
                                 <div class="mt-3 mb-8 flex flex-wrap gap-2">
                                     @foreach ($navCollections as $collection)
-                                        <a href="{{ $collection->url() }}" class="chip py-1.5"><x-sport-icon :name="$collection->iconName()" :for="$collection->name.' '.$collection->slug" class="size-4 text-stone-500" /> {{ $collection->name }}</a>
+                                        <a href="{{ $collection->url() }}" class="chip py-1.5"><x-category-icon :name="$collection->iconName()" :for="$collection->name.' '.$collection->slug" class="size-4 text-stone-500" /> {{ $collection->name }}</a>
                                     @endforeach
                                 </div>
                             @endif
                             <div class="flex items-center justify-between border-b border-stone-100 pb-3">
-                                <p class="eyebrow text-stone-400">{{ $navCollections->isNotEmpty() ? 'Kategori' : 'Belanja sesuai aktivitas' }}</p>
+                                <p class="eyebrow text-stone-400">{{ $navCollections->isNotEmpty() ? 'Kategori' : 'Belanja per kategori' }}</p>
                                 <a href="{{ route('products.index') }}" class="link-arrow text-xs">Lihat semua produk <x-icon name="arrow-right" class="size-3.5" /></a>
                             </div>
                             <ul class="mt-6 grid grid-cols-3 gap-x-10 gap-y-7 xl:grid-cols-4">
                                 @foreach ($navCategories as $category)
                                     <li>
                                         <a href="{{ route('products.index', ['kategori' => $category->slug]) }}" class="group flex items-center gap-2.5">
-                                            <x-sport-icon :for="$category->name.' '.$category->slug" class="size-5 text-stone-400 transition group-hover:text-brand-600" />
+                                            <x-category-icon :for="$category->name.' '.$category->slug" class="size-5 text-stone-400 transition group-hover:text-brand-600" />
                                             <span class="text-sm font-semibold">{{ $category->name }}</span>
                                         </a>
                                         @if ($category->children->isNotEmpty())
@@ -226,10 +226,10 @@
                                 @endforeach
                             </ul>
                         </div>
-                        <a href="{{ $nav[3]['url'] }}" class="track-lines group relative flex min-h-60 flex-col justify-end overflow-hidden rounded-2xl bg-ink p-6 text-white">
+                        <a href="{{ $nav[3]['url'] }}" class="ornament-bg group relative flex min-h-60 flex-col justify-end overflow-hidden rounded-2xl bg-ink p-6 text-white">
                             <x-logo variant="mark" mono class="absolute -top-4 -right-6 h-32 text-white/[0.06]" aria-hidden="true" />
                             <span class="relative kicker text-white/60">Promo</span>
-                            <span class="relative display mt-3 text-2xl leading-tight">Harga spesial untuk perlengkapan favorit.</span>
+                            <span class="relative display mt-3 text-2xl leading-tight">Harga spesial untuk mukena favorit.</span>
                             <span class="relative mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-300">Belanja promo <x-icon name="arrow-right" class="size-4 transition group-hover:translate-x-1" /></span>
                         </a>
                     </div>
@@ -253,17 +253,17 @@
                     </div>
                     <form action="{{ route('products.index') }}" method="GET" class="mt-3 flex items-center gap-3 border-b border-ink pb-3">
                         <x-icon name="search" class="size-6 shrink-0 text-stone-400" />
-                        <input type="search" name="q" value="{{ request('q') }}" placeholder="Matras yoga, botol, running belt..."
+                        <input type="search" name="q" value="{{ request('q') }}" placeholder="Mukena renda, mukena travel, tutup dagu..."
                                x-effect="if (search) $nextTick(() => $el.focus())"
                                class="w-full border-0 bg-transparent p-0 text-xl font-semibold tracking-tight placeholder:font-normal placeholder:text-stone-300 focus:ring-0 sm:text-3xl">
                         <button class="btn btn-ink btn-pill hidden shrink-0 sm:inline-flex">Cari</button>
                     </form>
                     @php($popular = $navCollections->isNotEmpty() ? $navCollections->take(8)->map(fn ($c) => [$c->url(), $c->name, $c->iconName(), $c->name.' '.$c->slug]) : $navCategories->take(8)->map(fn ($c) => [route('products.index', ['kategori' => $c->slug]), $c->name, null, $c->name.' '.$c->slug]))
                     @if ($popular->isNotEmpty())
-                        <p class="eyebrow mt-7 text-stone-400">Aktivitas populer</p>
+                        <p class="eyebrow mt-7 text-stone-400">Koleksi populer</p>
                         <div class="no-scrollbar -mx-4 mt-3 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
                             @foreach ($popular as [$url, $label, $icon, $for])
-                                <a href="{{ $url }}" class="chip"><x-sport-icon :name="$icon" :for="$for" class="size-4 text-stone-500" /> {{ $label }}</a>
+                                <a href="{{ $url }}" class="chip"><x-category-icon :name="$icon" :for="$for" class="size-4 text-stone-500" /> {{ $label }}</a>
                             @endforeach
                         </div>
                     @endif
@@ -298,11 +298,11 @@
                     </ul>
 
                     @if ($navCollections->isNotEmpty())
-                        <p class="eyebrow mt-6 text-stone-400">Aktivitas</p>
+                        <p class="eyebrow mt-6 text-stone-400">Koleksi</p>
                         <div class="mt-3 flex flex-wrap gap-2">
                             @foreach ($navCollections as $collection)
                                 <a href="{{ $collection->url() }}" @class(['chip', 'chip-active' => request('koleksi') === $collection->slug])>
-                                    <x-sport-icon :name="$collection->iconName()" :for="$collection->name.' '.$collection->slug" class="size-4 opacity-70" /> {{ $collection->name }}
+                                    <x-category-icon :name="$collection->iconName()" :for="$collection->name.' '.$collection->slug" class="size-4 opacity-70" /> {{ $collection->name }}
                                 </a>
                             @endforeach
                         </div>
@@ -316,7 +316,7 @@
                                     <div class="flex items-center">
                                         <a href="{{ route('products.index', ['kategori' => $category->slug]) }}" @if ($current) aria-current="page" @endif
                                            @class(['flex min-h-14 flex-1 items-center gap-3 py-2 text-[15px] font-medium', 'text-brand-700' => $current])>
-                                            <x-sport-icon :for="$category->name.' '.$category->slug" class="size-5 shrink-0 text-stone-400" />
+                                            <x-category-icon :for="$category->name.' '.$category->slug" class="size-5 shrink-0 text-stone-400" />
                                             {{ $category->name }}
                                         </a>
                                         @if ($category->children->isNotEmpty())
@@ -375,12 +375,12 @@
         {{-- Footer --}}
         <footer class="bottom-nav-spacer mt-20 bg-ink text-white lg:mt-28">
             {{-- Ajakan komunitas (disembunyikan saat checkout supaya fokus membayar) --}}
-            <div @class(['track-lines border-b border-white/10', 'hidden' => request()->routeIs('checkout.*')])>
+            <div @class(['ornament-bg border-b border-white/10', 'hidden' => request()->routeIs('checkout.*')])>
                 <div class="shop-container flex flex-col gap-8 py-14 lg:flex-row lg:items-end lg:justify-between lg:py-20">
                     <div class="max-w-2xl">
                         <p class="kicker text-white/55">{{ $hashtag }}</p>
-                        <h2 class="display mt-4 text-3xl leading-[1.05] sm:text-5xl">Latihan lebih seru bareng komunitas.</h2>
-                        <p class="mt-4 max-w-lg text-sm leading-relaxed text-white/60 sm:text-base">Bagikan momen latihanmu dengan tagar {{ $hashtag }}. Tim kami siap membantu memilih perlengkapan yang pas, dari pemula sampai atlet.</p>
+                        <h2 class="display mt-4 text-3xl leading-[1.05] sm:text-5xl">Ibadah lebih khusyuk, tampil tetap anggun.</h2>
+                        <p class="mt-4 max-w-lg text-sm leading-relaxed text-white/60 sm:text-base">Bagikan momen ibadahmu bersama Albaniah dengan tagar {{ $hashtag }}. Tim kami siap membantu memilih ukuran, bahan, dan warna mukena yang pas.</p>
                     </div>
                     <div class="flex flex-wrap gap-3">
                         @if ($instagram)
@@ -399,7 +399,7 @@
             <div class="shop-container py-14 lg:py-16">
                 <div class="grid gap-12 lg:grid-cols-12">
                     <div class="lg:col-span-4">
-                        <a href="{{ route('home') }}" class="inline-block" aria-label="{{ config('shop.full_name') }}"><x-logo dark class="h-9" /></a>
+                        <a href="{{ route('home') }}" class="inline-block" aria-label="{{ config('shop.full_name') }}"><x-logo dark class="h-12" /></a>
                         <p class="mt-5 max-w-xs text-sm leading-relaxed text-white/55">{{ config('shop.tagline') }}.</p>
                         <p class="mt-4 text-[11px] font-semibold tracking-[0.18em] text-white/80 uppercase">{{ config('shop.motto') }}</p>
                         @if (config('shop.email') || $whatsapp)
@@ -431,7 +431,7 @@
                                 <li><a href="{{ $user?->isAdmin() ? $accountUrl : ($user ? route('account.orders.index') : route('login')) }}" class="{{ $footLink }}">Lacak pesanan</a></li>
                                 <li><a href="{{ $accountUrl }}" class="{{ $footLink }}">Akun saya</a></li>
                                 <li><a href="{{ route('cart.index') }}" class="{{ $footLink }}">Keranjang</a></li>
-                                <li><a href="{{ route('articles.index') }}" class="{{ $footLink }}">Artikel &amp; tips latihan</a></li>
+                                <li><a href="{{ route('articles.index') }}" class="{{ $footLink }}">Artikel &amp; inspirasi</a></li>
                                 @if ($whatsapp)
                                     <li><a href="https://wa.me/{{ $whatsapp }}" target="_blank" rel="noopener" class="{{ $footLink }}">WhatsApp</a></li>
                                 @endif
@@ -440,7 +440,7 @@
                         <div class="col-span-2 sm:col-span-1">
                             <h3 class="eyebrow text-white/35">Kenapa {{ config('shop.name') }}</h3>
                             <ul class="mt-3 text-sm text-white/70 lg:mt-5 lg:space-y-3">
-                                @foreach ([['shield', 'Produk resmi NuFit'], ['truck', 'Kirim se-Indonesia'], ['refresh', 'Garansi tukar 7 hari'], ['lock', 'Pembayaran aman']] as [$icon, $label])
+                                @foreach ([['shield', 'Produk resmi Albaniah'], ['truck', 'Kirim se-Indonesia'], ['refresh', 'Garansi tukar 7 hari'], ['lock', 'Pembayaran aman']] as [$icon, $label])
                                     <li class="flex min-h-9 items-center gap-2.5 lg:min-h-0"><x-icon :name="$icon" class="size-4 text-brand-400" /> {{ $label }}</li>
                                 @endforeach
                             </ul>

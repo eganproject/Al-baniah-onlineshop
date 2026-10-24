@@ -7,7 +7,7 @@
     <div class="flex min-h-screen flex-col">
         <header class="border-b border-stone-200/70">
             <div class="mx-auto flex h-16 w-full max-w-[1360px] items-center justify-between px-5 sm:px-10">
-                <a href="{{ url('/') }}" class="inline-block" aria-label="{{ config('shop.full_name') }}"><x-logo class="h-7" /></a>
+                <a href="{{ url('/') }}" class="inline-block" aria-label="{{ config('shop.full_name') }}"><x-logo :tagline="false" class="h-8" /></a>
                 <a href="{{ url('/produk') }}" class="text-sm font-medium text-stone-500 transition hover:text-ink">Belanja</a>
             </div>
         </header>
@@ -15,8 +15,9 @@
         <main class="flex flex-1 items-center px-5 py-16 sm:px-10">
             <div class="mx-auto grid w-full max-w-5xl grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
                 <div class="relative order-last lg:order-first" aria-hidden="true">
-                    <p class="font-display text-[8rem] leading-none font-bold tracking-[-0.06em] text-sand-200 sm:text-[12rem]">{{ $code }}</p>
-                    <span class="absolute bottom-4 left-1 h-1.5 w-24 -skew-x-[30deg] rounded-sm bg-brand-400 sm:bottom-7 sm:w-32"></span>
+                    <x-logo variant="mark" mono class="absolute -top-6 left-[38%] h-24 text-brand-200 sm:h-32" />
+                    <p class="relative font-display text-[8rem] leading-none font-semibold tracking-[-0.02em] text-sand-300 sm:text-[12rem]">{{ $code }}</p>
+                    <div class="ornament-divider mt-2 max-w-72"><span class="size-2 rotate-45 bg-brand-400"></span></div>
                 </div>
                 <div>
                     <p class="kicker">Error {{ $code }}</p>

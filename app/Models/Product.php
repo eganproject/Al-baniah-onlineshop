@@ -54,7 +54,7 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    /** Koleksi / aktivitas (bisa lebih dari satu), di luar kategori utama. */
+    /** Koleksi (bisa lebih dari satu), di luar kategori utama. */
     public function collections(): BelongsToMany
     {
         return $this->belongsToMany(ProductCollection::class, 'collection_product', 'product_id', 'collection_id');

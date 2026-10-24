@@ -1,22 +1,74 @@
 {{--
-    Logo resmi NuFit ("nü fit"), dijiplak ke SVG dari file logo brand.
-    Warna mengikuti token tema brand-400 (#3BCFEB, cyan logo).
+    Logo resmi Albaniah: bunga rose gold (5 kelopak lengkung + 5 daun + huruf "A")
+    dan tulisan "ALBANIAH" serif kapital, tagline "TEMANI IBADAHMU".
+    Digambar ulang ke SVG dari file logo brand (public/images/brand).
 
-    variant: full (tulisan "nü fit") | mark (hanya "nü", untuk ikon/ruang sempit)
-    dark:    untuk latar gelap; logo tetap cyan (kontras tinggi di navy/hitam).
+    variant: full    = bunga + tulisan berdampingan (header, footer)
+             stacked = bunga di atas tulisan, persis logo asli (halaman masuk, error)
+             mark    = hanya bunga (ikon, ruang sempit, watermark)
+             word    = hanya tulisan "ALBANIAH"
+    tagline: tampilkan "TEMANI IBADAHMU" (bawaan: ya untuk full & stacked).
+    dark:    untuk latar gelap (tulisan putih, bunga tetap rose gold).
     mono:    satu warna mengikuti `color` (currentColor), mis. untuk watermark.
-    Atur ukuran lewat class tinggi, mis. <x-logo class="h-8" />.
+    adaptive: tulisan ikut jadi putih saat header transparan (group/header data-clear).
+    Atur ukuran lewat class tinggi, mis. <x-logo class="h-10" />.
 --}}
-@props(['variant' => 'full', 'dark' => false, 'mono' => false])
+@props(['variant' => 'full', 'dark' => false, 'mono' => false, 'tagline' => null, 'adaptive' => false])
 @php
-    $full = $variant !== 'mark';
-    $nu = 'M12.4 124.1C14.7 123.5 15.5 123 17.2 121.4C18.4 120.2 18.7 119.8 19 118.4C19.7 115.6 19.7 116.6 19.8 95.9C19.8 74.9 19.8 76.1 20.6 72.3C21.8 67.3 22.6 65.2 25 62.1C26.3 60.3 27.4 59.2 28.5 58.5C31.3 56.7 31.7 56.5 33.7 55.8C37.2 54.7 39.2 54.4 43.9 54.6C47.8 54.7 47.9 54.7 50.4 55.5C54.2 56.7 56 57.7 57.5 59.4C58 59.9 58.9 60.8 59.4 61.5C62.2 64.5 63.8 68.6 64.8 74.6C65.2 76.7 65.2 76.7 65.3 96.3C65.3 117.7 65.3 116.3 66 118.4C67.2 121.5 70.8 124.2 74.2 124.5C76.3 124.6 79.1 123.9 80.5 123C82.4 121.5 83.9 119.5 84.5 117.4C84.9 116.1 85.1 74.7 84.7 73C84.6 72.5 84.4 71.6 84.4 71.1C83.8 66.8 83 63.9 81.8 61.1C81.3 60.1 80.7 58.8 80.4 58.1C79.3 55.5 78.3 53.8 76.6 51.7C76 51 75.1 49.9 74.6 49.2C73.5 47.7 72.6 46.8 71.2 45.7C70.6 45.2 69.6 44.4 69 43.9C67.7 42.7 66.8 42.2 64.2 40.7C60.9 38.8 59.7 38.3 57.9 37.7C56.9 37.5 55.7 37.1 55.2 36.9C52.2 36.1 46.7 35.4 42.3 35.4C35.3 35.4 30.7 36.3 25.1 38.7C21.2 40.4 20 41.1 18.2 42.5C17.7 43 16.6 43.8 15.8 44.3C13.7 45.6 10.3 49 8.3 52C7.8 52.8 7 54 6.5 54.6C5.5 56.1 5.1 56.8 4.3 58.8C3.9 59.8 3.4 60.9 3.2 61.4C2.1 63.6 0.8 69 0.4 73.2C0.2 74.9 0 100.1 0.1 108.8C0.2 116.2 0.2 116.2 0.7 117.8C1.3 119.7 1.6 120.3 2.6 121.3C5.8 124.2 8.9 125.1 12.4 124.1ZM147.6 127.1C153.8 126.7 157 125.7 163.4 122.6C166.9 120.8 167.4 120.5 168.9 119.2C169.5 118.7 170.3 118 170.8 117.7C172.1 116.7 174.2 114.7 174.9 113.7C175.3 113.2 175.9 112.5 176.3 112.1C177.1 111.3 177.4 110.9 178.5 109.1C179 108.3 179.6 107.3 179.9 106.8C182.6 102.5 184.7 95.7 185.1 90.5C185.2 89.6 185.3 88.2 185.4 87.4C185.5 86.6 185.5 80.7 185.5 73.1C185.5 58.9 185.5 59.3 186.2 58.4C186.8 57.7 187.3 57.6 189.9 57.6C194 57.5 196.3 56.7 198.5 54.4C202.3 50.4 202.2 45.4 198.2 40.9C197.3 39.8 196.1 39.1 194.4 38.5C192.6 38 190.4 37.9 172.9 37.9C156.3 38 157.1 37.9 154.4 39.8C152.9 40.9 152.6 41.1 151.7 42.8C150.2 45.1 149.8 48.3 150.5 50.6C151.6 53.7 152.6 54.8 155.3 56.3C157.4 57.4 157.9 57.5 161.3 57.6C164.6 57.6 165 57.7 165.6 59.1C165.9 59.7 166 80.8 165.8 85.3C165.5 90.5 164.2 95 162.2 98.3C161.7 99 161.1 99.9 160.9 100.3C159.3 102.9 154.2 106.4 151.1 107.2C145 108.6 139.4 108.5 134.8 106.9C132.2 106 132 105.9 129.8 104.4C127.5 102.9 127 102.4 125.4 100.2C123.7 98 123.3 97.1 122.4 94.2C120.3 87.9 120.4 88.6 120.4 66.1C120.4 47.2 120.3 46.5 119.8 44.7C118.9 42.2 118.2 41.2 116.2 39.9C110.6 36.1 103 38.8 101.2 45.2C101 46.2 101 46.2 100.9 66.4C100.9 87.6 100.9 88.8 101.4 92.5C101.5 93.2 101.7 94.2 101.7 94.8C101.9 96.3 102.8 99 103.5 100.7C103.9 101.4 104.3 102.5 104.6 103.1C105.3 105 106.6 107.4 107.6 108.8C108.2 109.6 109 110.8 109.5 111.4C111.6 114.4 116.7 119.1 119.6 120.7C120.1 121 120.7 121.4 121.1 121.6C123.7 123.2 129 125.4 132.1 126.1C136 127 142.8 127.5 147.6 127.1ZM114.1 27.1C116.2 26.5 118.2 25.1 120 23.1C121.1 21.8 121.2 21.7 121.9 19.3C123.3 15 122.6 10.9 120 7.9C118.1 5.6 116.6 4.6 113.8 3.9C109.2 2.7 105.3 3.6 102.1 6.8C100.4 8.4 100 9 99.4 11.2C98.2 15.3 98.4 17.6 100 21.2C101.2 23.9 104.3 26.3 107.3 26.9C110.2 27.6 112.1 27.6 114.1 27.1ZM178.6 27.2C181.2 26.7 185 23.9 186.2 21.5C186.7 20.7 187.4 18 187.5 16.7C187.9 13.5 186.8 9.6 185.1 7.7C182.3 4.7 179.4 3.5 174.8 3.5C171.5 3.5 170.3 4 167.5 6.5C164.3 9.4 163.1 14.1 164.3 19.1C165 22.2 168.5 26 171.2 26.9C172.9 27.4 176.6 27.5 178.6 27.2Z';
-    $fit = 'M251.7 124.3C252.3 124 252.7 123.5 252.9 122.6C253 122.1 253.1 115.6 253.1 90.6C253.1 56.2 253 58.4 253.9 57.6C254.6 56.9 254.5 56.9 265.9 56.9C276.3 56.9 277.7 56.8 278.4 56.4C279.4 55.8 279.5 54.9 279.5 46.2C279.4 38.5 279.5 38.8 278.3 38.2C277.5 37.9 277.8 37.9 265.8 37.8C255.2 37.8 255.2 37.8 254.4 37.1C253.4 36 255.5 30.6 258 27.9C260.3 25.5 260.7 25.1 261.4 24.7C261.9 24.5 263.1 23.8 264.1 23.1C266.9 21.2 270.5 20 275.4 19.4C278.4 19 279.1 18.7 279.4 17.5C279.5 16.9 279.5 4.1 279.4 2.4C279.1 0 278.5 -0.2 273 0.4C268.3 0.9 266.2 1.3 263.9 2C262.7 2.3 261.1 2.8 260.2 3.1C257.1 4 251.4 6.9 249.1 8.7C245.1 11.9 243.1 13.9 241 17C239.9 18.6 239.3 19.5 238.9 20.5C238.6 21.2 238 22.5 237.5 23.3C236.8 24.5 236.2 26.2 235.3 29C234.8 30.6 234.4 32.7 234 35.9L233.6 39.1L233.5 80.3C233.5 122.7 233.5 123 234 123.6C234.7 124.6 234.6 124.6 243.5 124.6C250.9 124.6 251.2 124.6 251.7 124.3ZM304.5 27.3C306 27 308.5 25.8 310 24.6C311 23.8 313 20.5 313.4 18.9C314.1 16.2 313.6 11.9 312.3 9.4C311.2 7.2 308.6 5 306.3 4.3C302 2.9 298.1 3.2 295.4 5C292.4 7.1 291.1 9.1 290.1 12.9C289.2 16.5 290.6 21.6 293.2 24C294.6 25.3 296.4 26.5 297.5 26.9C298.8 27.3 303.1 27.5 304.5 27.3ZM309.8 124.5C310.4 124.3 311 123.8 311.2 123.3C311.5 122.7 311.6 40.9 311.4 39.6C311.2 38.7 310.6 38.2 309.7 38C308.6 37.8 294.4 37.9 293.5 38.1C292.7 38.4 292.3 38.7 292.1 39.4C291.9 40 291.9 119.5 292.1 121.7C292.3 123.9 292.7 124.3 294.6 124.5C296.5 124.6 309.2 124.6 309.8 124.5ZM373.4 124.5C374.4 124 374.4 124 374.5 116.3C374.5 105.9 374.6 106 371.1 105.6C367.7 105.3 362.4 104.1 360.6 103.2C359.4 102.6 357.2 101.2 356.4 100.5C356 100.2 355.3 99.6 354.7 99.3C352.7 97.9 350.3 94.6 349.3 91.9C348.3 89 348.3 89.5 348.3 74.2C348.2 57.2 348.1 58.2 349.6 57.4C350.3 57.1 350.3 57.1 361.5 57C373.8 56.9 373.4 56.9 374 56.1C374.4 55.5 374.5 54.2 374.5 46.5C374.4 38.5 374.5 39 373.6 38.3C373 37.9 372 37.9 361.1 37.9C349.5 37.9 349.5 37.9 348.9 37.3C348.3 36.7 348.3 36.9 348.2 19.2C348.1 1.3 348.1 1.6 347.5 0.9C346.9 0.3 346.7 0.2 338.2 0.3C329.5 0.3 329.7 0.3 329.1 1.1C328.6 1.8 328.6 1.6 328.6 42.7C328.6 82.2 328.7 86.9 329.1 88.6C329.2 89 329.4 90.2 329.6 91.2C330.4 95.5 331.8 100.1 333.1 102.1C333.3 102.6 334 103.9 334.6 105C335.3 106.3 336 107.6 336.6 108.3C338.5 110.9 343.4 116 345 117C349.6 120.1 352 121.3 355.6 122.3C356.8 122.6 357.8 122.9 357.9 122.9C358 122.9 358.9 123.1 359.9 123.3C364.3 124.3 372.3 125.1 373.4 124.5Z';
+    $id = 'alb'.\Illuminate\Support\Str::random(6);
+    $tagline ??= in_array($variant, ['full', 'stacked'], true);
     $hasHeight = preg_match('/(^|\s|:)h-/', (string) $attributes->get('class'));
     $hasWidth = preg_match('/(^|\s|:)w-/', (string) $attributes->get('class'));
+    $markFill = $mono ? 'currentColor' : "url(#{$id})";
+    $wordClass = $mono ? 'fill-current' : ($dark ? 'fill-white' : 'fill-ink'.($adaptive ? ' transition-[fill] group-data-[clear]/header:fill-white' : ''));
+    $tagClass = $mono ? 'fill-current' : ($dark ? 'fill-brand-200' : 'fill-brand-600');
+
+    // Kelopak lengkung (mengarah ke bawah, ujung bulat ke tengah) & daun, diputar 5x72°.
+    $petal = 'M-27 118V67a27 27 0 0 1 54 0v51H10V93L0 79l-10 14v25Z';
+    $leaf = 'M0 64Q14 95 0 126Q-14 95 0 64Z';
+    $letter = 'M-14 20h7l3.2-9.5h7.6L7 20h7L2.4-20h-4.8ZM-4 4 0-8l4 12Z';
+
+    [$viewBox, $markTransform] = match ($variant) {
+        'mark' => ['-132 -132 264 264', null],
+        'word' => ['0 0 440 64', null],
+        'stacked' => [$tagline ? '0 0 440 330' : '0 0 440 296', 'translate(220 110) scale(.8)'],
+        default => ['0 0 470 112', 'translate(56 56) scale(.4)'],
+    };
 @endphp
-<svg {{ $attributes->class(['block shrink-0', 'w-auto' => ! $hasWidth, 'h-8' => ! $hasHeight]) }} xmlns="http://www.w3.org/2000/svg"
-     viewBox="{{ $full ? '0 0 375 128' : '0 0 203 128' }}" role="img" aria-label="{{ config('shop.full_name') }}">
+<svg {{ $attributes->class(['block shrink-0', 'w-auto' => ! $hasWidth, 'h-9' => ! $hasHeight]) }} xmlns="http://www.w3.org/2000/svg"
+     viewBox="{{ $viewBox }}" role="img" aria-label="{{ config('shop.full_name') }}">
     <title>{{ config('shop.full_name') }}</title>
-    <path @class(['fill-current' => $mono, 'fill-brand-400' => ! $mono]) d="{{ $full ? $nu.$fit : $nu }}"/>
+    @unless ($mono)
+        <defs>
+            <linearGradient id="{{ $id }}" x1="-120" y1="-120" x2="120" y2="125" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#ecd7c2" />
+                <stop offset=".55" stop-color="#cda083" />
+                <stop offset="1" stop-color="#ad7c5f" />
+            </linearGradient>
+        </defs>
+    @endunless
+
+    @if ($variant !== 'word')
+        <g @if ($markTransform) transform="{{ $markTransform }}" @endif fill="{{ $markFill }}">
+            @foreach ([0, 72, 144, 216, 288] as $deg)
+                <path d="{{ $petal }}" transform="rotate({{ $deg }})" />
+                <path d="{{ $leaf }}" transform="rotate({{ $deg + 180 }})" />
+            @endforeach
+            <path d="{{ $letter }}" fill-rule="evenodd" />
+        </g>
+    @endif
+
+    @if ($variant === 'word')
+        <text x="220" y="50" text-anchor="middle" textLength="436" lengthAdjust="spacingAndGlyphs" class="{{ $wordClass }} font-logo" font-size="58" font-weight="500">ALBANIAH</text>
+    @elseif ($variant === 'stacked')
+        <text x="220" y="272" text-anchor="middle" textLength="420" lengthAdjust="spacingAndGlyphs" class="{{ $wordClass }} font-logo" font-size="56" font-weight="500">ALBANIAH</text>
+        @if ($tagline)
+            <text x="220" y="314" text-anchor="middle" textLength="236" lengthAdjust="spacing" class="{{ $tagClass }} font-sans" font-size="17" font-weight="400" letter-spacing="5">TEMANI IBADAHMU</text>
+        @endif
+    @else
+        <text x="128" y="{{ $tagline ? 66 : 76 }}" textLength="338" lengthAdjust="spacingAndGlyphs" class="{{ $wordClass }} font-logo" font-size="56" font-weight="500">ALBANIAH</text>
+        @if ($tagline)
+            <text x="131" y="102" textLength="332" lengthAdjust="spacing" class="{{ $tagClass }} font-sans" font-size="17" font-weight="500" letter-spacing="7">TEMANI IBADAHMU</text>
+        @endif
+    @endif
 </svg>

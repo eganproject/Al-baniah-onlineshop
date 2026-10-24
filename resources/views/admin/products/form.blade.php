@@ -52,9 +52,9 @@
                 </div>
                 <div>
                     <input type="hidden" name="collection_ids" value="">
-                    <x-form.select name="collection_ids[]" multiple label="Koleksi / aktivitas" optional :options="$collections"
+                    <x-form.select name="collection_ids[]" multiple label="Koleksi" optional :options="$collections"
                         :selected="$product->exists ? $product->collections->modelKeys() : []" placeholder="Pilih satu atau lebih koleksi"
-                        hint="Satu produk bisa masuk beberapa koleksi, mis. kaos kaki di Running dan Workout. Kelola koleksi di menu Katalog › Koleksi." />
+                        hint="Satu produk bisa masuk beberapa koleksi, mis. mukena travel di Travel & Umrah dan Hadiah Spesial. Kelola koleksi di menu Katalog › Koleksi." />
                 </div>
                 <x-form.textarea name="description" label="Deskripsi" :value="$product->description" rows="7" maxlength="10000"
                                  placeholder="Jelaskan spesifikasi, kompatibilitas, dan isi paket..." />
@@ -72,7 +72,7 @@
                     <template x-for="(image, index) in images" :key="image.id">
                         <div class="group relative aspect-square overflow-hidden rounded-2xl border border-stone-200 bg-stone-50"
                              :class="image.removed && 'opacity-40'">
-                            <img :src="image.url" alt="" class="size-full object-cover">
+                            <img :src="image.url" referrerpolicy="no-referrer" alt="" class="size-full object-cover">
                             <input type="hidden" name="image_order[]" :value="image.id">
                             <template x-if="image.removed"><input type="hidden" name="remove_images[]" :value="image.id"></template>
                             <span x-show="index === images.findIndex(i => !i.removed) && !image.removed" class="absolute left-2 top-2 rounded-lg bg-brand-600 px-2 py-0.5 text-[10px] font-bold text-white">Sampul</span>

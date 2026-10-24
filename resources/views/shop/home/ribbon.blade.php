@@ -7,8 +7,8 @@
                 <div class="flex shrink-0 items-center">
                     @foreach (range(1, max(1, (int) ceil(6 / count($words)))) as $i)
                         @foreach ($words as $word)
-                            <span class="px-6 text-sm font-semibold tracking-[0.2em] whitespace-nowrap uppercase sm:px-8 sm:text-base">{{ $word }}</span>
-                            <span class="h-[3px] w-5 shrink-0 -skew-x-[30deg] bg-brand-400"></span>
+                            <span class="px-6 font-logo text-sm font-medium tracking-[0.22em] whitespace-nowrap uppercase sm:px-8 sm:text-base">{{ $word }}</span>
+                            <span class="size-1.5 shrink-0 rotate-45 bg-brand-400"></span>
                         @endforeach
                     @endforeach
                 </div>

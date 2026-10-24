@@ -1,4 +1,4 @@
-{{-- Kenapa NuFit (teks & poin diatur di Admin › Tampilan Beranda) --}}
+{{-- Kenapa Albaniah (teks & poin diatur di Admin › Tampilan Beranda) --}}
 @php
     use App\Support\Storefront;
     $whyTitle = Storefront::text('why_title') ?? (string) config('shop.motto');
@@ -13,7 +13,7 @@
                     <span @class(['block', 'text-brand-600' => $loop->iteration === 2])>{{ $line }}</span>
                 @endforeach
             </h2>
-            <p class="mt-5 max-w-md leading-relaxed text-stone-600">{{ Storefront::text('why_text', config('shop.tagline').'. Kami memilih bahan yang nyaman dan awet supaya kamu fokus ke latihan, bukan ke perlengkapan.') }}</p>
+            <p class="mt-5 max-w-md leading-relaxed text-stone-600">{{ Storefront::text('why_text', config('shop.tagline').'. Kami memilih bahan yang adem, jatuh, dan tidak menerawang supaya kamu bisa fokus beribadah dengan tenang.') }}</p>
         </div>
         @if ($points)
             <ul class="grid gap-px overflow-hidden rounded-2xl border border-stone-200 bg-stone-200 sm:grid-cols-2 lg:col-span-7">

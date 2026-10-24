@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Koleksi / aktivitas (Running, Yoga, Workout, ...). Berbeda dari kategori (satu per produk),
- * satu produk bisa masuk banyak koleksi. Tampil sebagai ubin "Belanja per aktivitas" di beranda
+ * Koleksi (Travel & Umrah, Premium Velvet, Hadiah Spesial, ...). Berbeda dari kategori (satu per produk),
+ * satu produk bisa masuk banyak koleksi. Tampil sebagai ubin "Belanja per koleksi" di beranda
  * dan filter `?koleksi=slug` di katalog.
  */
 #[Fillable(['name', 'slug', 'tagline', 'description', 'image_path', 'icon', 'tone', 'is_active', 'show_on_home', 'sort_order'])]
@@ -24,31 +24,32 @@ class ProductCollection extends Model
 
     /**
      * Warna ubin di beranda => [kelas ubin, kelas ikon, label admin].
-     * Palet sengaja kalem (netral + cyan NuFit); kunci lama tetap dipakai
+     * Palet kalem Albaniah (krem, navy, rose gold); kunci lama tetap dipakai
      * supaya pilihan yang sudah tersimpan tidak hilang.
      */
     public const TONES = [
-        'sand' => ['bg-sand-100 text-ink', 'text-ink/10', 'Abu muda'],
-        'ink' => ['bg-ink text-white', 'text-brand-400/50', 'Gelap'],
-        'cyan' => ['bg-brand-400 text-ink', 'text-ink/20', 'Cyan NuFit'],
-        'sky' => ['bg-brand-50 text-ink', 'text-brand-600/30', 'Cyan lembut'],
-        'volt' => ['bg-sand-200 text-ink', 'text-ink/15', 'Abu'],
-        'orange' => ['bg-stone-700 text-white', 'text-white/20', 'Abu gelap'],
+        'sand' => ['bg-sand-100 text-ink', 'text-brand-500/25', 'Krem'],
+        'ink' => ['bg-ink text-white', 'text-brand-300/40', 'Navy'],
+        'cyan' => ['bg-brand-300 text-ink', 'text-white/40', 'Rose gold'],
+        'sky' => ['bg-brand-50 text-ink', 'text-brand-500/30', 'Rose gold lembut'],
+        'volt' => ['bg-sand-200 text-ink', 'text-ink/10', 'Gading'],
+        'orange' => ['bg-navy-700 text-white', 'text-white/20', 'Navy lembut'],
     ];
 
-    /** Ikon garis yang tersedia di <x-sport-icon> => label admin. */
+    /** Ikon garis yang tersedia di <x-category-icon> => label admin. */
     public const ICONS = [
-        'running' => 'Lari / sepatu',
-        'yoga' => 'Yoga & pilates',
-        'workout' => 'Workout / dumbbell',
-        'padel' => 'Padel / raket',
-        'swimming' => 'Renang',
-        'support' => 'Support & recovery',
-        'essentials' => 'Botol / essentials',
-        'apparel' => 'Pakaian',
-        'hiking' => 'Hiking / outdoor',
-        'earphones' => 'Earphone',
-        'sparkles' => 'Kilau (umum)',
+        'mukena' => 'Mukena',
+        'veil' => 'Tutup dagu / hijab',
+        'travel' => 'Travel / umrah',
+        'lace' => 'Renda / bordir',
+        'premium' => 'Premium / velvet',
+        'sajadah' => 'Sajadah',
+        'kids' => 'Anak',
+        'gift' => 'Hampers / hadiah',
+        'moon' => 'Ramadan / lebaran',
+        'accessories' => 'Aksesoris',
+        'flower' => 'Bunga Albaniah (umum)',
+        'sparkles' => 'Kilau',
     ];
 
     protected function casts(): array
@@ -87,7 +88,7 @@ class ProductCollection extends Model
         return $this->image_path ? Storage::disk('public')->url($this->image_path) : null;
     }
 
-    /** Kunci ikon untuk <x-sport-icon name>; null = ditebak dari nama. */
+    /** Kunci ikon untuk <x-category-icon name>; null = ditebak dari nama. */
     public function iconName(): ?string
     {
         return array_key_exists((string) $this->icon, self::ICONS) ? $this->icon : null;

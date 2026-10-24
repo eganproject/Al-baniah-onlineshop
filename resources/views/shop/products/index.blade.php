@@ -13,7 +13,7 @@
     // Filter aktif yang bisa dihapus satu per satu.
     $activeFilters = array_filter([
         'q' => request('q') ? 'Kata kunci: '.request('q') : null,
-        'koleksi' => $activeCollection && ($activeCategory || request('q')) ? 'Aktivitas: '.$activeCollection->name : null,
+        'koleksi' => $activeCollection && ($activeCategory || request('q')) ? 'Koleksi: '.$activeCollection->name : null,
         'tersedia' => request()->boolean('tersedia') ? 'Tersedia' : null,
         'promo' => request()->boolean('promo') ? 'Sedang diskon' : null,
         'harga' => ($minPrice || $maxPrice)
@@ -35,7 +35,7 @@
         : null;
     $intro = $activeCategory?->description
         ?: ($activeCollection && ! $activeCategory ? ($activeCollection->tagline ?: $activeCollection->description) : null)
-        ?: (request('q') ? 'Produk yang cocok dengan pencarianmu.' : (request()->boolean('promo') ? 'Harga spesial untuk perlengkapan favorit, selama stok masih ada.' : 'Perlengkapan lari, yoga, workout, padel, renang, dan lainnya untuk menemani latihanmu.'));
+        ?: (request('q') ? 'Produk yang cocok dengan pencarianmu.' : (request()->boolean('promo') ? 'Harga spesial untuk mukena favorit, selama stok masih ada.' : 'Mukena renda, bordir, travel, tutup dagu, dan perlengkapan ibadah untuk menemani setiap sujudmu.'));
 @endphp
 <x-layouts.shop :title="$context?->name ?? 'Semua Produk'" :description="$metaDescription">
     <div x-data="{ filters: false }" x-effect="document.body.classList.toggle('overflow-hidden', filters)" @keydown.escape.window="filters = false">
@@ -88,15 +88,15 @@
                     <p class="max-w-md text-sm leading-relaxed text-stone-500 sm:text-[15px] lg:pb-1 lg:text-right">{{ $intro }}</p>
                 </div>
 
-                {{-- Pilihan aktivitas (koleksi) --}}
+                {{-- Pilihan koleksi --}}
                 @if ($collections->isNotEmpty())
-                    <div class="no-scrollbar -mx-4 mt-7 flex items-center gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0 lg:mt-9" aria-label="Aktivitas">
-                        <span class="eyebrow mr-1 shrink-0 text-stone-400">Aktivitas</span>
+                    <div class="no-scrollbar -mx-4 mt-7 flex items-center gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0 lg:mt-9" aria-label="Koleksi">
+                        <span class="eyebrow mr-1 shrink-0 text-stone-400">Koleksi</span>
                         @foreach ($collections as $item)
                             <a href="{{ $activeCollection?->is($item) ? $collectionUrl(null) : $collectionUrl($item->slug) }}"
                                @class(['chip shrink-0 px-3.5 py-1.5 text-[13px] max-lg:min-h-9', 'chip-active' => $activeCollection?->is($item)])
                                @if ($activeCollection?->is($item)) aria-current="page" @endif>
-                                <x-sport-icon :name="$item->iconName()" :for="$item->name.' '.$item->slug" class="size-4 opacity-70" /> {{ $item->name }}
+                                <x-category-icon :name="$item->iconName()" :for="$item->name.' '.$item->slug" class="size-4 opacity-70" /> {{ $item->name }}
                                 @if ($activeCollection?->is($item))<x-icon name="x" class="size-3.5 opacity-70" />@endif
                             </a>
                         @endforeach
