@@ -50,17 +50,17 @@
                 @endif
             </div>
 
-            {{-- Rel aktivitas: pintasan koleksi/kategori di dasar hero --}}
+            {{-- Rel koleksi: pintasan koleksi/kategori di dasar hero --}}
             @if ($activities->isNotEmpty() && config('shop.storefront.hero_rail', true))
                 <div @class(['mt-12 border-t pt-5 sm:mt-16', 'border-white/15' => $light, 'border-ink/10' => ! $light])>
-                    <p @class(['eyebrow', 'text-white/50' => $light, 'text-stone-500' => ! $light])>Pilih aktivitasmu</p>
+                    <p @class(['eyebrow', 'text-white/50' => $light, 'text-stone-500' => ! $light])>Pilih koleksimu</p>
                     <ul class="no-scrollbar -mx-4 mt-3 flex snap-x scroll-px-4 gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0">
                         @foreach ($activities as $tile)
                             <li class="shrink-0 snap-start">
                                 <a href="{{ $tile['url'] }}"
                                    @class(['group flex items-center gap-2.5 rounded-full py-2 pr-4 pl-2 text-sm font-medium ring-1 transition', 'bg-white/[0.06] ring-white/15 backdrop-blur-md hover:bg-white hover:text-ink' => $light, 'bg-white/70 ring-ink/10 hover:bg-ink hover:text-white' => ! $light])>
                                     <span @class(['grid size-8 place-items-center rounded-full transition', 'bg-white/10 group-hover:bg-sand-100' => $light, 'bg-sand-100 group-hover:bg-white/15' => ! $light])>
-                                        <x-sport-icon :name="$tile['icon']" :for="$tile['for']" class="size-[18px]" />
+                                        <x-category-icon :name="$tile['icon']" :for="$tile['for']" class="size-[18px]" />
                                     </span>
                                     {{ $tile['name'] }}
                                     <span class="text-xs opacity-50">{{ $tile['count'] }}</span>

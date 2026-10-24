@@ -1,12 +1,12 @@
 <x-layouts.admin title="Koleksi">
-    <x-admin.page-header title="Koleksi / aktivitas" description="Kelompok seperti Running, Yoga, atau Workout. Satu produk boleh masuk beberapa koleksi, terlepas dari kategorinya.">
+    <x-admin.page-header title="Koleksi" description="Kelompok seperti Travel & Umrah, Premium Velvet, atau Hadiah Spesial. Satu produk boleh masuk beberapa koleksi, terlepas dari kategorinya.">
         <a href="{{ route('admin.collections.create') }}" class="btn btn-primary"><x-icon name="plus" class="size-4" /> Tambah koleksi</a>
     </x-admin.page-header>
 
     <div class="mb-6 flex gap-3 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-800">
         <x-icon name="info" class="size-5 shrink-0" />
-        <p><b>Kategori</b> = jenis barang (Kaos Kaki, Botol, Topi), satu per produk. <b>Koleksi</b> = untuk aktivitas apa (Running, Workout), boleh lebih dari satu.
-            Koleksi yang aktif & "tampil di beranda" mengisi ubin <i>Belanja per aktivitas</i>; bila belum ada, beranda memakai kategori.</p>
+        <p><b>Kategori</b> = jenis barang (Mukena Dewasa, Mukena Travel, Sajadah), satu per produk. <b>Koleksi</b> = tema atau kebutuhan (Travel & Umrah, Hadiah Spesial), boleh lebih dari satu.
+            Koleksi yang aktif & "tampil di beranda" mengisi ubin <i>Belanja per koleksi</i>; bila belum ada, beranda memakai kategori.</p>
     </div>
 
     <div class="card overflow-hidden">
@@ -18,7 +18,7 @@
         </form>
 
         @if ($collections->isEmpty())
-            <x-empty-state icon="swatch" :title="$search ? 'Koleksi tidak ditemukan' : 'Belum ada koleksi'" description="Buat koleksi pertama, misalnya Running, lalu pilih produk yang cocok untuk lari.">
+            <x-empty-state icon="swatch" :title="$search ? 'Koleksi tidak ditemukan' : 'Belum ada koleksi'" description="Buat koleksi pertama, misalnya Travel & Umrah, lalu pilih mukena yang ringkas dibawa bepergian.">
                 <a href="{{ route('admin.collections.create') }}" class="btn btn-primary">Tambah koleksi</a>
             </x-empty-state>
         @else
@@ -35,7 +35,7 @@
                                             @if ($collection->imageUrl())
                                                 <img src="{{ $collection->imageUrl() }}" alt="" class="size-full object-cover">
                                             @else
-                                                <x-sport-icon :name="$collection->iconName()" :for="$collection->name.' '.$collection->slug" class="size-5" />
+                                                <x-category-icon :name="$collection->iconName()" :for="$collection->name.' '.$collection->slug" class="size-5" />
                                             @endif
                                         </div>
                                         <div>

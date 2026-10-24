@@ -69,8 +69,8 @@
                aria-label="Menu admin">
             <div :class="{ 'lg:justify-center lg:px-0': collapsed, 'px-6': true }" @class(['flex h-16 shrink-0 items-center justify-between px-6', 'lg:justify-center lg:px-0' => $collapsed])>
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3" aria-label="Dashboard admin">
-                    <x-logo x-bind:class="{ 'lg:hidden': collapsed }" @class(['h-7', 'lg:hidden' => $collapsed]) />
-                    <x-logo variant="mark" x-bind:class="{ 'lg:block': collapsed }" @class(['hidden h-auto w-12', 'lg:block' => $collapsed]) />
+                    <x-logo :tagline="false" x-bind:class="{ 'lg:hidden': collapsed }" @class(['h-8', 'lg:hidden' => $collapsed]) />
+                    <x-logo variant="mark" x-bind:class="{ 'lg:block': collapsed }" @class(['hidden h-auto w-10', 'lg:block' => $collapsed]) />
                     <span :class="{ 'lg:hidden': collapsed }" @class(['rounded-md bg-brand-50 px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-brand-700 uppercase', 'lg:hidden' => $collapsed])>Admin</span>
                 </a>
                 <button @click="sidebar = false" class="btn btn-ghost p-2 lg:hidden" aria-label="Tutup menu"><x-icon name="x" /></button>

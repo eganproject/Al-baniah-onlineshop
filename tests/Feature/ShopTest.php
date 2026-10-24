@@ -47,7 +47,7 @@ class ShopTest extends TestCase
             ->assertOk()->assertSee($pricey->name)->assertDontSee($sale->name);
 
         // Beranda menampilkan bagian promo bila ada produk diskon.
-        $this->get(route('home'))->assertOk()->assertSee('Lagi diskon');
+        $this->get(route('home'))->assertOk()->assertSee('Promo berkah');
     }
 
     public function test_inactive_product_page_returns_404(): void

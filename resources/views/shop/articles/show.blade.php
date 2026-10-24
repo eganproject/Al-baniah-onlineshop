@@ -50,7 +50,7 @@
                 @if ($article->category)
                     <a href="{{ route('articles.index', ['kategori' => $article->category->slug]) }}" class="eyebrow text-brand-600 hover:text-brand-800">{{ $article->category->name }}</a>
                 @endif
-                <h1 class="mt-3 text-3xl leading-[1.1] font-bold tracking-tight text-ink text-balance sm:text-5xl">{{ $article->title }}</h1>
+                <h1 class="display mt-3 text-[2.1rem] leading-[1.1] text-ink sm:text-[3.4rem]">{{ $article->title }}</h1>
                 @if ($article->excerpt)
                     <p class="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-stone-600 sm:text-lg">{{ $article->excerpt }}</p>
                 @endif
@@ -96,7 +96,7 @@
             <div class="flex items-end justify-between gap-4">
                 <div>
                     <p class="eyebrow text-brand-600">Dibahas di artikel ini</p>
-                    <h2 id="produk-terkait" class="mt-2 text-2xl font-bold tracking-tight text-ink sm:text-3xl">Produk terkait</h2>
+                    <h2 id="produk-terkait" class="display mt-2 text-3xl text-ink sm:text-4xl">Produk terkait</h2>
                 </div>
                 <a href="{{ route('products.index') }}" class="link-underline shrink-0 text-sm font-semibold">Semua produk</a>
             </div>
@@ -111,7 +111,7 @@
     @if ($related->isNotEmpty())
         <section class="shop-container mt-16 border-t border-stone-200 pt-12 lg:mt-20" aria-labelledby="artikel-lain">
             <div class="flex items-end justify-between gap-4">
-                <h2 id="artikel-lain" class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Baca juga</h2>
+                <h2 id="artikel-lain" class="display text-3xl text-ink sm:text-4xl">Baca juga</h2>
                 <a href="{{ route('articles.index') }}" class="link-underline shrink-0 text-sm font-semibold">Semua artikel</a>
             </div>
             <div class="mt-8 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">

@@ -1,6 +1,6 @@
-# NuFit Online Shop
+# Albaniah Online Shop
 
-Toko online resmi **NuFit Indonesia**, brand aksesoris olahraga (lari, yoga, pilates, renang, padel, workout), berbasis Laravel 13, MySQL, Tailwind CSS v4, dan Alpine.js.
+Toko online resmi **Albaniah Mukena**, brand mukena dari Tasikmalaya (mukena dewasa renda & bordir, travel, tutup dagu, dan perlengkapan ibadah), berbasis Laravel 13, MySQL, Tailwind CSS v4, dan Alpine.js.
 
 ## Fitur saat ini
 
@@ -31,10 +31,10 @@ Akun contoh dari seeder (password: `password`):
 
 | Peran | Email |
 |---|---|
-| Owner (akses penuh) | `admin@nufit.test` |
-| Staf Gudang | `gudang@nufit.test` |
-| Customer Service | `cs@nufit.test` |
-| Pelanggan | `pelanggan@nufit.test` |
+| Owner (akses penuh) | `admin@albaniah.test` |
+| Staf Gudang | `gudang@albaniah.test` |
+| Customer Service | `cs@albaniah.test` |
+| Pelanggan | `pelanggan@albaniah.test` |
 
 Panel admin punya jabatan staf (Owner, Admin, Staf Gudang, Customer Service).
 Hak akses tiap jabatan ada di `App\Enums\StaffRole::permissions()`; route admin

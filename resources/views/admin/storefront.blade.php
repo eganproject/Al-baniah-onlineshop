@@ -12,7 +12,7 @@
             <a href="{{ $href }}" class="shrink-0 rounded-full border border-stone-200 bg-white px-4 py-1.5 text-sm font-semibold text-stone-700 hover:border-brand-400 hover:text-brand-700">{{ $label }}</a>
         @endforeach
         @can('catalog.manage')
-            <a href="{{ route('admin.collections.index') }}" class="shrink-0 rounded-full border border-dashed border-stone-300 px-4 py-1.5 text-sm font-semibold text-stone-600 hover:border-brand-400 hover:text-brand-700">Koleksi / aktivitas <x-icon name="arrow-right" class="inline size-3.5" /></a>
+            <a href="{{ route('admin.collections.index') }}" class="shrink-0 rounded-full border border-dashed border-stone-300 px-4 py-1.5 text-sm font-semibold text-stone-600 hover:border-brand-400 hover:text-brand-700">Koleksi <x-icon name="arrow-right" class="inline size-3.5" /></a>
         @endcan
     </nav>
 
@@ -25,7 +25,7 @@
             <section class="card space-y-5 p-6">
                 <div class="flex items-center gap-3">
                     <span class="grid size-10 place-items-center rounded-xl bg-brand-50 text-brand-600"><x-icon name="photo" /></span>
-                    <div><h2 class="font-bold text-stone-900">Foto hero</h2><p class="text-xs text-stone-500">Tampil selebar layar. Tanpa foto, beranda memakai ilustrasi bawaan NuFit.</p></div>
+                    <div><h2 class="font-bold text-stone-900">Foto hero</h2><p class="text-xs text-stone-500">Tampil selebar layar. Tanpa foto, beranda memakai ilustrasi bawaan Albaniah.</p></div>
                 </div>
                 <x-form.image-upload name="hero_image" label="Foto utama (desktop)" optional :current="$images['hero_image']"
                     remove-name="remove_hero_image" aspect="aspect-video" :max-kb="5120"
@@ -68,7 +68,7 @@
 
             <div class="flex gap-3 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-800">
                 <x-icon name="info" class="size-5 shrink-0" />
-                <p>Link diawali <code class="font-mono">/</code> untuk halaman toko, mis. <code class="font-mono">/produk?kategori=running</code>, atau <code class="font-mono">https://</code> untuk link luar.</p>
+                <p>Link diawali <code class="font-mono">/</code> untuk halaman toko, mis. <code class="font-mono">/produk?kategori=mukena-dewasa</code>, atau <code class="font-mono">https://</code> untuk link luar.</p>
             </div>
 
             <div class="card sticky top-20 p-4">
@@ -106,20 +106,20 @@
                 </details>
 
                 <details class="group rounded-xl border border-stone-200 p-4">
-                    <summary class="flex cursor-pointer list-none items-center justify-between font-semibold text-stone-800">Belanja per aktivitas <x-icon name="chevron-down" class="size-4 transition group-open:rotate-180" /></summary>
+                    <summary class="flex cursor-pointer list-none items-center justify-between font-semibold text-stone-800">Belanja per koleksi <x-icon name="chevron-down" class="size-4 transition group-open:rotate-180" /></summary>
                     <div class="mt-4 space-y-5">
                         <x-form.select name="activities_source" label="Isi ubin" :search="false" :selected="$sectionText['activities_source']"
                             :options="\App\Services\Storefront\ActivityTiles::SOURCES"
                             hint="Ubin & urutannya diatur di menu Koleksi (atau Kategori). Maks. {{ \App\Services\Storefront\ActivityTiles::LIMIT }} ubin, yang pertama jadi ubin besar." />
                         <div class="grid gap-5 sm:grid-cols-2">
                             <x-form.input name="activities_eyebrow" label="Teks kecil" optional :value="$sectionText['activities_eyebrow']" :maxlength="$textLimits['activities_eyebrow']"
-                                hint="Kosongkan: &quot;Aktivitas&quot; untuk koleksi, &quot;Kategori&quot; untuk kategori." />
+                                hint="Kosongkan: &quot;Koleksi&quot; untuk koleksi, &quot;Kategori&quot; untuk kategori." />
                             <x-form.input name="activities_title" label="Judul" optional :value="$sectionText['activities_title']" :maxlength="$textLimits['activities_title']" :hint="$sHint('activities_title')" />
                         </div>
                         <label class="flex items-start gap-3 text-sm text-stone-700">
                             <input type="hidden" name="hero_rail" value="0">
                             <input type="checkbox" name="hero_rail" value="1" @checked(old('hero_rail', $sectionText['hero_rail'])) class="mt-0.5 rounded text-brand-600 focus:ring-brand-500">
-                            <span>Tampilkan pintasan "Pilih aktivitasmu" di bawah hero<span class="block text-xs text-stone-500">Deretan tombol aktivitas berlapis kaca di bagian bawah foto hero.</span></span>
+                            <span>Tampilkan pintasan "Pilih koleksimu" di bawah hero<span class="block text-xs text-stone-500">Deretan tombol koleksi berlapis kaca di bagian bawah foto hero.</span></span>
                         </label>
                     </div>
                 </details>
@@ -250,7 +250,7 @@
                             <button type="button" @click="add(product)" :disabled="has(product.id)"
                                     class="flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left hover:bg-stone-50 disabled:cursor-default disabled:opacity-50">
                                 <span class="size-10 shrink-0 overflow-hidden rounded-lg bg-stone-100">
-                                    <img x-show="product.image" :src="product.image" alt="" class="size-full object-cover" loading="lazy">
+                                    <img x-show="product.image" :src="product.image" referrerpolicy="no-referrer" alt="" class="size-full object-cover" loading="lazy">
                                 </span>
                                 <span class="min-w-0 flex-1">
                                     <span class="block truncate text-sm font-medium text-stone-900" x-text="product.name"></span>
@@ -282,7 +282,7 @@
                                 </button>
                                 <span class="w-5 text-center text-xs font-semibold text-stone-400" x-text="index + 1"></span>
                                 <span class="size-10 shrink-0 sm:size-11 overflow-hidden rounded-lg bg-stone-100">
-                                    <img x-show="product.image" :src="product.image" alt="" class="size-full object-cover" loading="lazy">
+                                    <img x-show="product.image" :src="product.image" referrerpolicy="no-referrer" alt="" class="size-full object-cover" loading="lazy">
                                 </span>
                                 <span class="min-w-0 flex-1">
                                     <span class="block truncate text-sm font-medium text-stone-900" x-text="product.name"></span>

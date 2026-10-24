@@ -3,7 +3,7 @@
     $featured = ! $filtered && $articles->onFirstPage() ? $articles->first() : null;
     $list = $featured ? $articles->getCollection()->slice(1) : $articles->getCollection();
     $heading = $activeCategory?->name ?? ($tag ? '#'.$tag : 'Artikel');
-    $description = $activeCategory?->description ?: 'Tips, panduan memilih, dan kabar terbaru seputar olahraga, latihan, dan perlengkapannya dari '.config('shop.full_name').'.';
+    $description = $activeCategory?->description ?: 'Inspirasi ibadah, tips merawat mukena, dan panduan memilih koleksi dari '.config('shop.full_name').'.';
 @endphp
 <x-layouts.shop :title="$activeCategory ? $activeCategory->name.' · Artikel' : ($tag ? 'Artikel tentang '.$tag : 'Artikel & Tips')" :description="$description">
     <x-slot:head>
@@ -18,7 +18,7 @@
         <div class="flex flex-col gap-6 border-b border-stone-200 pb-6 lg:flex-row lg:items-end lg:justify-between">
             <div class="max-w-2xl">
                 <p class="eyebrow text-brand-600">{{ $filtered ? 'Artikel' : 'Jurnal '.config('shop.name') }}</p>
-                <h1 class="mt-2 text-4xl leading-none font-bold tracking-tight text-ink sm:text-5xl">{{ $heading }}</h1>
+                <h1 class="display mt-2 text-4xl leading-none text-ink sm:text-6xl">{{ $heading }}</h1>
                 <p class="mt-3 text-stone-600">{{ $description }}</p>
             </div>
             <form action="{{ route('articles.index') }}" method="GET" role="search" class="w-full lg:w-72">

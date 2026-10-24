@@ -1,5 +1,5 @@
 <x-layouts.account title="Akun Saya">
-    <div class="track-lines relative isolate flex flex-col gap-4 overflow-hidden rounded-2xl bg-ink p-6 text-white sm:flex-row sm:items-center sm:justify-between sm:p-8">
+    <div class="ornament-bg relative isolate flex flex-col gap-4 overflow-hidden rounded-2xl bg-ink p-6 text-white sm:flex-row sm:items-center sm:justify-between sm:p-8">
         <x-logo variant="mark" mono class="pointer-events-none absolute -right-6 -bottom-8 -z-10 h-36 text-white/[0.05]" aria-hidden="true" />
         <div>
             <p class="kicker text-white/55">Selamat datang kembali</p>

@@ -1,11 +1,11 @@
-{{-- "Belanja per aktivitas": koleksi (atau kategori) — satu ubin besar + ubin kecil. Warna ubin kosong = palet kalem bawaan. --}}
+{{-- "Belanja per koleksi": koleksi (atau kategori) — satu ubin besar + ubin kecil. Warna ubin kosong = palet kalem bawaan. --}}
 @use('App\Support\Storefront')
 @if ($activities->isNotEmpty())
     <section class="shop-container section-gap" aria-labelledby="home-categories">
         <div class="flex items-end justify-between gap-4">
             <div>
-                <p class="kicker">{{ Storefront::text('activities_eyebrow', $activitiesKind === 'collections' ? 'Aktivitas' : 'Kategori') }}</p>
-                <h2 id="home-categories" class="section-title">{{ Storefront::text('activities_title', 'Belanja per aktivitas') }}</h2>
+                <p class="kicker">{{ Storefront::text('activities_eyebrow', $activitiesKind === 'collections' ? 'Koleksi' : 'Kategori') }}</p>
+                <h2 id="home-categories" class="section-title">{{ Storefront::text('activities_title', 'Belanja per koleksi') }}</h2>
             </div>
             <a href="{{ route('products.index') }}" class="link-arrow hidden sm:inline-flex">Semua produk <x-icon name="arrow-right" class="size-4" /></a>
         </div>
@@ -22,7 +22,7 @@
                             <img src="{{ $tile['image'] }}" alt="" loading="lazy" class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-[1.03]">
                             <span class="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent"></span>
                         @else
-                            <x-sport-icon :name="$tile['icon']" :for="$tile['for']" @class(['absolute transition duration-500 group-hover:-translate-y-1', $iconTone, 'top-14 -right-4 size-36 sm:top-16 sm:right-6 sm:size-52 lg:size-60' => $big, '-right-2 -bottom-2 size-20 sm:-right-3 sm:-bottom-3 sm:size-28' => ! $big]) />
+                            <x-category-icon :name="$tile['icon']" :for="$tile['for']" :stroke="$big ? 0.6 : 0.9" @class(['absolute transition duration-500 group-hover:-translate-y-1', $iconTone, 'top-14 -right-4 size-36 sm:top-16 sm:right-6 sm:size-52 lg:size-60' => $big, '-right-2 -bottom-2 size-20 sm:-right-3 sm:-bottom-3 sm:size-28' => ! $big]) />
                         @endif
                         <span class="relative flex items-start justify-between gap-3">
                             @if ($big)

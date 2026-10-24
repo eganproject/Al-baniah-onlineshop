@@ -23,13 +23,13 @@
             <div class="card space-y-5 p-6">
                 <div>
                     <label for="title" class="label">Judul</label>
-                    <input id="title" name="title" value="{{ old('title', $banner->title) }}" required maxlength="120" placeholder="Diskon 10% koleksi yoga" class="input @error('title') input-error @enderror">
+                    <input id="title" name="title" value="{{ old('title', $banner->title) }}" required maxlength="120" placeholder="Diskon 10% mukena renda" class="input @error('title') input-error @enderror">
                     <p class="mt-1.5 text-xs text-stone-400">Juga dipakai sebagai teks alternatif gambar.</p>
                     <x-input-error for="title" />
                 </div>
                 <div>
                     <label for="subtitle" class="label">Subjudul <span class="font-normal text-stone-400">(opsional)</span></label>
-                    <input id="subtitle" name="subtitle" value="{{ old('subtitle', $banner->subtitle) }}" maxlength="255" placeholder="Pakai kode HEMAT10 sampai akhir bulan" class="input">
+                    <input id="subtitle" name="subtitle" value="{{ old('subtitle', $banner->subtitle) }}" maxlength="255" placeholder="Pakai kode BERKAH10 sampai akhir bulan" class="input">
                     <x-input-error for="subtitle" />
                 </div>
                 <div class="grid gap-5 sm:grid-cols-2">

@@ -3,7 +3,7 @@
 @if ($onSale->isNotEmpty())
     <section class="shop-container section-gap" aria-labelledby="home-sale">
         <div class="grid gap-6 lg:grid-cols-12 lg:gap-8">
-            <div class="track-lines relative flex min-h-64 flex-col justify-between overflow-hidden rounded-2xl bg-ink p-6 text-white sm:p-8 lg:col-span-4">
+            <div class="ornament-bg relative flex min-h-64 flex-col justify-between overflow-hidden rounded-2xl bg-ink p-6 text-white sm:p-8 lg:col-span-4">
                 <x-logo variant="mark" mono class="pointer-events-none absolute -right-8 -bottom-6 h-40 text-white/[0.05]" aria-hidden="true" />
                 <div class="relative">
                     <div class="flex flex-wrap items-center gap-3">

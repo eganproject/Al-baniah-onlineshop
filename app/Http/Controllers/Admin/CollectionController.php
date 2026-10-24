@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
-/** Admin › Katalog › Koleksi: aktivitas seperti Running/Yoga yang bisa berisi produk dari kategori mana pun. */
+/** Admin › Katalog › Koleksi: tema seperti Travel & Umrah/Hadiah Spesial yang bisa berisi produk dari kategori mana pun. */
 class CollectionController extends Controller
 {
     /** Batas produk yang bisa diatur sekaligus dari form koleksi. */

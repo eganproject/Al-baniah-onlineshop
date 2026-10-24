@@ -166,7 +166,7 @@
                         @foreach ($lines as $line)
                             <li class="flex gap-3">
                                 @if ($line->variant?->image)
-                                    <img src="{{ $line->imageUrl() }}" alt="" class="size-14 shrink-0 rounded-xl object-cover">
+                                    <img src="{{ $line->imageUrl() }}" referrerpolicy="no-referrer" alt="" class="size-14 shrink-0 rounded-xl object-cover">
                                 @else
                                     <x-product-image :product="$line->product" class="size-14 shrink-0 rounded-xl" />
                                 @endif

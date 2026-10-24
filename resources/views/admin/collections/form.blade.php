@@ -26,9 +26,9 @@
 
         <div class="min-w-0 space-y-6 lg:col-span-2">
             <section class="card space-y-5 p-6">
-                <x-form.input name="name" label="Nama koleksi" :value="$collection->name" required maxlength="100" placeholder="Contoh: Running" />
+                <x-form.input name="name" label="Nama koleksi" :value="$collection->name" required maxlength="100" placeholder="Contoh: Travel & Umrah" />
                 <x-form.input name="tagline" label="Teks pendek" optional :value="$collection->tagline" maxlength="120"
-                    placeholder="Contoh: Lari lebih jauh, lebih nyaman" hint="Tampil di ubin besar beranda dan kepala halaman koleksi." />
+                    placeholder="Contoh: Ringkas dibawa, tetap nyaman dipakai" hint="Tampil di ubin besar beranda dan kepala halaman koleksi." />
                 <x-form.textarea name="description" label="Deskripsi" optional :value="$collection->description" rows="3" maxlength="1000"
                     hint="Untuk halaman koleksi & mesin pencari." />
                 <x-form.input name="slug" label="Slug URL" optional="kosongkan untuk otomatis" :value="$collection->slug" maxlength="120" />
@@ -39,7 +39,7 @@
                 <div class="flex flex-wrap items-center justify-between gap-2">
                     <div>
                         <h2 class="font-bold text-stone-900">Produk dalam koleksi</h2>
-                        <p class="text-xs text-stone-500">Bisa juga diatur dari form produk (kolom "Koleksi / aktivitas").</p>
+                        <p class="text-xs text-stone-500">Bisa juga diatur dari form produk (kolom "Koleksi").</p>
                     </div>
                     <span class="text-xs text-stone-500"><span x-text="items.length"></span> produk</span>
                 </div>
@@ -63,7 +63,7 @@
                             <button type="button" @click="add(product)" :disabled="has(product.id)"
                                     class="flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left hover:bg-stone-50 disabled:cursor-default disabled:opacity-50">
                                 <span class="size-10 shrink-0 overflow-hidden rounded-lg bg-stone-100">
-                                    <img x-show="product.image" :src="product.image" alt="" class="size-full object-cover" loading="lazy">
+                                    <img x-show="product.image" :src="product.image" referrerpolicy="no-referrer" alt="" class="size-full object-cover" loading="lazy">
                                 </span>
                                 <span class="min-w-0 flex-1">
                                     <span class="block truncate text-sm font-medium text-stone-900" x-text="product.name"></span>
@@ -82,7 +82,7 @@
                         <li class="flex items-center gap-3 bg-white px-3 py-2">
                             <input type="hidden" name="products[]" x-bind:value="product.id">
                             <span class="size-10 shrink-0 overflow-hidden rounded-lg bg-stone-100">
-                                <img x-show="product.image" :src="product.image" alt="" class="size-full object-cover" loading="lazy">
+                                <img x-show="product.image" :src="product.image" referrerpolicy="no-referrer" alt="" class="size-full object-cover" loading="lazy">
                             </span>
                             <span class="min-w-0 flex-1">
                                 <span class="block truncate text-sm font-medium text-stone-900" x-text="product.name"></span>
@@ -107,7 +107,7 @@
                     <input type="checkbox" name="is_active" value="1" class="checkbox size-5" @checked(old('is_active', $collection->is_active))>
                 </label>
                 <label class="flex items-center justify-between gap-3">
-                    <span><span class="block text-sm font-semibold text-stone-800">Tampil di beranda</span><span class="text-xs text-stone-500">Sebagai ubin "Belanja per aktivitas"</span></span>
+                    <span><span class="block text-sm font-semibold text-stone-800">Tampil di beranda</span><span class="text-xs text-stone-500">Sebagai ubin "Belanja per koleksi"</span></span>
                     <input type="checkbox" name="show_on_home" value="1" class="checkbox size-5" @checked(old('show_on_home', $collection->show_on_home))>
                 </label>
                 <x-form.number name="sort_order" label="Urutan tampil" :value="$collection->sort_order ?? 0" min="0"

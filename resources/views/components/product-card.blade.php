@@ -1,5 +1,5 @@
 {{--
-    Kartu produk NuFit: foto di atas latar abu lembut, info ringkas di bawah.
+    Kartu produk Albaniah: foto di atas latar krem lembut, info ringkas di bawah.
     Tombol tambah cepat (+) di pojok foto: selalu terlihat di layar sentuh,
     muncul saat hover di desktop. Produk bervarian diarahkan ke halaman produk.
     rank: nomor peringkat di pojok foto (dipakai di Best Seller beranda).
@@ -21,7 +21,7 @@
         </div>
 
         @if ($rank)
-            <span class="pointer-events-none absolute bottom-2 left-3 font-display text-4xl leading-none font-extrabold tracking-tighter text-ink/90 italic [paint-order:stroke_fill] [-webkit-text-stroke:5px_#fff] sm:text-5xl" aria-hidden="true">{{ $rank }}</span>
+            <span class="pointer-events-none absolute bottom-2 left-3 font-display text-4xl leading-none font-semibold tracking-tight text-ink/90 italic [paint-order:stroke_fill] [-webkit-text-stroke:5px_#fff] sm:text-5xl" aria-hidden="true">{{ $rank }}</span>
         @endif
 
         <div class="absolute top-2 right-2 z-10">

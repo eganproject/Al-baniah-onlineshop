@@ -1,7 +1,7 @@
 <x-mail::message>
 # Halo, {{ \Illuminate\Support\Str::words($user->name, 1, '') }}!
 
-Terima kasih sudah bergabung di **{{ config('shop.full_name') }}**. Akunmu sudah aktif, jadi kamu bisa langsung belanja perlengkapan olahraga NuFit untuk latihan yang lebih nyaman.
+Terima kasih sudah bergabung di **{{ config('shop.full_name') }}**. Akunmu sudah aktif, jadi kamu bisa langsung belanja mukena Albaniah yang adem dan anggun untuk menemani ibadahmu.
 
 Dengan akun ini kamu bisa:
 

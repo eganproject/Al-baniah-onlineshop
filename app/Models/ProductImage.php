@@ -22,7 +22,8 @@ class ProductImage extends Model
     protected static function booted(): void
     {
         // Hapus file fisik ketika record dihapus lewat Eloquent, setelah transaksi sukses.
-        static::deleted(fn (ProductImage $image) => DB::afterCommit(
+        // Foto dari URL luar (mis. data contoh) tidak punya file lokal.
+        static::deleted(fn (ProductImage $image) => $image->isRemote() ? null : DB::afterCommit(
             fn () => Storage::disk('public')->delete($image->path)
         ));
     }
@@ -32,8 +33,14 @@ class ProductImage extends Model
         return $this->belongsTo(Product::class);
     }
 
+    /** Path berupa URL lengkap (foto contoh dari CDN marketplace), bukan file di disk public. */
+    public function isRemote(): bool
+    {
+        return str_starts_with((string) $this->path, 'https://') || str_starts_with((string) $this->path, 'http://');
+    }
+
     public function url(): string
     {
-        return Storage::disk('public')->url($this->path);
+        return $this->isRemote() ? $this->path : Storage::disk('public')->url($this->path);
     }
 }

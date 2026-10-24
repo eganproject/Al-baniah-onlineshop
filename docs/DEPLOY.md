@@ -1,4 +1,4 @@
-# Panduan Deploy NuFit Online Shop
+# Panduan Deploy Albaniah Online Shop
 
 Panduan ini untuk dua jenis server tanpa Docker:
 
@@ -57,9 +57,9 @@ sudo mysql
 Bila `sudo mysql` ditolak karena root sudah berpassword, pakai `mysql -u root -p`. Bila MySQL menolak password user baru (ERROR 1819), buat password acak yang memenuhi aturan: `echo "Mga_$(openssl rand -hex 12)"`.
 
 ```sql
-CREATE DATABASE nufit_onlineshop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'nufit'@'localhost' IDENTIFIED BY 'ganti-password-kuat';
-GRANT ALL PRIVILEGES ON nufit_onlineshop.* TO 'nufit'@'localhost';
+CREATE DATABASE albaniah_onlineshop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'albaniah'@'localhost' IDENTIFIED BY 'ganti-password-kuat';
+GRANT ALL PRIVILEGES ON albaniah_onlineshop.* TO 'albaniah'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
@@ -68,8 +68,8 @@ FLUSH PRIVILEGES;
 ```bash
 sudo mkdir -p /var/www && sudo chown $USER:www-data /var/www
 cd /var/www
-git clone https://github.com/eganproject/nufit-onlineshop.git
-cd nufit-onlineshop
+git clone https://github.com/eganproject/Al-baniah-onlineshop.git
+cd Al-baniah-onlineshop
 
 cp .env.production.example .env
 nano .env                       # isi semua bagian <...>
@@ -91,13 +91,13 @@ sudo chmod -R 775 storage bootstrap/cache
 ### 4. Nginx + SSL
 
 ```bash
-sudo cp deploy/nginx.conf.example /etc/nginx/sites-available/nufit
-sudo nano /etc/nginx/sites-available/nufit          # ganti domain & path
-sudo ln -s /etc/nginx/sites-available/nufit /etc/nginx/sites-enabled/
+sudo cp deploy/nginx.conf.example /etc/nginx/sites-available/albaniah
+sudo nano /etc/nginx/sites-available/albaniah          # ganti domain & path
+sudo ln -s /etc/nginx/sites-available/albaniah /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl reload nginx
 
 sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d nufit.id -d www.nufit.id
+sudo certbot --nginx -d albaniah.id -d www.albaniah.id
 ```
 
 ### 5. Worker antrean (Supervisor)
@@ -105,7 +105,7 @@ sudo certbot --nginx -d nufit.id -d www.nufit.id
 Antrean dipakai untuk email dan pekerjaan latar supaya checkout tetap cepat.
 
 ```bash
-sudo cp deploy/supervisor-worker.conf.example /etc/supervisor/conf.d/nufit-worker.conf
+sudo cp deploy/supervisor-worker.conf.example /etc/supervisor/conf.d/albaniah-worker.conf
 sudo supervisorctl reread && sudo supervisorctl update
 sudo supervisorctl status
 ```
@@ -119,7 +119,7 @@ sudo crontab -u www-data -e
 Tambahkan satu baris:
 
 ```
-* * * * * cd /var/www/nufit-onlineshop && php artisan schedule:run >> /dev/null 2>&1
+* * * * * cd /var/www/albaniah-onlineshop && php artisan schedule:run >> /dev/null 2>&1
 ```
 
 Lihat jadwalnya dengan `php artisan schedule:list`.
@@ -127,7 +127,7 @@ Lihat jadwalnya dengan `php artisan schedule:list`.
 ### 7. Update berikutnya
 
 ```bash
-cd /var/www/nufit-onlineshop
+cd /var/www/albaniah-onlineshop
 bash deploy/deploy.sh
 ```
 
@@ -148,11 +148,11 @@ composer install --no-dev --optimize-autoloader
 npm ci && npm run build
 ```
 
-Kompres seluruh folder proyek (termasuk `vendor/` dan `public/build/`, **tanpa** `node_modules/` dan `.env`), lalu upload dan ekstrak di luar `public_html`, misalnya `/home/user/nufit-onlineshop`.
+Kompres seluruh folder proyek (termasuk `vendor/` dan `public/build/`, **tanpa** `node_modules/` dan `.env`), lalu upload dan ekstrak di luar `public_html`, misalnya `/home/user/albaniah-onlineshop`.
 
 ### 2. Arahkan domain ke folder `public`
 
-- **Bisa ubah document root** (cPanel → Domains): arahkan ke `/home/user/nufit-onlineshop/public`. Ini cara terbaik.
+- **Bisa ubah document root** (cPanel → Domains): arahkan ke `/home/user/albaniah-onlineshop/public`. Ini cara terbaik.
 - **Tidak bisa**: ekstrak aplikasi langsung di `public_html`, lalu salin `deploy/htaccess-root.example` menjadi `public_html/.htaccess`. File ini meneruskan semua request ke `public/` dan memblokir akses ke `.env`, `vendor`, dsb.
 
 ### 3. Database & .env
@@ -165,7 +165,7 @@ Kompres seluruh folder proyek (termasuk `vendor/` dan `public/build/`, **tanpa**
 Lewat Terminal cPanel:
 
 ```bash
-cd ~/nufit-onlineshop
+cd ~/albaniah-onlineshop
 php artisan key:generate
 php artisan migrate --force
 php artisan shop:create-admin
@@ -181,7 +181,7 @@ php artisan shop:check
 cPanel → Cron Jobs → *Once Per Minute*:
 
 ```
-cd /home/user/nufit-onlineshop && php artisan schedule:run >> /dev/null 2>&1
+cd /home/user/albaniah-onlineshop && php artisan schedule:run >> /dev/null 2>&1
 ```
 
 Dengan `QUEUE_VIA_SCHEDULER=true`, cron ini juga memproses antrean email setiap menit.
@@ -225,7 +225,7 @@ Restore:
 
 ```bash
 php artisan down
-gunzip -c db-2026-10-23_020000.sql.gz | mysql -u nufit -p nufit_onlineshop
+gunzip -c db-2026-10-23_020000.sql.gz | mysql -u albaniah -p albaniah_onlineshop
 tar -xzf uploads-2026-10-23_020000.tar.gz -C storage/app
 php artisan optimize:clear && php artisan optimize
 php artisan up
@@ -243,7 +243,7 @@ php artisan up
 
 - [ ] `php artisan shop:check` tanpa status **GAGAL**
 - [ ] SSL aktif dan `APP_URL` memakai `https://`
-- [ ] Akun Superadmin dibuat lewat `shop:create-admin`, tidak ada akun contoh `@nufit.test`
+- [ ] Akun Superadmin dibuat lewat `shop:create-admin`, tidak ada akun contoh `@albaniah.test`
 - [ ] Kunci Midtrans produksi terisi, URL notifikasi di dashboard Midtrans: `https://domain-anda/webhooks/midtrans`
 - [ ] API key RajaOngkir & `SHOP_ORIGIN_CITY_ID` terisi
 - [ ] Email SMTP bisa terkirim (coba fitur lupa password)

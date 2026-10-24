@@ -7,7 +7,7 @@
     <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
             <p class="text-sm font-medium text-stone-500">{{ now()->translatedFormat('l, d F Y') }}</p>
-            <h1 class="text-2xl font-extrabold tracking-tight text-stone-900">Halo, {{ \Illuminate\Support\Str::words(auth()->user()->name, 1, '') }}! ☕</h1>
+            <h1 class="font-display text-[1.9rem] leading-tight font-semibold text-ink">Assalamu’alaikum, {{ \Illuminate\Support\Str::words(auth()->user()->name, 1, '') }}</h1>
         </div>
         <div class="flex flex-wrap items-center gap-2">
             <nav class="inline-flex rounded-xl border border-stone-200 bg-white p-1 text-xs font-semibold" aria-label="Periode dashboard">

@@ -105,8 +105,8 @@
                             </label>
                             <div class="grid gap-5 sm:grid-cols-2">
                                 <x-form.input name="firebase[api_key]" id="firebase_api_key" label="API key (apiKey)" :value="$value('firebase', 'api_key')" placeholder="AIza..." :hint="$source('firebase', 'api_key')" spellcheck="false" />
-                                <x-form.input name="firebase[project_id]" id="firebase_project_id" label="Project ID (projectId)" :value="$value('firebase', 'project_id')" placeholder="nufit-shop" :hint="$source('firebase', 'project_id')" spellcheck="false" />
-                                <x-form.input name="firebase[auth_domain]" id="firebase_auth_domain" label="Auth domain (authDomain)" :value="$value('firebase', 'auth_domain')" placeholder="nufit-shop.firebaseapp.com" optional
+                                <x-form.input name="firebase[project_id]" id="firebase_project_id" label="Project ID (projectId)" :value="$value('firebase', 'project_id')" placeholder="albaniah-shop" :hint="$source('firebase', 'project_id')" spellcheck="false" />
+                                <x-form.input name="firebase[auth_domain]" id="firebase_auth_domain" label="Auth domain (authDomain)" :value="$value('firebase', 'auth_domain')" placeholder="albaniah-shop.firebaseapp.com" optional
                                               :hint="$source('firebase', 'auth_domain') ?? 'Kosong = <project-id>.firebaseapp.com.'" spellcheck="false" />
                                 <x-form.input name="firebase[app_id]" id="firebase_app_id" label="App ID (appId)" :value="$value('firebase', 'app_id')" placeholder="1:1234:web:abcd" optional :hint="$source('firebase', 'app_id')" spellcheck="false" />
                             </div>

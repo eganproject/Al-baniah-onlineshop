@@ -8,7 +8,7 @@ use App\Models\ProductCollection;
 use Illuminate\Support\Collection;
 
 /**
- * Isi ubin "Belanja per aktivitas" & rel "Pilih aktivitasmu" di beranda.
+ * Isi ubin "Belanja per koleksi" & rel "Pilih koleksimu" di beranda.
  *
  * Sumber diatur di Admin › Tampilan Beranda (`shop.storefront.activities_source`):
  * "auto" = koleksi yang tampil di beranda, atau kategori induk bila belum ada koleksi;
@@ -20,7 +20,7 @@ class ActivityTiles
 
     public const SOURCES = [
         'auto' => 'Otomatis (koleksi, atau kategori bila belum ada koleksi)',
-        'collections' => 'Koleksi / aktivitas',
+        'collections' => 'Koleksi',
         'categories' => 'Kategori induk',
     ];
 
