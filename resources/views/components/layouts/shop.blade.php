@@ -361,8 +361,8 @@
 
         {{-- Footer --}}
         <footer class="bottom-nav-spacer mt-20 bg-ink text-white lg:mt-28">
-            {{-- Ajakan komunitas --}}
-            <div class="relative overflow-hidden border-b border-white/10">
+            {{-- Ajakan komunitas (disembunyikan saat checkout supaya fokus membayar) --}}
+            <div @class(['relative overflow-hidden border-b border-white/10', 'hidden' => request()->routeIs('checkout.*')])>
                 <span class="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full border-[28px] border-brand-400/90 sm:size-96" aria-hidden="true"></span>
                 <span class="pointer-events-none absolute bottom-8 right-40 hidden size-16 rounded-full bg-volt lg:block" aria-hidden="true"></span>
                 <div class="shop-container relative py-14 lg:py-20">

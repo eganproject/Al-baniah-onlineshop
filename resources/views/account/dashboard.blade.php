@@ -1,15 +1,17 @@
 <x-layouts.account title="Akun Saya">
-    <div class="flex flex-col gap-4 bg-ink p-6 text-white sm:flex-row sm:items-center sm:justify-between sm:p-8">
+    <div class="relative isolate flex flex-col gap-4 overflow-hidden rounded-3xl bg-ink p-6 text-white sm:flex-row sm:items-center sm:justify-between sm:p-8">
+        <span class="pointer-events-none absolute -top-16 -right-10 -z-10 size-48 rounded-full border-[22px] border-brand-400/80 sm:right-48" aria-hidden="true"></span>
         <div>
-            <p class="eyebrow text-white/60">Selamat datang kembali</p>
-            <p class="mt-2 font-display text-2xl font-extrabold tracking-tight uppercase sm:text-3xl">{{ auth()->user()->name }}</p>
+            <p class="eyebrow text-brand-300">Selamat datang kembali</p>
+            <p class="display mt-2 text-2xl sm:text-3xl">{{ auth()->user()->name }}</p>
+            <p class="mt-1 text-sm text-white/55">{{ config('shop.motto') }}</p>
         </div>
-        <a href="{{ route('products.index') }}" class="btn btn-light btn-pill shrink-0">Lanjut belanja <x-icon name="arrow-right" class="size-4" /></a>
+        <a href="{{ route('products.index') }}" class="btn btn-brand btn-pill shrink-0">Lanjut belanja <x-icon name="arrow-right" class="size-4" /></a>
     </div>
 
     <div class="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
         @foreach ([['Semua pesanan', $stats['total'], 'receipt', null], ['Belum dibayar', $stats['pending'], 'clock', 'pending_payment'], ['Sedang berjalan', $stats['active'], 'truck', null], ['Selesai', $stats['completed'], 'check-circle', 'completed']] as [$label, $value, $icon, $status])
-            <a href="{{ route('account.orders.index', array_filter(['status' => $status])) }}" class="card p-4 transition hover:border-ink">
+            <a href="{{ route('account.orders.index', array_filter(['status' => $status])) }}" class="card p-4 transition hover:border-brand-400">
                 <x-icon :name="$icon" class="size-6 text-ink" />
                 <p class="mt-3 text-2xl font-extrabold text-stone-900">{{ $value }}</p>
                 <p class="text-xs text-stone-500">{{ $label }}</p>

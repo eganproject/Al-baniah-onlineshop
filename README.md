@@ -1,6 +1,6 @@
 # NuFit Online Shop
 
-Toko online **NuFit Indonesia (NuFit)** berbasis Laravel 13, MySQL, Tailwind CSS v4, dan Alpine.js.
+Toko online resmi **NuFit Indonesia**, brand aksesoris olahraga (lari, yoga, pilates, renang, padel, workout), berbasis Laravel 13, MySQL, Tailwind CSS v4, dan Alpine.js.
 
 ## Fitur saat ini
 
