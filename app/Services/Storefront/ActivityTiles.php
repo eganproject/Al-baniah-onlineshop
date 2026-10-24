@@ -26,7 +26,7 @@ class ActivityTiles
 
     /**
      * @return array{kind: 'collections'|'categories', tiles: Collection<int, array{name: string, url: string, count: int,
-     *     image: ?string, icon: ?string, for: string, tone: ?array{0: string, 1: string}, tagline: ?string,
+     *     image: ?string, cover: ?string, icon: ?string, for: string, tone: ?array{0: string, 1: string}, tagline: ?string,
      *     chips: list<array{label: string, url: string}>}>}
      */
     public function forHome(): array
@@ -55,6 +55,7 @@ class ActivityTiles
             'url' => $c->url(),
             'count' => (int) $c->products_count,
             'image' => $c->imageUrl(),
+            'cover' => $c->image_path ? null : $this->cover(Product::active()->inCollection($c)),
             'icon' => $c->iconName(),
             'for' => $c->name.' '.$c->slug,
             'tone' => $c->toneClasses(),
@@ -93,6 +94,7 @@ class ActivityTiles
                 // Jumlah produk induk termasuk produk di subkategorinya.
                 'count' => (int) $c->products_count + (int) $c->children->sum('products_count'),
                 'image' => $c->imageUrl(),
+                'cover' => $c->image_path ? null : $this->cover(Product::active()->whereIn('category_id', [$c->id, ...$c->children->pluck('id')])),
                 'icon' => null,
                 'for' => $c->name.' '.$c->slug,
                 'tone' => null,
@@ -102,5 +104,11 @@ class ActivityTiles
                     'url' => route('products.index', ['kategori' => $child->slug]),
                 ])->values()->all() : [],
             ]);
+    }
+
+    /** Foto produk terbaru sebagai sampul ubin yang belum punya gambar sendiri. */
+    private function cover(\Illuminate\Database\Eloquent\Builder $products): ?string
+    {
+        return $products->whereHas('coverImage')->latest()->first()?->imageUrl();
     }
 }

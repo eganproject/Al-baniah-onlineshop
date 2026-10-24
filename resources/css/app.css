@@ -313,6 +313,29 @@
         background-size: 72px 96px;
     }
 
+    /*
+     * Bingkai lengkung mihrab, ciri visual Albaniah.
+     *   .arch      = puncak setengah lingkaran penuh (hero, ubin koleksi)
+     *   .arch-soft = kubah landai untuk foto produk (sudut atas foto tidak banyak terpotong)
+     */
+    .arch {
+        border-radius: 999px 999px 1.5rem 1.5rem;
+    }
+    .arch-soft {
+        border-radius: 50% 50% 1.25rem 1.25rem / 20% 20% 1.25rem 1.25rem;
+    }
+    /* Judul seksi rata tengah dengan ornamen belah ketupat di atasnya. */
+    .section-head {
+        @apply mx-auto flex max-w-2xl flex-col items-center text-center;
+    }
+    .ornament-mark {
+        @apply flex items-center gap-2 text-brand-400;
+    }
+    .ornament-mark::before,
+    .ornament-mark::after {
+        @apply h-px w-8 bg-current opacity-60 content-[''];
+    }
+
     .table-base {
         @apply min-w-full divide-y divide-stone-100 text-sm;
     }

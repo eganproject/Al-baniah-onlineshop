@@ -73,9 +73,15 @@ class ProductController extends Controller
                 ->values();
         }
 
+        // Foto bulat di navigasi kategori: gambar kategori, atau foto produk terbaru di kategori itu.
+        $categoryCovers = $categories->mapWithKeys(fn (Category $c) => [$c->id => $c->imageUrl()
+            ?? Product::active()->whereIn('category_id', [$c->id, ...$c->children->pluck('id')])
+                ->whereHas('coverImage')->latest()->first()?->imageUrl()]);
+
         return view('shop.products.index', [
             'products' => $products,
             'categories' => $categories,
+            'categoryCovers' => $categoryCovers,
             'collections' => ProductCollection::active()->ordered()->get(['id', 'name', 'slug', 'icon']),
             'activeCollection' => $collection,
             'activeCategory' => $category,
