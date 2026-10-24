@@ -192,7 +192,7 @@
 
                             @if ($product->inStock())
                                 <form id="add-to-cart" method="POST" action="{{ route('cart.store', $product) }}"
-                                      @submit="if (needsVariant) { $event.preventDefault(); $refs.variantHint.classList.remove('hidden') }">
+                                      @submit="if (needsVariant) { $event.preventDefault(); $refs.variantHint.classList.remove('hidden'); $refs.variantHint.scrollIntoView({ behavior: 'smooth', block: 'center' }) }">
                                     @csrf
                                     @if ($variants->isNotEmpty())
                                         <input type="hidden" name="variant_id" :value="selectedId ?? ''">
@@ -207,12 +207,13 @@
                                         </div>
                                     </div>
                                     <p x-ref="variantHint" x-show="needsVariant" class="mt-4 hidden text-sm font-medium text-accent-600">Pilih {{ mb_strtolower($product->variant_label ?: 'varian') }} terlebih dahulu.</p>
-                                    <div class="mt-5 flex gap-2">
-                                        <button class="btn btn-brand btn-pill min-h-14 flex-1 text-[15px]"><x-icon name="bag" class="size-5" /> Tambah ke keranjang</button>
-                                        <x-wishlist-button :product="$product" variant="outline" class="shrink-0" />
-                                    </div>
-                                    <button name="buy_now" value="1" class="btn btn-ink btn-pill mt-2 min-h-14 w-full text-[15px]">Beli sekarang</button>
                                 </form>
+                                {{-- Tombol di luar <form>: tombol wishlist punya form sendiri, dan form bersarang membuat "Beli sekarang" tidak terkirim. --}}
+                                <div class="mt-5 flex gap-2">
+                                    <button form="add-to-cart" class="btn btn-brand btn-pill min-h-14 flex-1 text-[15px]"><x-icon name="bag" class="size-5" /> Tambah ke keranjang</button>
+                                    <x-wishlist-button :product="$product" variant="outline" class="shrink-0" />
+                                </div>
+                                <button form="add-to-cart" name="buy_now" value="1" class="btn btn-ink btn-pill mt-2 min-h-14 w-full text-[15px]">Beli sekarang</button>
                             @else
                                 <div class="rounded-2xl bg-sand-100 p-5 text-sm text-stone-600">
                                     Produk ini sedang habis.

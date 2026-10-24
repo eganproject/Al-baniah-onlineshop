@@ -7,6 +7,10 @@ use App\Http\Controllers\Shop;
 use App\Http\Controllers\Webhooks;
 use Illuminate\Support\Facades\Route;
 
+// Catatan throttle: `throttle:N,M` tanpa nama memakai SATU penghitung per user/IP untuk semua route.
+// Karena itu setiap batas diberi nama sendiri (parameter ke-3), mis. `throttle:20,1,voucher`,
+// supaya permintaan di route lain (ongkir, wilayah, dll.) tidak ikut menghabiskan kuotanya.
+
 /*
 |--------------------------------------------------------------------------
 | Toko (publik)
@@ -14,11 +18,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', Shop\HomeController::class)->name('home');
-Route::get('/produk', [Shop\ProductController::class, 'index'])->name('products.index');
-Route::get('/best-seller', [Shop\ProductController::class, 'bestSellers'])->name('products.best-sellers');
+Route::get('/produk', [Shop\ProductController::class, 'index'])->name('products.index')->middleware('scalar.query');
+Route::get('/best-seller', [Shop\ProductController::class, 'bestSellers'])->name('products.best-sellers')->middleware('scalar.query');
 Route::get('/produk/{product}', [Shop\ProductController::class, 'show'])->name('products.show');
 
-Route::get('/artikel', [Shop\ArticleController::class, 'index'])->name('articles.index');
+Route::get('/artikel', [Shop\ArticleController::class, 'index'])->name('articles.index')->middleware('scalar.query');
 Route::get('/artikel/{article}', [Shop\ArticleController::class, 'show'])->name('articles.show');
 
 // Alamat berbahasa Inggris yang sering diketik/dibagikan diarahkan ke versi Indonesia.
@@ -64,8 +68,8 @@ Route::post('/keluar', [Auth\AuthenticatedSessionController::class, 'destroy'])-
 
 Route::middleware('auth')->prefix('email')->name('verification.')->group(function () {
     Route::get('/verifikasi', [Auth\EmailVerificationController::class, 'notice'])->name('notice');
-    Route::get('/verifikasi/{id}/{hash}', [Auth\EmailVerificationController::class, 'verify'])->middleware(['signed', 'throttle:6,1'])->name('verify');
-    Route::post('/verifikasi/kirim-ulang', [Auth\EmailVerificationController::class, 'send'])->middleware('throttle:6,1')->name('send');
+    Route::get('/verifikasi/{id}/{hash}', [Auth\EmailVerificationController::class, 'verify'])->middleware(['signed', 'throttle:6,1,email-verify'])->name('verify');
+    Route::post('/verifikasi/kirim-ulang', [Auth\EmailVerificationController::class, 'send'])->middleware('throttle:6,1,email-verify')->name('send');
 });
 
 /*
@@ -76,12 +80,12 @@ Route::middleware('auth')->prefix('email')->name('verification.')->group(functio
 
 Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::post('/wishlist/{product}', [Shop\WishlistController::class, 'toggle'])->name('wishlist.toggle');
-    Route::post('/produk/{product}/ulasan', [Shop\ReviewController::class, 'store'])->middleware('throttle:10,1')->name('reviews.store');
+    Route::post('/produk/{product}/ulasan', [Shop\ReviewController::class, 'store'])->middleware('throttle:10,1,review')->name('reviews.store');
 
     Route::get('/checkout', [Shop\CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout', [Shop\CheckoutController::class, 'store'])->name('checkout.store');
-    Route::get('/checkout/ongkir', [Shop\CheckoutController::class, 'rates'])->name('checkout.rates')->middleware('throttle:60,1');
-    Route::post('/checkout/voucher', [Shop\CheckoutController::class, 'applyVoucher'])->name('checkout.voucher.apply')->middleware('throttle:20,1');
+    Route::get('/checkout/ongkir', [Shop\CheckoutController::class, 'rates'])->name('checkout.rates')->middleware('throttle:60,1,shipping-rates');
+    Route::post('/checkout/voucher', [Shop\CheckoutController::class, 'applyVoucher'])->name('checkout.voucher.apply')->middleware('throttle:20,1,voucher');
     Route::delete('/checkout/voucher', [Shop\CheckoutController::class, 'removeVoucher'])->name('checkout.voucher.remove');
 
     Route::prefix('akun')->name('account.')->group(function () {
@@ -91,18 +95,18 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
         Route::get('/pesanan/{order}', [Account\OrderController::class, 'show'])->name('orders.show');
         Route::post('/pesanan/{order}/batal', [Account\OrderController::class, 'cancel'])->name('orders.cancel');
         Route::post('/pesanan/{order}/diterima', [Account\OrderController::class, 'complete'])->name('orders.complete');
-        Route::get('/pesanan/{order}/lacak', [Account\OrderController::class, 'tracking'])->name('orders.tracking')->middleware('throttle:30,1');
+        Route::get('/pesanan/{order}/lacak', [Account\OrderController::class, 'tracking'])->name('orders.tracking')->middleware('throttle:30,1,order-tracking');
         Route::get('/pesanan/{order}/invoice', [Account\OrderController::class, 'invoice'])->name('orders.invoice');
         Route::post('/pesanan/{order}/simulasi-bayar', [Account\OrderController::class, 'simulatePayment'])->name('orders.simulate-payment');
 
         Route::controller(Account\PaymentController::class)->prefix('pesanan/{order}/bayar')->name('orders.payment')->group(function () {
             Route::get('/', 'show')->name('');
-            Route::get('/selesai', 'finish')->name('.finish')->middleware('throttle:20,1');
-            Route::post('/cek', 'check')->name('.check')->middleware('throttle:10,1');
-            Route::post('/baru', 'regenerate')->name('.regenerate')->middleware('throttle:5,1');
+            Route::get('/selesai', 'finish')->name('.finish')->middleware('throttle:20,1,payment-finish');
+            Route::post('/cek', 'check')->name('.check')->middleware('throttle:10,1,payment-check');
+            Route::post('/baru', 'regenerate')->name('.regenerate')->middleware('throttle:5,1,payment-regenerate');
         });
 
-        Route::controller(Account\RegionController::class)->prefix('wilayah')->name('regions.')->middleware('throttle:120,1')->group(function () {
+        Route::controller(Account\RegionController::class)->prefix('wilayah')->name('regions.')->middleware('throttle:120,1,regions')->group(function () {
             Route::get('/provinsi', 'provinces')->name('provinces');
             Route::get('/provinsi/{province}/kota', 'cities')->name('cities');
             Route::get('/kota/{city}/kecamatan', 'districts')->name('districts');
@@ -150,7 +154,7 @@ Route::middleware(['auth', 'role:admin', 'log.activity'])->prefix('admin')->name
     Route::controller(Admin\ProductTransferController::class)->group(function () {
         Route::get('/products/import-export', 'index')->name('products.transfer');
         Route::get('/stock/export', 'exportStock')->name('stock.export')->middleware('can:stock.manage');
-        Route::post('/imports', 'store')->name('imports.store')->middleware('throttle:20,1');
+        Route::post('/imports', 'store')->name('imports.store')->middleware('throttle:20,1,imports');
         Route::get('/imports/{import}', 'show')->name('imports.show');
         Route::post('/imports/{import}/commit', 'commit')->name('imports.commit');
         Route::delete('/imports/{import}', 'destroy')->name('imports.destroy');
@@ -181,7 +185,7 @@ Route::middleware(['auth', 'role:admin', 'log.activity'])->prefix('admin')->name
     });
 
     Route::middleware('can:articles.manage')->group(function () {
-        Route::post('/articles/images', [Admin\ArticleController::class, 'uploadImage'])->name('articles.images')->middleware('throttle:60,1');
+        Route::post('/articles/images', [Admin\ArticleController::class, 'uploadImage'])->name('articles.images')->middleware('throttle:60,1,article-images');
         Route::resource('articles', Admin\ArticleController::class)->except('show');
         Route::resource('article-categories', Admin\ArticleCategoryController::class)->except(['show', 'create']);
     });
@@ -193,7 +197,7 @@ Route::middleware(['auth', 'role:admin', 'log.activity'])->prefix('admin')->name
         Route::get('/{order}', 'show')->name('show');
         Route::patch('/{order}/status', 'updateStatus')->name('status')->middleware('can:orders.manage');
         Route::patch('/{order}/tracking-number', 'updateTracking')->name('tracking-number')->middleware('can:orders.manage');
-        Route::get('/{order}/tracking', 'tracking')->name('tracking')->middleware('throttle:30,1');
+        Route::get('/{order}/tracking', 'tracking')->name('tracking')->middleware('throttle:30,1,admin-tracking');
         Route::get('/{order}/invoice', 'invoice')->name('invoice');
         Route::get('/{order}/packing-slip', 'packingSlip')->name('packing-slip');
     });
@@ -214,7 +218,7 @@ Route::middleware(['auth', 'role:admin', 'log.activity'])->prefix('admin')->name
         Route::put('/store-settings', [Admin\StoreSettingController::class, 'update'])->name('store-settings.update');
 
         // Data wilayah untuk memilih kecamatan asal pengiriman.
-        Route::controller(Account\RegionController::class)->prefix('regions')->name('regions.')->middleware('throttle:120,1')->group(function () {
+        Route::controller(Account\RegionController::class)->prefix('regions')->name('regions.')->middleware('throttle:120,1,admin-regions')->group(function () {
             Route::get('/provinces', 'provinces')->name('provinces');
             Route::get('/provinces/{province}/cities', 'cities')->name('cities');
             Route::get('/cities/{city}/districts', 'districts')->name('districts');
@@ -226,7 +230,7 @@ Route::middleware(['auth', 'role:admin', 'log.activity'])->prefix('admin')->name
         Route::redirect('/settings', '/admin/integrations');
         Route::get('/integrations', [Admin\IntegrationController::class, 'index'])->name('integrations.index');
         Route::put('/integrations/{integration}', [Admin\IntegrationController::class, 'update'])->name('integrations.update')->whereIn('integration', ['midtrans', 'rajaongkir', 'firebase']);
-        Route::post('/integrations/{integration}/test', [Admin\IntegrationController::class, 'test'])->name('integrations.test')->whereIn('integration', ['midtrans', 'rajaongkir', 'firebase'])->middleware('throttle:10,1');
+        Route::post('/integrations/{integration}/test', [Admin\IntegrationController::class, 'test'])->name('integrations.test')->whereIn('integration', ['midtrans', 'rajaongkir', 'firebase'])->middleware('throttle:10,1,integration-test');
     });
 
     Route::middleware('can:staff.manage')->group(function () {
@@ -247,4 +251,4 @@ Route::middleware(['auth', 'role:admin', 'log.activity'])->prefix('admin')->name
 |--------------------------------------------------------------------------
 */
 
-Route::post('/webhooks/midtrans', Webhooks\MidtransController::class)->name('webhooks.midtrans')->middleware('throttle:120,1');
+Route::post('/webhooks/midtrans', Webhooks\MidtransController::class)->name('webhooks.midtrans')->middleware('throttle:120,1,midtrans-webhook');

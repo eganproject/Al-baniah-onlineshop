@@ -24,6 +24,13 @@
         <priority>0.7</priority>
     </url>
 @endforeach
+@foreach ($collections as $collection)
+    <url>
+        <loc>{{ $collection->url() }}</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+@endforeach
 @if ($articles->isNotEmpty())
     <url>
         <loc>{{ route('articles.index') }}</loc>

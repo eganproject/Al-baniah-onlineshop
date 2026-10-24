@@ -14,7 +14,7 @@ class Seo
     ];
 
     /** Parameter yang membuat halaman unik (dipertahankan di canonical). */
-    public const CANONICAL_PARAMS = ['kategori', 'tag', 'page'];
+    public const CANONICAL_PARAMS = ['kategori', 'koleksi', 'tag', 'page'];
 
     /** Parameter filter/pencarian: halamannya tidak diindeks agar tidak jadi duplikat. */
     public const FILTER_PARAMS = ['q', 'urut', 'promo', 'tersedia', 'harga_min', 'harga_max'];
