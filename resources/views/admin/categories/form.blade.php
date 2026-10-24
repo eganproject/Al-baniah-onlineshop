@@ -16,13 +16,21 @@
             </div>
             <x-form.select name="parent_id" label="Induk kategori" placeholder="Tidak ada (kategori utama)" :search="true"
                 :options="$parents->pluck('name', 'id')->all()" :selected="$category->parent_id"
-                hint="Pilih induk untuk menjadikannya subkategori, mis. Mukena Dewasa › Mukena Renda." />
+                hint="Pilih induk untuk menjadikannya subkategori, mis. Mukena Dewasa › Mukena Renda."
+                tip="Kategori maksimal 2 tingkat: kategori utama dan subkategori. Kategori utama tampil di menu toko, subkategori di dalamnya."
+                :tips="['Cukup 4–6 kategori utama supaya menu tidak penuh.', 'Produk dipasang di subkategori; pembeli yang membuka kategori induk tetap melihatnya.']" />
             <div>
-                <label for="slug" class="label">Slug URL <span class="font-normal text-stone-400">(kosongkan untuk otomatis)</span></label>
+                <div class="label-row">
+                    <label for="slug" class="label">Slug URL <span class="font-normal text-stone-400">(kosongkan untuk otomatis)</span></label>
+                    <x-tip title="Slug URL" text="Nama kategori di alamat link, mis. /produk?kategori=mukena-dewasa. Dibuat otomatis dari nama bila dikosongkan."
+                        :tips="['Jangan diubah setelah link kategori dipakai di banner, hero, atau iklan, karena link lama akan kosong.']" />
+                </div>
                 <input id="slug" name="slug" value="{{ old('slug', $category->slug) }}" class="input @error('slug') input-error @enderror">
                 <x-input-error for="slug" />
             </div>
-            <x-form.textarea name="description" label="Deskripsi" optional :value="$category->description" rows="4" maxlength="1000" />
+            <x-form.textarea name="description" label="Deskripsi" optional :value="$category->description" rows="4" maxlength="1000"
+                tip="Tampil sebagai paragraf pembuka di halaman katalog kategori ini, dan sebagai deskripsi halaman di Google."
+                :tips="['1–2 kalimat (±150 huruf) yang menyebut jenis produk dan keunggulannya, mis. bahan & cocok untuk siapa.']" />
         </div>
 
         <div class="space-y-6">
@@ -31,8 +39,12 @@
                     <span><span class="block text-sm font-semibold text-stone-800">Tampilkan di toko</span><span class="text-xs text-stone-500">Nonaktifkan untuk menyembunyikan</span></span>
                     <input type="checkbox" name="is_active" value="1" class="checkbox size-5" @checked(old('is_active', $category->is_active))>
                 </label>
-                <x-form.number name="sort_order" label="Urutan tampil" :value="$category->sort_order ?? 0" min="0" />
-                <x-form.image-upload name="image" label="Gambar" optional :current="$category->imageUrl()" remove-name="remove_image" />
+                <x-form.number name="sort_order" label="Urutan tampil" :value="$category->sort_order ?? 0" min="0"
+                    tip="Urutan di menu toko & ubin beranda: angka kecil tampil lebih dulu. Angka sama diurutkan sesuai abjad."
+                    :tips="['Pakai kelipatan 10 supaya mudah menyisipkan kategori baru.']" />
+                <x-form.image-upload name="image" label="Gambar" optional :current="$category->imageUrl()" remove-name="remove_image" aspect="aspect-[4/3]"
+                    tip="Dipakai sebagai foto ubin “Belanja per koleksi” di beranda saat ubin diisi dari kategori (belum ada koleksi yang tampil di beranda)."
+                    :tips="['Foto 4:3, minimal 1200×900 px. Ubin dipotong otomatis: lebih melebar di laptop, hampir persegi di HP.', 'Taruh objek di tengah; bagian atas & bawah ubin tertimpa nama dan jumlah produk.', 'Foto bernuansa senada (mis. latar krem/netral) membuat deretan ubin terlihat rapi.', 'Kompres di bawah 500 KB agar beranda cepat.']" />
             </div>
             <button class="btn btn-primary w-full py-3">{{ $editing ? 'Simpan perubahan' : 'Simpan kategori' }}</button>
         </div>

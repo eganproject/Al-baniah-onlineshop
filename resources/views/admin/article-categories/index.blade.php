@@ -33,7 +33,8 @@
             <x-form.input name="name" label="Nama" required maxlength="80" :value="$category->name" placeholder="Tips & Trik" />
             <x-form.input name="slug" label="Slug" optional maxlength="100" :value="$category->slug" placeholder="tips-trik" hint="Kosongkan untuk dibuat otomatis dari nama." />
             <x-form.textarea name="description" label="Deskripsi" optional maxlength="255" rows="2" :value="$category->description" hint="Tampil di halaman daftar artikel kategori ini." />
-            <x-form.number name="sort_order" label="Urutan" :value="$category->sort_order ?? 0" min="0" />
+            <x-form.number name="sort_order" label="Urutan" :value="$category->sort_order ?? 0" min="0"
+                tip="Urutan tombol kategori di halaman Artikel: angka kecil tampil lebih dulu." />
             <div class="flex gap-2">
                 <button class="btn btn-primary flex-1">{{ $editing ? 'Simpan perubahan' : 'Tambah kategori' }}</button>
                 @if ($editing)

@@ -12,7 +12,9 @@
         <div class="card space-y-5 p-6 lg:col-span-2">
             <div class="grid gap-5 sm:grid-cols-2">
                 <x-form.input name="name" label="Nama" :value="$member->name" required maxlength="100" autocomplete="off" wrapper-class="sm:col-span-2" />
-                <x-form.input type="email" name="email" label="Email (untuk login)" icon="envelope" :value="$member->email" required autocomplete="off" />
+                <x-form.input type="email" name="email" label="Email (untuk login)" icon="envelope" :value="$member->email" required autocomplete="off"
+                    tip="Dipakai staf untuk masuk ke panel admin. Notifikasi akun (mis. reset password) juga dikirim ke sini."
+                    :tips="['Pakai email pribadi masing-masing staf, jangan satu email bersama, supaya riwayat aktivitas jelas siapa pelakunya.']" />
                 <x-form.phone name="phone" label="No. HP" :value="$member->phone" optional />
                 <x-form.input type="password" name="password" :label="$editing ? 'Password baru' : 'Password'" icon="lock" :required="! $editing" autocomplete="new-password"
                               :optional="$editing ? 'kosongkan bila tidak diganti' : false" hint="Minimal 8 karakter." />
@@ -22,7 +24,11 @@
 
         <div class="space-y-6">
             <div class="card p-6">
-                <p class="label">Jabatan</p>
+                <div class="label-row">
+                    <p class="label">Jabatan</p>
+                    <x-tip title="Jabatan" text="Menentukan menu apa saja yang bisa dibuka staf ini. Menu di luar haknya otomatis disembunyikan."
+                        :tips="['Beri hak seperlunya: tim gudang cukup Gudang, admin chat cukup CS.', 'Superadmin sebaiknya hanya pemilik toko, karena bisa mengubah kunci pembayaran.']" />
+                </div>
                 <div class="grid gap-2">
                     @foreach ($roles as $role)
                         <label class="flex cursor-pointer gap-3 rounded-xl border border-stone-200 p-3 transition has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50">

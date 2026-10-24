@@ -111,9 +111,14 @@
                     @endforeach
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <x-form.number id="adjust-qty" name="quantity" label="Jumlah" min="0" required />
+                    <x-form.number id="adjust-qty" name="quantity" label="Jumlah" min="0" required
+                        tip="Tambah/Kurangi: selisih yang dimasukkan atau dikeluarkan. Set jadi: angka akhir hasil hitung fisik (stock opname)." />
                     <div>
-                        <label for="adjust-type" class="label">Jenis</label>
+                        <div class="label-row">
+                            <label for="adjust-type" class="label">Jenis</label>
+                            <x-tip title="Jenis perubahan" text="Label alasan yang tercatat di Riwayat stok. Barang masuk = kiriman dari produksi/supplier, Penyesuaian = koreksi (rusak, hilang, hasil opname)."
+                                :tips="['Jenis yang tepat membuat laporan stok mudah ditelusuri saat ada selisih.']" />
+                        </div>
                         <select id="adjust-type" name="type" class="input" x-effect="$el.value = mode === 'add' ? 'restock' : 'adjustment'">
                             @foreach ($types as $type)
                                 <option value="{{ $type->value }}">{{ $type->label() }}</option>
@@ -122,7 +127,10 @@
                     </div>
                 </div>
                 <div>
-                    <label for="adjust-note" class="label">Catatan <span class="font-normal text-stone-400">(opsional)</span></label>
+                    <div class="label-row">
+                        <label for="adjust-note" class="label">Catatan <span class="font-normal text-stone-400">(opsional)</span></label>
+                        <x-tip title="Catatan" text="Keterangan bebas yang tersimpan di Riwayat stok, mis. nomor surat jalan atau alasan barang rusak." />
+                    </div>
                     <input id="adjust-note" name="note" maxlength="255" placeholder="Mis. kiriman supplier, barang rusak, stock opname" class="input">
                 </div>
                 <button class="btn btn-primary w-full py-3">Simpan perubahan stok</button>
