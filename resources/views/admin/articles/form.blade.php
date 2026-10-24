@@ -44,7 +44,9 @@
                     <input id="title" name="title" x-model="title" required maxlength="160" placeholder="5 Cara Merawat Baterai HP Agar Awet"
                            class="input py-3 text-lg font-semibold @error('title') input-error @enderror">
                 </x-form.field>
-                <x-form.field label="Slug (alamat URL)" for="slug" name="slug" hint="Otomatis dari judul. Hindari mengubah slug artikel yang sudah terbit supaya link lama tidak rusak.">
+                <x-form.field label="Slug (alamat URL)" for="slug" name="slug" hint="Otomatis dari judul. Hindari mengubah slug artikel yang sudah terbit supaya link lama tidak rusak."
+                    tip="Bagian akhir alamat artikel. Slug yang memuat kata kunci membantu artikel ditemukan di Google."
+                    :tips="['Pendek, 3–6 kata kunci, mis. cara-memilih-mukena-travel.', 'Buang kata sambung (dan, yang, untuk) dan angka tahun bila artikel akan terus relevan.']">
                     <div class="flex items-stretch overflow-hidden rounded-xl border border-stone-200 bg-white focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/15 @error('slug') border-rose-300 @enderror">
                         <span class="hidden items-center bg-stone-50 px-3 text-sm text-stone-400 sm:flex">{{ str_replace(['https://', 'http://'], '', url('/artikel')) }}/</span>
                         <input id="slug" name="slug" x-model="slug" @input="slugTouched = true" maxlength="170" placeholder="cara-merawat-baterai-hp"
@@ -99,6 +101,8 @@
             <div class="card p-6">
                 <x-form.textarea name="excerpt" label="Ringkasan" optional maxlength="300" rows="3" x-model="excerpt"
                     hint="Tampil di daftar artikel & saat dibagikan. Kosongkan untuk memakai awal isi artikel."
+                    tip="Ringkasan 1–2 kalimat yang tampil di kartu artikel (beranda & daftar artikel) dan sebagai cuplikan saat link dibagikan."
+                    :tips="['Tulis manfaat yang didapat pembaca, bukan mengulang judul.', 'Idealnya 120–160 huruf supaya tidak terpotong.']"
                     :value="$article->excerpt" />
             </div>
 
@@ -112,8 +116,12 @@
                     <p class="mt-1 truncate text-lg leading-snug text-[#1a0dab]" x-text="(metaTitle || title || 'Judul artikel') + ' · {{ config('shop.name') }}'"></p>
                     <p class="mt-1 line-clamp-2 text-sm text-stone-600" x-text="metaDescription || excerpt || 'Ringkasan artikel akan tampil di sini.'"></p>
                 </div>
-                <x-form.input name="meta_title" label="Judul SEO" optional maxlength="70" x-model="metaTitle" :value="$article->meta_title" hint="Idealnya 50–60 karakter." />
-                <x-form.textarea name="meta_description" label="Deskripsi SEO" optional maxlength="160" rows="2" x-model="metaDescription" :value="$article->meta_description" hint="Idealnya 120–160 karakter." />
+                <x-form.input name="meta_title" label="Judul SEO" optional maxlength="70" x-model="metaTitle" :value="$article->meta_title" hint="Idealnya 50–60 karakter."
+                    tip="Judul biru yang tampil di hasil pencarian Google dan tab browser. Kosong = memakai judul artikel. Pratinjaunya ada di kotak di atas."
+                    :tips="['Taruh kata kunci utama di depan, mis. “Mukena Travel: 7 Tips Memilih yang Ringkas”.', 'Lebih dari ±60 huruf akan dipotong Google.']" />
+                <x-form.textarea name="meta_description" label="Deskripsi SEO" optional maxlength="160" rows="2" x-model="metaDescription" :value="$article->meta_description" hint="Idealnya 120–160 karakter."
+                    tip="Teks abu-abu di bawah judul pada hasil Google. Kosong = memakai ringkasan."
+                    :tips="['Ajak klik dengan menjawab “apa yang didapat pembaca”, dan sebut kata kunci sekali secara alami.']" />
             </div>
         </div>
 
@@ -131,7 +139,9 @@
                     </div>
                 </x-form.field>
                 <x-form.date name="published_at" label="Tanggal terbit" optional time :value="$article->published_at" x-model="publishedAt"
-                    hint="Kosongkan = terbit sekarang. Isi tanggal mendatang untuk menjadwalkan." />
+                    hint="Kosongkan = terbit sekarang. Isi tanggal mendatang untuk menjadwalkan."
+                    tip="Bila status Terbitkan dan tanggal diisi di masa depan, artikel otomatis tampil di toko pada waktu itu (terjadwal). Tanggal ini juga dipakai sebagai tanggal artikel."
+                    :tips="['Jadwalkan artikel menjelang momen, mis. tips mukena untuk Ramadan 2–3 minggu sebelumnya.']" />
                 <p x-show="scheduled" x-cloak class="flex items-start gap-2 rounded-xl bg-sky-50 p-3 text-xs text-sky-800">
                     <x-icon name="clock" class="size-4 shrink-0" /> Artikel akan tampil otomatis di toko pada tanggal tersebut.
                 </p>
@@ -147,14 +157,19 @@
             <div class="card p-6">
                 <x-form.image-upload name="cover_image" label="Gambar sampul" optional :current="$article->coverUrl()"
                     remove-name="remove_cover_image" aspect="aspect-[16/9]" :max-kb="4096"
-                    hint="Rasio 16:9, mis. 1600×900 px. Juga dipakai saat dibagikan ke WhatsApp/Facebook." />
+                    hint="Rasio 16:9, mis. 1600×900 px. Juga dipakai saat dibagikan ke WhatsApp/Facebook."
+                    tip="Tampil besar 16:9 di atas isi artikel, di kartu artikel (sedikit lebih tinggi, 16:10, jadi tepi kiri-kanan terpotong tipis), dan sebagai gambar pratinjau saat link dibagikan."
+                    :tips="['Ukuran 1600×900 px (16:9), JPG/WebP di bawah 500 KB.', 'Taruh objek di tengah dan sisakan ruang di kiri-kanan.', 'Hindari tulisan kecil di gambar: di kartu & pratinjau WhatsApp gambar tampil kecil.']" />
             </div>
 
             <div class="card space-y-5 p-6">
                 <x-form.select name="article_category_id" label="Kategori" optional :options="$categories" :selected="$article->article_category_id" placeholder="Tanpa kategori"
-                    :hint="$categories->isEmpty() ? 'Belum ada kategori. Tambah di menu Kategori Artikel.' : null" />
+                    :hint="$categories->isEmpty() ? 'Belum ada kategori. Tambah di menu Kategori Artikel.' : null"
+                    tip="Mengelompokkan artikel (mis. Tips Ibadah, Perawatan Mukena) supaya pembaca bisa menyaring artikel sejenis." />
 
-                <x-form.field label="Tag" for="tags" name="tags" optional hint="Ketik lalu tekan Enter. Maks. 10 tag.">
+                <x-form.field label="Tag" for="tags" name="tags" optional hint="Ketik lalu tekan Enter. Maks. 10 tag."
+                    tip="Kata kunci kecil untuk menghubungkan artikel yang membahas topik serupa."
+                    :tips="['Pakai 3–5 tag yang konsisten (huruf kecil), mis. ramadan, perawatan, travel. Hindari tag yang hanya dipakai sekali.']">
                     <select id="tags" name="tags[]" multiple data-placeholder="mis. baterai, tips"
                             x-data x-searchable="{ settings: { create: true, persist: false, createOnBlur: true, maxItems: 10 } }" class="input">
                         @foreach ($tagOptions as $tag)
@@ -163,7 +178,9 @@
                     </select>
                 </x-form.field>
 
-                <x-form.field label="Produk terkait" for="product_ids" name="product_ids" optional hint="Tampil di akhir artikel supaya pembaca bisa langsung belanja. Maks. 8.">
+                <x-form.field label="Produk terkait" for="product_ids" name="product_ids" optional hint="Tampil di akhir artikel supaya pembaca bisa langsung belanja. Maks. 8."
+                    tip="Kartu produk di akhir artikel, mengubah pembaca jadi pembeli."
+                    :tips="['Pilih 3–4 produk yang benar-benar dibahas di artikel.', 'Sebut juga nama produknya di isi artikel lalu sisipkan link-nya.']">
                     <select id="product_ids" name="product_ids[]" multiple data-placeholder="Cari produk..."
                             x-data x-searchable="{ settings: { maxItems: 8 } }" class="input">
                         @foreach ($products as $id => $name)
