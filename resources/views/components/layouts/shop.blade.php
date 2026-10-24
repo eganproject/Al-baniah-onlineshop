@@ -1,4 +1,4 @@
-@props(['title' => null, 'description' => null, 'image' => null, 'canonical' => null, 'type' => 'website', 'noindex' => false, 'bottomNav' => true])
+@props(['title' => null, 'description' => null, 'image' => null, 'canonical' => null, 'type' => 'website', 'noindex' => false, 'bottomNav' => true, 'transparentHeader' => false])
 @php
     $user = auth()->user();
     $announcements = \App\Support\Storefront::announcements();
@@ -11,8 +11,9 @@
     $articleNav = ['label' => 'Artikel', 'url' => route('articles.index'), 'active' => request()->routeIs('articles.*')];
     $accountUrl = $user ? $user->homeRoute() : route('login');
     $instagram = config('shop.instagram') ? ltrim(config('shop.instagram'), '@') : null;
-    $navLink = 'relative flex h-full items-center text-sm font-semibold transition hover:text-brand-600';
-    $navActive = 'text-ink after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:rounded-t-full after:bg-brand-400';
+    // Header transparan (menyatu dengan hero gelap) saat halaman di paling atas; jadi solid putih saat di-scroll.
+    $navLink = 'relative flex h-full items-center text-sm font-semibold transition hover:text-brand-600 group-data-[clear]/header:hover:text-brand-300';
+    $navActive = 'after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:rounded-t-full after:bg-brand-400';
 @endphp
 <x-layouts.base :title="$title" :description="$description" :image="$image" :canonical="$canonical" :type="$type" :noindex="$noindex" :viewport-fit="true" body-class="bg-white text-ink">
     @isset($head)
@@ -87,7 +88,10 @@
         </div>
 
         {{-- Header --}}
-        <header class="sticky top-0 z-40 border-b border-stone-200/80 bg-white/95 backdrop-blur" @mouseleave="cats = false">
+        <header @mouseleave="cats = false" @if ($transparentHeader) data-clear @endif
+                x-data="{ top: true }" x-init="top = window.scrollY < 24" @scroll.window.throttle.50ms="top = window.scrollY < 24"
+                x-bind:data-clear="@js($transparentHeader) && top && !cats ? '' : null"
+                class="group/header sticky top-0 z-40 border-b border-stone-200/80 bg-white/95 text-ink backdrop-blur transition-[background-color,border-color,color] duration-300 data-[clear]:border-white/10 data-[clear]:bg-transparent data-[clear]:text-white data-[clear]:backdrop-blur-none">
             <div class="shop-container flex h-16 items-center gap-2 lg:h-[72px] lg:gap-8">
                 {{-- Logo --}}
                 <a href="{{ route('home') }}" class="shrink-0 py-1 lg:py-0" aria-label="{{ config('shop.full_name') }}">
@@ -96,8 +100,8 @@
 
                 {{-- Mobile: kolom cari (menu utama ada di navigasi bawah) --}}
                 <button type="button" @click="search = true"
-                        class="ml-2 flex h-11 min-w-0 flex-1 items-center gap-2.5 rounded-full bg-stone-100 px-4 text-left text-sm text-stone-400 transition active:bg-stone-200 lg:hidden">
-                    <x-icon name="search" class="size-[18px] shrink-0 text-stone-500" />
+                        class="ml-2 flex h-11 min-w-0 flex-1 items-center gap-2.5 rounded-full bg-stone-100 px-4 text-left text-sm text-stone-400 transition active:bg-stone-200 group-data-[clear]/header:bg-white/10 group-data-[clear]/header:text-white/70 group-data-[clear]/header:ring-1 group-data-[clear]/header:ring-white/20 lg:hidden">
+                    <x-icon name="search" class="size-[18px] shrink-0 text-stone-500 group-data-[clear]/header:text-white/70" />
                     <span class="truncate">{{ request('q') ?: 'Cari matras, botol, running belt...' }}</span>
                 </button>
 
@@ -112,7 +116,7 @@
                     @foreach ([$nav[1], $bestNav] as $item)
                         <a href="{{ $item['url'] }}" @mouseenter="cats = false" @class([$navLink, $navActive => $item['active']])>{{ $item['label'] }}</a>
                     @endforeach
-                    <a href="{{ $promoNav['url'] }}" @mouseenter="cats = false" @class([$navLink, 'gap-1.5 !text-accent-600 hover:!text-accent-700', 'after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:rounded-t-full after:bg-accent-500' => $promoNav['active']])>
+                    <a href="{{ $promoNav['url'] }}" @mouseenter="cats = false" @class([$navLink, 'gap-1.5 !text-accent-600 hover:!text-accent-700 group-data-[clear]/header:!text-accent-300', 'after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:rounded-t-full after:bg-accent-500' => $promoNav['active']])>
                         <span class="relative flex size-2"><span class="absolute inline-flex size-full animate-ping rounded-full bg-accent-400 opacity-60 motion-reduce:hidden"></span><span class="relative inline-flex size-2 rounded-full bg-accent-500"></span></span>
                         {{ $promoNav['label'] }}
                     </a>
@@ -124,23 +128,23 @@
                     <form action="{{ route('products.index') }}" method="GET" role="search" class="mr-2 hidden xl:block">
                         <label class="relative block">
                             <span class="sr-only">Cari produk</span>
-                            <x-icon name="search" class="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-stone-400" />
+                            <x-icon name="search" class="pointer-events-none absolute left-3.5 top-1/2 z-10 size-4 -translate-y-1/2 text-stone-400 group-data-[clear]/header:text-white/60" />
                             <input type="search" name="q" value="{{ request('q') }}" placeholder="Cari produk..."
-                                   class="h-10 w-60 rounded-full border-0 bg-stone-100 pl-10 pr-4 text-sm placeholder:text-stone-400 focus:bg-white focus:ring-2 focus:ring-brand-400">
+                                   class="h-10 w-60 rounded-full border-0 bg-stone-100 pl-10 pr-4 text-sm placeholder:text-stone-400 transition focus:bg-white focus:text-ink focus:ring-2 focus:ring-brand-400 group-data-[clear]/header:bg-white/10 group-data-[clear]/header:text-white group-data-[clear]/header:ring-1 group-data-[clear]/header:ring-white/20 group-data-[clear]/header:placeholder:text-white/60">
                         </label>
                     </form>
-                    <button type="button" @click="search = true" class="hidden size-10 place-items-center rounded-full hover:bg-sand-100 lg:grid xl:hidden" aria-label="Cari">
+                    <button type="button" @click="search = true" class="hidden size-10 place-items-center rounded-full hover:bg-sand-100 group-data-[clear]/header:hover:bg-white/10 lg:grid xl:hidden" aria-label="Cari">
                         <x-icon name="search" />
                     </button>
 
                     @auth
                         <div x-data="{ open: false }" class="relative hidden lg:block">
                             <button type="button" @click="open = !open" @click.outside="open = false" :aria-expanded="open" aria-label="Akun"
-                                    class="grid size-10 place-items-center rounded-full hover:bg-sand-100">
+                                    class="grid size-10 place-items-center rounded-full hover:bg-sand-100 group-data-[clear]/header:hover:bg-white/10">
                                 <x-icon name="user" />
                             </button>
                             <div x-show="open" x-cloak x-transition.origin.top.right
-                                 class="absolute right-0 mt-2 w-60 rounded-2xl border border-stone-200 bg-white p-2 shadow-2xl shadow-ink/10">
+                                 class="absolute right-0 mt-2 w-60 rounded-2xl border border-stone-200 bg-white p-2 text-ink shadow-2xl shadow-ink/10">
                                 <div class="px-3 py-2">
                                     <p class="truncate text-sm font-semibold">{{ $user->name }}</p>
                                     <p class="truncate text-xs text-stone-500">{{ $user->email }}</p>
@@ -161,13 +165,13 @@
                             </div>
                         </div>
                     @else
-                        <a href="{{ route('login') }}" class="hidden size-10 place-items-center rounded-full hover:bg-sand-100 lg:grid" aria-label="Masuk">
+                        <a href="{{ route('login') }}" class="hidden size-10 place-items-center rounded-full hover:bg-sand-100 group-data-[clear]/header:hover:bg-white/10 lg:grid" aria-label="Masuk">
                             <x-icon name="user" />
                         </a>
                     @endauth
 
                     @unless ($user?->isAdmin())
-                        <a href="{{ $user ? route('account.wishlist') : route('login') }}" class="relative grid size-11 lg:size-10 place-items-center rounded-full hover:bg-sand-100"
+                        <a href="{{ $user ? route('account.wishlist') : route('login') }}" class="relative grid size-11 lg:size-10 place-items-center rounded-full hover:bg-sand-100 group-data-[clear]/header:hover:bg-white/10"
                            x-data="{ count: {{ $wishlistCount }} }" @wishlist-updated.window="count = $event.detail.count" aria-label="Wishlist">
                             <x-icon name="heart" />
                             <span x-show="count > 0" x-text="count > 99 ? '99+' : count" @if (! $wishlistCount) x-cloak @endif
@@ -175,7 +179,7 @@
                         </a>
                     @endunless
 
-                    <a href="{{ route('cart.index') }}" class="relative -mr-1 grid size-11 lg:size-10 place-items-center rounded-full hover:bg-sand-100 lg:mr-0" aria-label="Keranjang ({{ $cartCount }})">
+                    <a href="{{ route('cart.index') }}" class="relative -mr-1 grid size-11 lg:size-10 place-items-center rounded-full hover:bg-sand-100 group-data-[clear]/header:hover:bg-white/10 lg:mr-0" aria-label="Keranjang ({{ $cartCount }})">
                         <x-icon name="bag" />
                         @if ($cartCount > 0)
                             <span class="absolute right-0.5 top-0.5 grid min-w-[18px] place-items-center rounded-full bg-brand-400 px-1 text-[10px] leading-[18px] font-bold text-ink">
@@ -191,7 +195,7 @@
                 <div id="mega-menu" x-show="cats" x-cloak @click.outside="cats = false"
                      x-transition:enter="transition duration-200 ease-out" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                      x-transition:leave="transition duration-150 ease-in" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                     class="absolute inset-x-0 top-full hidden border-b border-stone-200 bg-white shadow-2xl shadow-ink/10 lg:block">
+                     class="absolute inset-x-0 top-full hidden border-b border-stone-200 bg-white text-ink shadow-2xl shadow-ink/10 lg:block">
                     <div class="shop-container grid grid-cols-[1fr_300px] gap-10 py-8">
                         <div>
                             <div class="flex items-center justify-between">
@@ -355,7 +359,7 @@
             </div>
         </div>
 
-        <main class="flex-1">
+        <main @class(['flex-1', '-mt-16 lg:-mt-[72px]' => $transparentHeader])>
             {{ $slot }}
         </main>
 
