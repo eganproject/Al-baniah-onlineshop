@@ -38,11 +38,18 @@
         ?: (request('q') ? 'Produk yang cocok dengan pencarianmu.' : (request()->boolean('promo') ? 'Harga spesial untuk mukena favorit, selama stok masih ada.' : 'Mukena renda, bordir, travel, tutup dagu, dan perlengkapan ibadah untuk menemani setiap sujudmu.'));
 @endphp
 <x-layouts.shop :title="$context?->name ?? 'Semua Produk'" :description="$metaDescription">
+    @php
+        $sheetTone = 'flex min-h-11 items-center justify-center gap-2 rounded-xl border border-stone-200 px-3 text-center text-sm font-medium transition peer-checked:border-ink peer-checked:bg-ink peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 hover:border-stone-400';
+        $bubble = 'relative grid size-16 shrink-0 place-items-center overflow-hidden rounded-full bg-white transition sm:size-20 lg:size-[88px]';
+        $bubbleOn = 'ring-2 ring-ink ring-offset-2 ring-offset-sand-100';
+        $bubbleOff = 'ring-1 ring-sand-300 group-hover:ring-brand-400';
+    @endphp
     <div x-data="{ filters: false }" x-effect="document.body.classList.toggle('overflow-hidden', filters)" @keydown.escape.window="filters = false">
-        {{-- Kepala katalog --}}
-        <section class="border-b border-stone-200/70 bg-white">
-            <div class="shop-container pt-6 pb-6 lg:pt-10 lg:pb-8">
-                <nav class="flex flex-wrap items-center gap-1.5 text-xs text-stone-500" aria-label="Breadcrumb">
+        {{-- Kepala katalog: latar krem bermotif lengkung mihrab, judul rata tengah --}}
+        <section class="relative isolate overflow-hidden bg-sand-100">
+            <div class="ornament-bg-light absolute inset-0 -z-10 [mask-image:linear-gradient(to_bottom,#000,transparent_85%)]" aria-hidden="true"></div>
+            <div class="shop-container pt-5 pb-7 text-center lg:pt-8 lg:pb-10">
+                <nav class="flex flex-wrap items-center justify-center gap-1.5 text-xs text-stone-500" aria-label="Breadcrumb">
                     <a href="{{ route('home') }}" class="hover:text-ink">Beranda</a>
                     <x-icon name="chevron-right" class="size-3 text-stone-300" />
                     @if ($activeCategory || $activeCollection)
@@ -68,176 +75,137 @@
                     @endif
                 </nav>
 
-                <div class="mt-6 flex flex-col gap-4 lg:mt-8 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
-                    <div class="min-w-0">
-                        <p class="kicker">
-                            @if ($activeCollection && $activeCategory)
-                                {{ $activeCollection->name }}
-                            @elseif ($activeCollection)
-                                Aktivitas
-                            @elseif ($activeCategory?->parent)
-                                {{ $activeCategory->parent->name }}
-                            @elseif ($activeCategory)
-                                Kategori
-                            @else
-                                Katalog {{ config('shop.name') }}
-                            @endif
-                        </p>
-                        <h1 class="display mt-3 text-[2.1rem] leading-[1.02] break-words sm:text-5xl lg:text-6xl">{{ $heading }}</h1>
-                    </div>
-                    <p class="max-w-md text-sm leading-relaxed text-stone-500 sm:text-[15px] lg:pb-1 lg:text-right">{{ $intro }}</p>
-                </div>
+                <p class="eyebrow mt-6 text-brand-700 lg:mt-8">
+                    @if ($activeCollection && $activeCategory)
+                        {{ $activeCollection->name }}
+                    @elseif ($activeCollection)
+                        Koleksi
+                    @elseif ($activeCategory?->parent)
+                        {{ $activeCategory->parent->name }}
+                    @elseif ($activeCategory)
+                        Kategori
+                    @else
+                        Katalog {{ config('shop.name') }}
+                    @endif
+                </p>
+                <h1 class="display mx-auto mt-2 max-w-3xl text-[2.25rem] leading-[1.05] break-words sm:text-5xl lg:text-[3.5rem]">{{ $heading }}</h1>
+                <p class="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-stone-600 sm:text-[15px]">{{ $intro }}</p>
 
-                {{-- Pilihan koleksi --}}
-                @if ($collections->isNotEmpty())
-                    <div class="no-scrollbar -mx-4 mt-7 flex items-center gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0 lg:mt-9" aria-label="Koleksi">
-                        <span class="eyebrow mr-1 shrink-0 text-stone-400">Koleksi</span>
-                        @foreach ($collections as $item)
-                            <a href="{{ $activeCollection?->is($item) ? $collectionUrl(null) : $collectionUrl($item->slug) }}"
-                               @class(['chip shrink-0 px-3.5 py-1.5 text-[13px] max-lg:min-h-9', 'chip-active' => $activeCollection?->is($item)])
-                               @if ($activeCollection?->is($item)) aria-current="page" @endif>
-                                <x-category-icon :name="$item->iconName()" :for="$item->name.' '.$item->slug" class="size-4 opacity-70" /> {{ $item->name }}
-                                @if ($activeCollection?->is($item))<x-icon name="x" class="size-3.5 opacity-70" />@endif
-                            </a>
-                        @endforeach
+                {{-- Kategori: foto bulat (gambar kategori / foto produk terbaru di dalamnya) --}}
+                @if ($categories->isNotEmpty())
+                    <nav class="no-scrollbar -mx-4 mt-7 overflow-x-auto px-4 sm:mx-0 sm:px-0 lg:mt-9" aria-label="Kategori">
+                        <ul class="mx-auto flex w-max gap-3 py-1 sm:gap-5">
+                            <li>
+                                <a href="{{ $categoryUrl(null) }}" class="group flex w-[76px] flex-col items-center gap-2 sm:w-24" @unless ($activeCategory) aria-current="page" @endunless>
+                                    <span class="{{ $bubble }} {{ $activeCategory ? $bubbleOff : $bubbleOn }}">
+                                        <x-logo variant="mark" class="h-auto w-[52%]" aria-hidden="true" />
+                                    </span>
+                                    <span @class(['text-xs leading-tight sm:text-[13px]', 'font-semibold text-ink' => ! $activeCategory, 'font-medium text-stone-600 group-hover:text-ink' => $activeCategory])>Semua</span>
+                                </a>
+                            </li>
+                            @foreach ($categories as $category)
+                                @php($on = (bool) $openParent?->is($category))
+                                <li>
+                                    <a href="{{ $categoryUrl($category->slug) }}" class="group flex w-[76px] flex-col items-center gap-2 sm:w-24" @if ($on) aria-current="page" @endif>
+                                        <span class="{{ $bubble }} {{ $on ? $bubbleOn : $bubbleOff }}">
+                                            <x-category-icon :for="$category->name.' '.$category->slug" class="size-7 text-brand-600 sm:size-8" />
+                                            @if ($cover = $categoryCovers[$category->id] ?? null)
+                                                <img src="{{ $cover }}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"
+                                                     class="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-105">
+                                            @endif
+                                        </span>
+                                        <span @class(['text-xs leading-tight line-clamp-2 sm:text-[13px]', 'font-semibold text-ink' => $on, 'font-medium text-stone-600 group-hover:text-ink' => ! $on])>
+                                            {{ $category->name }}
+                                        </span>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </nav>
+                @endif
+
+                {{-- Subkategori dari kategori induk yang sedang dibuka --}}
+                @if ($openParent?->children->isNotEmpty())
+                    <div class="no-scrollbar -mx-4 mt-5 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+                        <div class="mx-auto flex w-max items-center gap-2">
+                            <a href="{{ $categoryUrl($openParent->slug) }}"
+                               @class(['chip px-3.5 py-1.5 text-xs max-lg:min-h-9', 'chip-active' => $activeCategory->is($openParent)])>Semua {{ $openParent->name }}</a>
+                            @foreach ($openParent->children as $child)
+                                <a href="{{ $categoryUrl($child->slug) }}"
+                                   @class(['chip px-3.5 py-1.5 text-xs max-lg:min-h-9', 'chip-active' => $activeCategory->is($child)])>{{ $child->name }} <span class="opacity-50">{{ $child->products_count }}</span></a>
+                            @endforeach
+                        </div>
                     </div>
                 @endif
             </div>
-
-            {{-- Kategori: tab bergaris bawah --}}
-            @if ($categories->isNotEmpty())
-                <div class="shop-container">
-                    <nav class="no-scrollbar -mx-4 flex gap-6 overflow-x-auto px-4 sm:mx-0 sm:gap-8 sm:px-0" aria-label="Kategori">
-                        @php($tab = 'relative flex min-h-12 shrink-0 items-center gap-1.5 pb-0.5 text-sm whitespace-nowrap transition')
-                        <a href="{{ $categoryUrl(null) }}" @class([$tab, 'font-semibold text-ink after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-ink' => ! $activeCategory, 'text-stone-500 hover:text-ink' => $activeCategory])>
-                            Semua
-                        </a>
-                        @foreach ($categories as $category)
-                            @php($on = $openParent?->is($category))
-                            <a href="{{ $categoryUrl($category->slug) }}" @class([$tab, 'font-semibold text-ink after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-ink' => $on, 'text-stone-500 hover:text-ink' => ! $on]) @if ($on) aria-current="page" @endif>
-                                {{ $category->name }} <span class="text-xs font-normal text-stone-400">{{ $category->products_count }}</span>
-                            </a>
-                        @endforeach
-                    </nav>
-                </div>
-            @endif
-
-            {{-- Subkategori --}}
-            @if ($openParent?->children->isNotEmpty())
-                <div class="border-t border-stone-100 bg-sand-50">
-                    <div class="shop-container no-scrollbar flex items-center gap-2 overflow-x-auto py-3">
-                        <span class="eyebrow mr-1 shrink-0 text-stone-400">Jenis</span>
-                        <a href="{{ $categoryUrl($openParent->slug) }}"
-                           @class(['chip px-3.5 py-1.5 text-xs max-lg:min-h-9', 'chip-active' => $activeCategory->is($openParent)])>Semua {{ $openParent->name }}</a>
-                        @foreach ($openParent->children as $child)
-                            <a href="{{ $categoryUrl($child->slug) }}"
-                               @class(['chip px-3.5 py-1.5 text-xs max-lg:min-h-9', 'chip-active' => $activeCategory->is($child)])>{{ $child->name }} <span class="opacity-50">{{ $child->products_count }}</span></a>
-                        @endforeach
-                    </div>
-                </div>
-            @endif
         </section>
 
-        {{-- Bar filter horizontal (lengket di bawah navbar) --}}
-        <div class="sticky top-16 z-30 border-b border-stone-200/70 bg-white/95 backdrop-blur-md lg:top-[72px]">
+        {{-- Bar alat (lengket di bawah navbar): filter, filter cepat, jumlah, urutan --}}
+        <div class="sticky top-16 z-30 border-b border-stone-200/80 bg-white/95 backdrop-blur-md lg:top-[72px]">
             <div class="shop-container flex h-[60px] items-center gap-2">
-                {{-- Mobile: satu tombol membuka bottom sheet --}}
-                <button type="button" @click="filters = true" class="inline-flex min-h-10 items-center gap-2 rounded-full border border-stone-300 px-4 text-sm font-medium text-ink lg:hidden">
-                    <x-icon name="filter" class="size-4" /> Filter
-                    @if ($filterCount)
-                        <span class="grid size-5 place-items-center rounded-full bg-ink text-[10px] text-white">{{ $filterCount }}</span>
+                <button type="button" @click="filters = true" class="inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-ink pr-4 pl-3.5 text-sm font-medium text-white transition hover:bg-navy-800" aria-haspopup="dialog">
+                    <x-icon name="filter" class="size-4" />
+                    <span>Filter<span class="hidden sm:inline"> &amp; urutkan</span></span>
+                    @if ($filterCount + ($activeCollection ? 1 : 0))
+                        <span class="grid size-5 place-items-center rounded-full bg-brand-400 text-[10px] font-semibold text-ink">{{ $filterCount + ($activeCollection ? 1 : 0) }}</span>
                     @endif
                 </button>
 
-                {{-- Desktop: pil filter cepat --}}
-                <div class="hidden items-center gap-2 lg:flex">
-                    <a href="{{ $toggleUrl('tersedia') }}" @class(['chip px-3.5 py-2', 'chip-active' => request()->boolean('tersedia')]) @if (request()->boolean('tersedia')) aria-pressed="true" @endif>
+                <div class="hidden items-center gap-2 md:flex">
+                    <a href="{{ $toggleUrl('tersedia') }}" @class(['chip h-10 px-3.5 py-0', 'chip-active' => request()->boolean('tersedia')]) @if (request()->boolean('tersedia')) aria-pressed="true" @endif>
                         <x-icon name="check" class="size-4" /> Tersedia
                     </a>
-                    <a href="{{ $toggleUrl('promo') }}" @class(['chip px-3.5 py-2', 'chip-active' => request()->boolean('promo')]) @if (request()->boolean('promo')) aria-pressed="true" @endif>
+                    <a href="{{ $toggleUrl('promo') }}" @class(['chip h-10 px-3.5 py-0', 'chip-active' => request()->boolean('promo')]) @if (request()->boolean('promo')) aria-pressed="true" @endif>
                         <x-icon name="tag" class="size-4" /> Diskon
                     </a>
-
-                    <div class="relative" x-data="{ open: false }" @click.outside="open = false" @keydown.escape="open = false">
-                        <button type="button" @click="open = ! open" :aria-expanded="open" @class(['chip px-3.5 py-2', 'chip-active' => $hasPrice])>
-                            Harga
-                            @if ($hasPrice)
-                                <span class="font-normal opacity-75">· {{ $activeFilters['harga'] ? \Illuminate\Support\Str::after($activeFilters['harga'], 'Harga: ') : '' }}</span>
-                            @endif
-                            <x-icon name="chevron-down" class="size-4 transition" ::class="open && 'rotate-180'" />
-                        </button>
-                        <form x-show="open" x-cloak x-transition.opacity method="GET" action="{{ route('products.index') }}"
-                              x-data="{ min: @js(\App\Support\FormField::thousands($minPrice)), max: @js(\App\Support\FormField::thousands($maxPrice)) }"
-                              class="absolute top-full left-0 mt-2 w-80 rounded-2xl border border-stone-200 bg-white p-5 shadow-xl shadow-ink/10">
-                            @foreach (Arr::except($baseQuery, ['harga_min', 'harga_max']) as $key => $value)
-                                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                            @endforeach
-                            <p class="eyebrow text-stone-500">Rentang harga</p>
-                            <div class="mt-3 grid grid-cols-2 gap-2">
-                                @foreach ($pricePresets as [$label, $from, $to])
-                                    <button type="button" @click="min = @js(\App\Support\FormField::thousands($from)); max = @js(\App\Support\FormField::thousands($to))"
-                                            :class="min == @js(\App\Support\FormField::thousands($from)) && max == @js(\App\Support\FormField::thousands($to)) ? '!border-ink !bg-ink !text-white' : ''"
-                                            class="rounded-xl border border-stone-200 px-3 py-2 text-xs font-medium transition hover:border-stone-400">{{ $label }}</button>
-                                @endforeach
-                            </div>
-                            <div class="mt-3 grid grid-cols-2 gap-2">
-                                <label class="sr-only" for="d_harga_min">Harga minimum</label>
-                                <input id="d_harga_min" type="text" name="harga_min" x-model="min" x-money placeholder="Min Rp" class="input rounded-xl py-2 text-sm">
-                                <label class="sr-only" for="d_harga_max">Harga maksimum</label>
-                                <input id="d_harga_max" type="text" name="harga_max" x-model="max" x-money placeholder="Maks Rp" class="input rounded-xl py-2 text-sm">
-                            </div>
-                            <div class="mt-4 flex items-center justify-between">
-                                <a href="{{ route('products.index', Arr::except($baseQuery, ['harga_min', 'harga_max'])) }}" class="link-underline text-xs font-semibold">Reset</a>
-                                <button class="btn btn-ink rounded-full px-5 py-2 text-sm">Terapkan</button>
-                            </div>
-                        </form>
-                    </div>
                 </div>
 
-                <p class="ml-auto hidden text-sm text-stone-500 sm:block">
+                <p class="ml-auto hidden text-sm whitespace-nowrap text-stone-500 sm:block">
                     <span class="font-semibold text-ink">{{ $products->total() }}</span> produk
                 </p>
 
-                <form method="GET" x-data @change="$el.submit()" class="ml-auto flex items-center sm:ml-3">
+                <form method="GET" x-data @change="$el.submit()" class="ml-auto flex min-w-0 items-center sm:ml-3">
                     @foreach (Arr::except($baseQuery, 'urut') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
-                    <label for="sort" class="sr-only">Urutkan</label>
-                    <div class="relative">
-                        <x-icon name="chevron-up-down" class="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-stone-500" />
-                        <select id="sort" name="urut" class="min-h-10 rounded-full border-stone-200 bg-white py-2 pr-9 pl-10 text-base font-medium focus:border-ink focus:ring-ink/10 lg:text-sm">
-                            @foreach ($sorts as $key => $label)
-                                <option value="{{ $key }}" @selected($sort === $key)>{{ $label }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <label for="sort" class="mr-2 hidden text-sm text-stone-500 lg:block">Urutkan</label>
+                    <select id="sort" name="urut" class="h-10 min-w-0 rounded-full border-stone-200 bg-white py-0 pr-9 pl-4 text-base font-medium focus:border-ink focus:ring-ink/10 lg:text-sm">
+                        @foreach ($sorts as $key => $label)
+                            <option value="{{ $key }}" @selected($sort === $key)>{{ $label }}</option>
+                        @endforeach
+                    </select>
                 </form>
             </div>
         </div>
 
-        <div class="shop-container pt-6 pb-4 lg:pt-8">
-            @if ($activeFilters)
-                <div class="mb-6 flex flex-wrap items-center gap-2">
+        <div class="shop-container pt-6 pb-4 lg:pt-10">
+            @if ($activeFilters || $activeCollection)
+                <div class="mb-7 flex flex-wrap items-center gap-2">
+                    @if ($activeCollection && ! isset($activeFilters['koleksi']))
+                        <a href="{{ $collectionUrl(null) }}" class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1.5 text-xs font-medium text-ink ring-1 ring-brand-200 hover:bg-brand-100">
+                            Koleksi: {{ $activeCollection->name }} <x-icon name="x" class="size-3.5" /><span class="sr-only">Hapus filter</span>
+                        </a>
+                    @endif
                     @foreach ($activeFilters as $key => $label)
                         @php($without = $key === 'harga' ? Arr::except($baseQuery, ['harga_min', 'harga_max']) : Arr::except($baseQuery, $key))
-                        <a href="{{ route('products.index', $without) }}" class="inline-flex items-center gap-1.5 rounded-full bg-sand-100 px-3 py-1.5 text-xs font-medium text-ink hover:bg-sand-200">
+                        <a href="{{ route('products.index', $without) }}" class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1.5 text-xs font-medium text-ink ring-1 ring-brand-200 hover:bg-brand-100">
                             {{ $label }} <x-icon name="x" class="size-3.5" /><span class="sr-only">Hapus filter</span>
                         </a>
                     @endforeach
-                    @if (count($activeFilters) > 1)
-                        <a href="{{ route('products.index', Arr::only($baseQuery, ['kategori', 'koleksi'])) }}" class="link-underline px-1 text-xs font-semibold">Hapus semua</a>
+                    @if (count($activeFilters) + ($activeCollection && ! isset($activeFilters['koleksi']) ? 1 : 0) > 1)
+                        <a href="{{ route('products.index', Arr::only($baseQuery, ['kategori'])) }}" class="link-underline px-1 text-xs font-semibold">Hapus semua</a>
                     @endif
                 </div>
             @endif
 
             @if ($products->isEmpty())
-                <div class="rounded-2xl border border-dashed border-stone-300">
+                <div class="rounded-3xl border border-dashed border-stone-300 bg-sand-50">
                     <x-empty-state icon="search" title="Produk tidak ditemukan" description="Coba kata kunci lain atau kurangi filter yang dipakai.">
                         <a href="{{ route('products.index') }}" class="btn btn-ink btn-pill">Lihat semua produk</a>
                     </x-empty-state>
                 </div>
             @else
-                <div class="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-6 sm:gap-y-10 md:grid-cols-3 lg:grid-cols-4">
+                <div class="grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-7 lg:gap-y-12">
                     @foreach ($products as $product)
                         <x-product-card :product="$product" :eager="$loop->index < 4" />
                     @endforeach
@@ -246,71 +214,90 @@
             @endif
         </div>
 
-        {{-- Bottom sheet filter (mobile) --}}
-        <div x-show="filters" x-cloak class="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+        {{-- Panel filter & urutan: lembar bawah di HP, laci kanan di desktop --}}
+        <div x-show="filters" x-cloak class="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
             <div x-show="filters" x-transition.opacity @click="filters = false" class="absolute inset-0 bg-ink/40 backdrop-blur-sm"></div>
             <form x-show="filters"
-                  x-transition:enter="transition duration-300 ease-out" x-transition:enter-start="translate-y-full" x-transition:enter-end="translate-y-0"
-                  x-transition:leave="transition duration-200 ease-in" x-transition:leave-start="translate-y-0" x-transition:leave-end="translate-y-full"
+                  x-transition:enter="transition duration-300 ease-out" x-transition:enter-start="max-lg:translate-y-full lg:translate-x-full" x-transition:enter-end="max-lg:translate-y-0 lg:translate-x-0"
+                  x-transition:leave="transition duration-200 ease-in" x-transition:leave-start="max-lg:translate-y-0 lg:translate-x-0" x-transition:leave-end="max-lg:translate-y-full lg:translate-x-full"
                   method="GET" action="{{ route('products.index') }}"
+                  @submit="[...$el.elements].forEach((field) => { if (field.name && ! field.value) field.disabled = true })"
                   x-data="{ min: @js(\App\Support\FormField::thousands($minPrice)), max: @js(\App\Support\FormField::thousands($maxPrice)) }"
-                  class="absolute inset-x-0 bottom-0 flex max-h-[88svh] flex-col rounded-t-3xl bg-white">
-                @foreach (Arr::only($baseQuery, ['q', 'kategori', 'koleksi']) as $key => $value)
+                  class="absolute inset-x-0 bottom-0 flex max-h-[88svh] flex-col rounded-t-3xl bg-white lg:inset-y-0 lg:right-0 lg:left-auto lg:max-h-none lg:w-[420px] lg:rounded-none lg:rounded-l-3xl">
+                @foreach (Arr::only($baseQuery, ['q', 'kategori']) as $key => $value)
                     <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                 @endforeach
-                <div class="flex items-center justify-between px-5 pt-3 pb-2">
-                    <span class="absolute top-2 left-1/2 h-1 w-10 -translate-x-1/2 rounded-full bg-stone-200" aria-hidden="true"></span>
-                    <p id="sheet-title" class="display mt-3 text-xl">Filter</p>
-                    <button type="button" @click="filters = false" class="-mr-2 mt-3 grid size-10 place-items-center rounded-full hover:bg-sand-100" aria-label="Tutup filter"><x-icon name="x" /></button>
+                <div class="relative flex items-center justify-between px-5 pt-4 pb-3 lg:px-7 lg:pt-7">
+                    <span class="absolute top-2 left-1/2 h-1 w-10 -translate-x-1/2 rounded-full bg-stone-200 lg:hidden" aria-hidden="true"></span>
+                    <p id="sheet-title" class="display mt-2 text-2xl lg:mt-0 lg:text-3xl">Filter &amp; urutkan</p>
+                    <button type="button" @click="filters = false" class="-mr-2 mt-2 grid size-10 place-items-center rounded-full hover:bg-sand-100 lg:mt-0" aria-label="Tutup filter"><x-icon name="x" /></button>
                 </div>
 
-                <div class="flex-1 space-y-6 overflow-y-auto px-5 pt-2 pb-6">
-                    <div role="group" aria-labelledby="m-sort">
-                        <p id="m-sort" class="eyebrow text-stone-500">Urutkan</p>
+                <div class="flex-1 space-y-7 overflow-y-auto overscroll-contain px-5 pt-2 pb-6 lg:px-7">
+                    <div role="group" aria-labelledby="f-sort">
+                        <p id="f-sort" class="eyebrow text-stone-500">Urutkan</p>
                         <div class="mt-3 grid grid-cols-2 gap-2">
                             @foreach ($sorts as $key => $label)
                                 <label class="cursor-pointer">
                                     <input type="radio" name="urut" value="{{ $key }}" class="peer sr-only" @checked($sort === $key)>
-                                    <span class="flex min-h-11 items-center justify-center rounded-xl border border-stone-200 px-3 text-center text-sm font-medium peer-checked:border-ink peer-checked:bg-ink peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400">{{ $label }}</span>
+                                    <span class="{{ $sheetTone }}">{{ $label }}</span>
                                 </label>
                             @endforeach
                         </div>
                     </div>
 
-                    <div role="group" aria-labelledby="m-show">
-                        <p id="m-show" class="eyebrow text-stone-500">Tampilkan</p>
+                    @if ($collections->isNotEmpty())
+                        <div role="group" aria-labelledby="f-collection">
+                            <p id="f-collection" class="eyebrow text-stone-500">Koleksi</p>
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="koleksi" value="" class="peer sr-only" @checked(! $activeCollection)>
+                                    <span class="{{ $sheetTone }} rounded-full px-4">Semua</span>
+                                </label>
+                                @foreach ($collections as $item)
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="koleksi" value="{{ $item->slug }}" class="peer sr-only" @checked($activeCollection?->is($item))>
+                                        <span class="{{ $sheetTone }} rounded-full px-4">{{ $item->name }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <div role="group" aria-labelledby="f-show">
+                        <p id="f-show" class="eyebrow text-stone-500">Tampilkan</p>
                         <div class="mt-3 grid grid-cols-2 gap-2">
                             <label class="cursor-pointer">
                                 <input type="checkbox" name="tersedia" value="1" class="peer sr-only" @checked(request()->boolean('tersedia'))>
-                                <span class="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-stone-200 text-sm font-medium peer-checked:border-ink peer-checked:bg-ink peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400"><x-icon name="check" class="size-4" /> Tersedia</span>
+                                <span class="{{ $sheetTone }}"><x-icon name="check" class="size-4" /> Tersedia</span>
                             </label>
                             <label class="cursor-pointer">
                                 <input type="checkbox" name="promo" value="1" class="peer sr-only" @checked(request()->boolean('promo'))>
-                                <span class="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-stone-200 text-sm font-medium peer-checked:border-ink peer-checked:bg-ink peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400"><x-icon name="tag" class="size-4" /> Sedang diskon</span>
+                                <span class="{{ $sheetTone }}"><x-icon name="tag" class="size-4" /> Sedang diskon</span>
                             </label>
                         </div>
                     </div>
 
-                    <div role="group" aria-labelledby="m-price">
-                        <p id="m-price" class="eyebrow text-stone-500">Harga</p>
+                    <div role="group" aria-labelledby="f-price">
+                        <p id="f-price" class="eyebrow text-stone-500">Harga</p>
                         <div class="mt-3 grid grid-cols-2 gap-2">
                             @foreach ($pricePresets as [$label, $from, $to])
                                 <button type="button" @click="min = @js(\App\Support\FormField::thousands($from)); max = @js(\App\Support\FormField::thousands($to))"
                                         :class="min == @js(\App\Support\FormField::thousands($from)) && max == @js(\App\Support\FormField::thousands($to)) ? '!border-ink !bg-ink !text-white' : ''"
-                                        class="min-h-11 rounded-xl border border-stone-200 px-3 text-sm font-medium">{{ $label }}</button>
+                                        class="min-h-11 rounded-xl border border-stone-200 px-3 text-sm font-medium transition hover:border-stone-400">{{ $label }}</button>
                             @endforeach
                         </div>
                         <div class="mt-3 grid grid-cols-2 gap-2">
                             <label class="sr-only" for="harga_min">Harga minimum</label>
-                            <input id="harga_min" type="text" name="harga_min" x-model="min" x-money placeholder="Min Rp" class="input text-base">
+                            <input id="harga_min" type="text" name="harga_min" x-model="min" x-money placeholder="Min Rp" class="input text-base lg:text-sm">
                             <label class="sr-only" for="harga_max">Harga maksimum</label>
-                            <input id="harga_max" type="text" name="harga_max" x-model="max" x-money placeholder="Maks Rp" class="input text-base">
+                            <input id="harga_max" type="text" name="harga_max" x-model="max" x-money placeholder="Maks Rp" class="input text-base lg:text-sm">
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-[auto_1fr] gap-2 border-t border-stone-200 px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
-                    <a href="{{ route('products.index', Arr::only($baseQuery, ['q', 'kategori', 'koleksi'])) }}" class="btn btn-outline rounded-full px-6 py-3">Reset</a>
+                <div class="grid grid-cols-[auto_1fr] gap-2 border-t border-stone-200 px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] lg:px-7 lg:py-5">
+                    <a href="{{ route('products.index', Arr::only($baseQuery, ['q', 'kategori'])) }}" class="btn btn-outline rounded-full px-6 py-3">Reset</a>
                     <button class="btn btn-ink rounded-full py-3">Tampilkan produk</button>
                 </div>
             </form>

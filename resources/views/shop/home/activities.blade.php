@@ -1,67 +1,40 @@
-{{-- "Belanja per koleksi": koleksi (atau kategori) — satu ubin besar + ubin kecil. Warna ubin kosong = palet kalem bawaan. --}}
+{{-- "Belanja per koleksi": ubin berbingkai lengkung mihrab, digeser ke samping bila tidak muat --}}
 @use('App\Support\Storefront')
 @if ($activities->isNotEmpty())
-    <section class="shop-container section-gap" aria-labelledby="home-categories">
-        <div class="flex items-end justify-between gap-4">
-            <div>
-                <p class="kicker">{{ Storefront::text('activities_eyebrow', $activitiesKind === 'collections' ? 'Koleksi' : 'Kategori') }}</p>
+    <section class="section-gap" aria-labelledby="home-categories">
+        <div class="shop-container">
+            <div class="section-head">
+                <span class="ornament-mark" aria-hidden="true"><span class="size-1.5 rotate-45 bg-current"></span></span>
+                <p class="eyebrow mt-3 text-brand-700">{{ Storefront::text('activities_eyebrow', $activitiesKind === 'collections' ? 'Koleksi' : 'Kategori') }}</p>
                 <h2 id="home-categories" class="section-title">{{ Storefront::text('activities_title', 'Belanja per koleksi') }}</h2>
             </div>
-            <a href="{{ route('products.index') }}" class="link-arrow hidden sm:inline-flex">Semua produk <x-icon name="arrow-right" class="size-4" /></a>
-        </div>
-        <ul class="mt-7 grid auto-rows-[148px] grid-cols-2 gap-3 sm:mt-9 sm:auto-rows-[180px] sm:gap-4 lg:auto-rows-[200px] lg:grid-cols-4">
-            @foreach ($activities as $tile)
-                @php
-                    [$tone, $iconTone] = $tile['tone'] ?? ($loop->first ? ['bg-ink text-white', 'text-brand-400/50'] : ['bg-sand-100 text-ink', 'text-ink/10']);
-                    $big = $loop->first;
-                @endphp
-                <li @class(['col-span-2 row-span-2' => $big])>
-                    <a href="{{ $tile['url'] }}"
-                       class="group relative flex size-full flex-col justify-between overflow-hidden rounded-2xl p-4 transition duration-300 sm:p-6 {{ $tile['image'] ? 'bg-ink text-white' : $tone }}">
-                        @if ($tile['image'])
-                            <img src="{{ $tile['image'] }}" alt="" loading="lazy" class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-[1.03]">
-                            <span class="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent"></span>
-                        @else
-                            <x-category-icon :name="$tile['icon']" :for="$tile['for']" :stroke="$big ? 0.6 : 0.9" @class(['absolute transition duration-500 group-hover:-translate-y-1', $iconTone, 'top-14 -right-4 size-36 sm:top-16 sm:right-6 sm:size-52 lg:size-60' => $big, '-right-2 -bottom-2 size-20 sm:-right-3 sm:-bottom-3 sm:size-28' => ! $big]) />
-                        @endif
-                        <span class="relative flex items-start justify-between gap-3">
-                            @if ($big)
-                                <span class="kicker text-current opacity-70">{{ $tile['count'] }} produk</span>
-                            @else
-                                <span></span>
-                            @endif
-                            <span class="grid size-9 shrink-0 place-items-center rounded-full bg-white text-ink opacity-90 transition group-hover:opacity-100 sm:size-10">
-                                <x-icon name="arrow-right" class="size-4 -rotate-45 transition group-hover:rotate-0" />
+            <ul class="no-scrollbar -mx-4 mt-8 grid snap-x auto-cols-[42%] grid-flow-col justify-center-safe gap-3 overflow-x-auto scroll-px-4 px-4 pb-2 sm:mx-0 sm:auto-cols-[28%] sm:gap-5 sm:scroll-px-0 sm:px-0 lg:mt-12 lg:auto-cols-[calc((100%-6*1.5rem)/7)] lg:gap-6">
+                @foreach ($activities as $tile)
+                    @php($photo = $tile['image'] ?? $tile['cover'] ?? null)
+                    <li class="snap-start">
+                        <a href="{{ $tile['url'] }}" class="group block text-center">
+                            <span class="arch relative grid aspect-[3/4] place-items-center overflow-hidden bg-sand-100 ring-1 ring-sand-200 transition group-hover:ring-brand-300">
+                                <x-category-icon :name="$tile['icon']" :for="$tile['for']" :stroke="1" class="size-14 text-brand-400 sm:size-16" />
+                                @if ($photo)
+                                    <img src="{{ $photo }}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"
+                                         class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-[1.04]">
+                                @endif
                             </span>
+                            <span class="mt-3 block font-display text-lg leading-tight font-semibold text-ink transition group-hover:text-brand-700 sm:text-xl">{{ $tile['name'] }}</span>
+                            <span class="mt-0.5 block text-xs text-stone-500">{{ $tile['count'] }} produk</span>
+                        </a>
+                    </li>
+                @endforeach
+                <li class="snap-start">
+                    <a href="{{ route('products.index') }}" class="group block text-center">
+                        <span class="arch grid aspect-[3/4] place-items-center border border-dashed border-brand-300 bg-white transition group-hover:border-ink">
+                            <span class="grid size-12 place-items-center rounded-full bg-ink text-white transition group-hover:scale-105"><x-icon name="arrow-right" class="size-5" /></span>
                         </span>
-                        <span class="relative">
-                            <span @class(['block font-display font-bold tracking-tight', 'text-3xl leading-none sm:text-5xl' => $big, 'text-base leading-tight sm:text-lg' => ! $big])>{{ $tile['name'] }}</span>
-                            @if ($big && $tile['tagline'])
-                                <span class="mt-3 block max-w-sm text-sm opacity-75 sm:text-base">{{ $tile['tagline'] }}</span>
-                            @endif
-                            @unless ($big)
-                                <span class="mt-0.5 block text-xs opacity-60">{{ $tile['count'] }} produk</span>
-                            @endunless
-                            @if ($tile['chips'])
-                                <span class="mt-5 hidden flex-wrap gap-1.5 sm:flex">
-                                    @foreach ($tile['chips'] as $chip)
-                                        <span class="rounded-full px-3 py-1 text-xs font-medium ring-1 ring-current/25">{{ $chip['label'] }}</span>
-                                    @endforeach
-                                </span>
-                            @endif
-                        </span>
+                        <span class="mt-3 block font-display text-lg leading-tight font-semibold text-ink sm:text-xl">Semua produk</span>
+                        <span class="mt-0.5 block text-xs text-stone-500">Jelajahi katalog</span>
                     </a>
                 </li>
-            @endforeach
-            <li>
-                <a href="{{ route('products.index') }}" class="group flex size-full flex-col justify-between rounded-2xl border border-dashed border-stone-300 p-4 transition hover:border-ink sm:p-6">
-                    <span class="grid size-9 place-items-center rounded-full bg-ink text-white sm:size-10"><x-icon name="arrow-right" class="size-4 transition group-hover:translate-x-0.5" /></span>
-                    <span>
-                        <span class="block font-display text-base leading-tight font-bold tracking-tight sm:text-lg">Semua produk</span>
-                        <span class="mt-0.5 block text-xs text-stone-500">Jelajahi katalog lengkap</span>
-                    </span>
-                </a>
-            </li>
-        </ul>
+            </ul>
+        </div>
     </section>
 @endif

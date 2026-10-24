@@ -1,25 +1,19 @@
-{{-- Best Seller: korsel geser dengan nomor peringkat --}}
+{{-- Best Seller: judul rata tengah + kisi produk berperingkat (HP 4 produk, tablet/desktop 8) --}}
 @if ($bestSellers->isNotEmpty())
-    <section @class(['section-gap' => true, '!mt-10 lg:!mt-16' => $first]) aria-labelledby="home-best"
-             x-data="{ go(d) { const t = this.$refs.track; t.scrollBy({ left: d * t.clientWidth * 0.8, behavior: 'smooth' }) } }">
-        <div class="shop-container flex items-end justify-between gap-4">
-            <div>
-                @if ($eyebrow = \App\Support\Storefront::text('best_eyebrow'))<p class="kicker">{{ $eyebrow }}</p>@endif
-                <h2 id="home-best" class="section-title">{{ \App\Support\Storefront::text('best_title', 'Best Seller') }}</h2>
-            </div>
-            <div class="flex items-center gap-2">
-                <a href="{{ route('products.best-sellers') }}" class="link-arrow mr-1 sm:mr-3">Lihat semua <x-icon name="arrow-right" class="size-4" /></a>
-                <button type="button" @click="go(-1)" class="hidden size-11 place-items-center rounded-full border border-stone-200 transition hover:border-ink sm:grid" aria-label="Geser ke kiri"><x-icon name="arrow-left" class="size-[18px]" /></button>
-                <button type="button" @click="go(1)" class="hidden size-11 place-items-center rounded-full border border-stone-200 transition hover:border-ink sm:grid" aria-label="Geser ke kanan"><x-icon name="arrow-right" class="size-[18px]" /></button>
-            </div>
+    <section class="shop-container section-gap" aria-labelledby="home-best">
+        <div class="section-head">
+            <span class="ornament-mark" aria-hidden="true"><span class="size-1.5 rotate-45 bg-current"></span></span>
+            @if ($eyebrow = \App\Support\Storefront::text('best_eyebrow'))<p class="eyebrow mt-3 text-brand-700">{{ $eyebrow }}</p>@endif
+            <h2 id="home-best" class="section-title">{{ \App\Support\Storefront::text('best_title', 'Best Seller') }}</h2>
         </div>
-        <div class="shop-container mt-7 sm:mt-9">
-            <div x-ref="track" class="no-scrollbar -mx-4 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:scroll-px-0 sm:gap-6 sm:px-0">
-                @foreach ($bestSellers as $product)
-                    <x-product-tile :product="$product" :eager="$loop->index < 4" :rank="$loop->iteration <= 10 && (\App\Services\Storefront\BestSellers::isManual() || ($product->sold_count ?? 0) > 0) ? $loop->iteration : null"
-                                    class="w-[46%] shrink-0 snap-start sm:w-[31%] lg:w-[calc((100%-4.5rem)/4)]" />
-                @endforeach
-            </div>
+        <div class="mt-8 grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-5 md:grid-cols-4 lg:mt-12 lg:gap-x-7 lg:gap-y-12">
+            @foreach ($bestSellers->take(8) as $product)
+                <x-product-card :product="$product" :eager="$loop->index < 4" :rank="$loop->iteration <= 10 && (\App\Services\Storefront\BestSellers::isManual() || ($product->sold_count ?? 0) > 0) ? $loop->iteration : null"
+                                :class="$loop->iteration > 4 ? 'max-md:hidden' : ''" />
+            @endforeach
+        </div>
+        <div class="mt-10 text-center lg:mt-12">
+            <a href="{{ route('products.best-sellers') }}" class="btn btn-outline btn-pill min-h-12 px-7">Lihat semua best seller <x-icon name="arrow-right" class="size-4" /></a>
         </div>
     </section>
 @else
