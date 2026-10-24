@@ -1,13 +1,15 @@
 {{-- Kartu artikel untuk daftar artikel & beranda. --}}
 @props(['article', 'eager' => false, 'large' => false])
 <article {{ $attributes->class(['group relative flex flex-col', 'lg:grid lg:grid-cols-12 lg:items-center lg:gap-10' => $large]) }}>
-    <div @class(['relative overflow-hidden rounded-lg bg-sand-100', 'aspect-[16/10]' => ! $large, 'aspect-[16/10] lg:col-span-7 lg:aspect-[16/9]' => $large])>
+    <div @class(['relative overflow-hidden rounded-2xl bg-sand-100', 'aspect-[16/10]' => ! $large, 'aspect-[16/10] lg:col-span-7 lg:aspect-[16/9]' => $large])>
         @if ($article->coverUrl())
             <img src="{{ $article->coverUrl() }}" alt="" @unless ($eager) loading="lazy" @endunless decoding="async"
                  class="size-full object-cover transition duration-700 group-hover:scale-[1.03]">
         @else
-            <div class="grid size-full place-items-center bg-gradient-to-br from-brand-50 to-sand-100">
-                <x-logo variant="mark" class="h-12 opacity-30 grayscale" aria-hidden="true" />
+            <div class="relative grid size-full place-items-center overflow-hidden bg-ink">
+                <span class="absolute -top-10 -right-10 size-40 rounded-full border-[18px] border-brand-400/80" aria-hidden="true"></span>
+                <span class="absolute bottom-6 left-8 size-8 rounded-full bg-volt" aria-hidden="true"></span>
+                <x-logo variant="mark" class="relative h-12" aria-hidden="true" />
             </div>
         @endif
     </div>

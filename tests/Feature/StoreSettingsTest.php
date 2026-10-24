@@ -27,15 +27,15 @@ class StoreSettingsTest extends TestCase
     private function payload(array $overrides = []): array
     {
         return array_merge([
-            'name' => 'MGA',
-            'full_name' => 'Media Gudang Acc',
+            'name' => 'NuFit',
+            'full_name' => 'NuFit Indonesia',
             'tagline' => 'Gudangnya aksesoris',
-            'email' => 'halo@mga.test',
+            'email' => 'halo@nufit.test',
             'whatsapp' => '0812-3456-7890',
             'address' => 'Jl. Dago No. 1, Bandung',
-            'instagram' => 'https://instagram.com/mga.official/',
-            'tiktok' => '@mga.tiktok',
-            'facebook' => 'https://facebook.com/mga',
+            'instagram' => 'https://instagram.com/nufit.official/',
+            'tiktok' => '@nufit.tiktok',
+            'facebook' => 'https://facebook.com/nufit',
             'province_id' => '',
             'city_id' => '',
             'district_id' => '',
@@ -61,8 +61,8 @@ class StoreSettingsTest extends TestCase
             ->assertSessionHasNoErrors();
 
         $this->assertSame('6281234567890', config('shop.whatsapp'));
-        $this->assertSame('mga.official', config('shop.instagram'));
-        $this->assertSame('mga.tiktok', config('shop.tiktok'));
+        $this->assertSame('nufit.official', config('shop.instagram'));
+        $this->assertSame('nufit.tiktok', config('shop.tiktok'));
         $this->assertSame(['jne', 'sicepat'], config('shop.shipping.couriers'));
         $this->assertTrue(config('shop.shipping.tracking_sync'));
         $this->assertSame(12, config('shop.payment.expiry_hours'));

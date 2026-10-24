@@ -130,7 +130,7 @@ class MidtransWebhookTest extends TestCase
         $payload['signature_key'] = 'palsu';
         $this->postJson(route('webhooks.midtrans'), $payload)->assertForbidden();
 
-        $this->notify('MGA-TIDAK-ADA', 'settlement')->assertNotFound();
+        $this->notify('NF-TIDAK-ADA', 'settlement')->assertNotFound();
 
         // Signature valid tapi nominal berbeda dari tagihan: tidak dianggap lunas.
         $this->notify($order->code, 'settlement', gross: '1000.00')->assertOk();
@@ -346,7 +346,7 @@ class MidtransWebhookTest extends TestCase
         ];
     }
 
-    /** "MGA-261023-ABCDE-2" → "MGA-261023-ABCDE" */
+    /** "NF-261023-ABCDE-2" → "NF-261023-ABCDE" */
     private function orderCode(string $orderId): string
     {
         return implode('-', array_slice(explode('-', $orderId), 0, 3));

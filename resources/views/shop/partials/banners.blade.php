@@ -1,9 +1,9 @@
 {{-- Slider banner promo (dikelola di Admin › Banner). --}}
 @php($count = $banners->count())
-<section class="shop-container mt-10 lg:mt-16" aria-roledescription="carousel" aria-label="Promo"
+<section class="shop-container mt-14 lg:mt-24" aria-roledescription="carousel" aria-label="Promo"
          x-data="bannerCarousel({ count: {{ $count }} })"
          @mouseenter="stop()" @mouseleave="play()" @focusin="stop()" @focusout="play()" @touchstart.passive="stop()">
-    <div class="relative">
+    <div class="relative overflow-hidden rounded-3xl">
         <div x-ref="track" @scroll.debounce.100ms="onScroll()" class="no-scrollbar flex snap-x snap-mandatory overflow-x-auto">
             @foreach ($banners as $banner)
                 @php($href = $banner->href())
@@ -21,13 +21,13 @@
                         @if ($banner->show_text)
                             <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent sm:bg-gradient-to-r sm:from-black/60 sm:via-black/20"></div>
                             <div class="absolute inset-x-5 bottom-6 text-white sm:inset-x-10 sm:bottom-auto sm:top-1/2 sm:max-w-xl sm:-translate-y-1/2 lg:inset-x-14">
-                                <p class="eyebrow text-white/80">Promo</p>
+                                <p class="eyebrow inline-flex items-center gap-2 text-white/85"><span class="size-1.5 rounded-full bg-volt"></span>Promo</p>
                                 <h2 class="display mt-2 text-3xl leading-[0.95] sm:text-5xl lg:text-6xl">{{ $banner->title }}</h2>
                                 @if ($banner->subtitle)
                                     <p class="mt-3 max-w-md text-sm text-white/85 sm:text-base">{{ $banner->subtitle }}</p>
                                 @endif
                                 @if ($href && $banner->button_label)
-                                    <span class="btn btn-light btn-pill mt-5 sm:mt-6">{{ $banner->button_label }} <x-icon name="arrow-right" class="size-4 transition group-hover:translate-x-1" /></span>
+                                    <span class="btn btn-brand btn-pill mt-5 sm:mt-6">{{ $banner->button_label }} <x-icon name="arrow-right" class="size-4 transition group-hover:translate-x-1" /></span>
                                 @endif
                             </div>
                         @endif
@@ -53,7 +53,7 @@
             @foreach ($banners as $banner)
                 <button type="button" @click="go({{ $loop->index }})" aria-label="Tampilkan banner {{ $loop->iteration }}"
                         :aria-current="index === {{ $loop->index }}"
-                        :class="index === {{ $loop->index }} ? 'w-6 bg-ink' : 'w-1.5 bg-stone-300 hover:bg-stone-400'"
+                        :class="index === {{ $loop->index }} ? 'w-6 bg-brand-500' : 'w-1.5 bg-stone-300 hover:bg-stone-400'"
                         class="h-1.5 rounded-full transition-all"></button>
             @endforeach
         </div>

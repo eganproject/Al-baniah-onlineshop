@@ -15,7 +15,7 @@
             <section class="card space-y-5 p-6">
                 <div class="flex items-center gap-3">
                     <span class="grid size-10 place-items-center rounded-xl bg-brand-50 text-brand-600"><x-icon name="photo" /></span>
-                    <div><h2 class="font-bold text-stone-900">Foto hero</h2><p class="text-xs text-stone-500">Tampil selebar layar. Tanpa foto, beranda memakai ilustrasi bawaan MGA.</p></div>
+                    <div><h2 class="font-bold text-stone-900">Foto hero</h2><p class="text-xs text-stone-500">Tampil selebar layar. Tanpa foto, beranda memakai ilustrasi bawaan NuFit.</p></div>
                 </div>
                 <x-form.image-upload name="hero_image" label="Foto utama (desktop)" optional :current="$images['hero_image']"
                     remove-name="remove_hero_image" aspect="aspect-video" :max-kb="5120"
@@ -58,7 +58,7 @@
 
             <div class="flex gap-3 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-800">
                 <x-icon name="info" class="size-5 shrink-0" />
-                <p>Link diawali <code class="font-mono">/</code> untuk halaman toko, mis. <code class="font-mono">/produk?kategori=casing</code>, atau <code class="font-mono">https://</code> untuk link luar.</p>
+                <p>Link diawali <code class="font-mono">/</code> untuk halaman toko, mis. <code class="font-mono">/produk?kategori=running</code>, atau <code class="font-mono">https://</code> untuk link luar.</p>
             </div>
 
             <div class="card sticky top-20 p-4">

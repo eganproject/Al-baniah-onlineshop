@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Deploy ulang MGA Online Shop di VPS (jalankan dari folder aplikasi):
+# Deploy ulang NuFit Online Shop di VPS (jalankan dari folder aplikasi):
 #   bash deploy/deploy.sh
 # Asumsi: kode diambil dari git, Node.js tersedia untuk build aset.
 set -euo pipefail

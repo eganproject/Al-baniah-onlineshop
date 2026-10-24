@@ -20,6 +20,14 @@ Route::get('/produk/{product}', [Shop\ProductController::class, 'show'])->name('
 Route::get('/artikel', [Shop\ArticleController::class, 'index'])->name('articles.index');
 Route::get('/artikel/{article}', [Shop\ArticleController::class, 'show'])->name('articles.show');
 
+// Alamat berbahasa Inggris yang sering diketik/dibagikan diarahkan ke versi Indonesia.
+Route::permanentRedirect('/login', '/masuk');
+Route::permanentRedirect('/register', '/daftar');
+Route::permanentRedirect('/cart', '/keranjang');
+Route::permanentRedirect('/products', '/produk');
+Route::permanentRedirect('/shop', '/produk');
+Route::permanentRedirect('/blog', '/artikel');
+
 Route::get('/sitemap.xml', Shop\SitemapController::class)->name('sitemap');
 Route::get('/robots.txt', Shop\RobotsController::class)->name('robots');
 

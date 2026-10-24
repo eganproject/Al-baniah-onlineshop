@@ -1,6 +1,6 @@
-{{-- Logo lengkap MGA untuk header/halaman publik. Lihat <x-logo>. --}}
+{{-- Logo lengkap NuFit untuk header/halaman publik. Lihat <x-logo>. --}}
 @props(['dark' => false, 'size' => 'md'])
 <x-logo :dark="$dark" {{ $attributes->class([
-    'h-10 lg:h-12' => $size === 'md',
-    'h-14 sm:h-16' => $size === 'lg',
+    'h-8 lg:h-9' => $size === 'md',
+    'h-11 sm:h-12' => $size === 'lg',
 ]) }} />

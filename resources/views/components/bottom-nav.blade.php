@@ -49,9 +49,9 @@
             <a href="{{ route('cart.index') }}" class="group -mt-5 flex flex-col items-center gap-1 focus-visible:outline-none"
                aria-label="Keranjang ({{ $cartCount }} barang)" @if ($cartActive) aria-current="page" @endif>
                 <span @class([
-                    'relative grid size-14 place-items-center rounded-full text-white shadow-lg ring-4 ring-white transition group-active:scale-95 group-focus-visible:ring-brand-200',
-                    'bg-brand-700 shadow-brand-700/40' => $cartActive,
-                    'bg-brand-600 shadow-brand-600/30' => ! $cartActive,
+                    'relative grid size-14 place-items-center rounded-full shadow-lg ring-4 ring-white transition group-active:scale-95 group-focus-visible:ring-brand-200',
+                    'bg-brand-400 text-ink shadow-brand-500/40' => $cartActive,
+                    'bg-ink text-brand-400 shadow-ink/30' => ! $cartActive,
                 ])>
                     <x-icon name="bag" class="size-6" />
                     @if ($cartCount > 0)
@@ -72,7 +72,7 @@
                         <x-icon :name="$item['icon']" class="size-6" />
                         @if (! empty($item['wishlist']))
                             <span x-show="count > 0" x-text="count > 99 ? '99+' : count" @if (! $wishlistCount) x-cloak @endif
-                                  class="absolute -right-2.5 -top-1.5 grid min-w-[18px] place-items-center rounded-full bg-brand-600 px-1 text-[10px] leading-[18px] font-bold text-white ring-2 ring-white">{{ $wishlistCount }}</span>
+                                  class="absolute -right-2.5 -top-1.5 grid min-w-[18px] place-items-center rounded-full bg-ink px-1 text-[10px] leading-[18px] font-bold text-white ring-2 ring-white">{{ $wishlistCount }}</span>
                         @endif
                     </span>
                     <span>{{ $item['label'] }}</span>

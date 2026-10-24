@@ -17,7 +17,7 @@ class OrderFactory extends Factory
         $shipping = fake()->randomElement([9000, 12000, 18000, 24000]);
 
         return [
-            'code' => 'MGA-'.now()->format('ymd').'-'.Str::upper(Str::random(6)),
+            'code' => 'NF-'.now()->format('ymd').'-'.Str::upper(Str::random(6)),
             'user_id' => User::factory(),
             'status' => OrderStatus::Paid,
             'subtotal' => $subtotal,

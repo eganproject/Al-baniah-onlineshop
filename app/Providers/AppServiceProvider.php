@@ -77,7 +77,9 @@ class AppServiceProvider extends ServiceProvider
             $view->with([
                 'cartCount' => app(CartService::class)->count(),
                 'wishlistCount' => app(WishlistService::class)->count(),
-                'navCategories' => Category::active()->root()->orderBy('sort_order')->get(['id', 'name', 'slug']),
+                'navCategories' => Category::active()->root()->orderBy('sort_order')
+                    ->with(['children' => fn ($q) => $q->active()->orderBy('sort_order')->select(['id', 'parent_id', 'name', 'slug'])])
+                    ->get(['id', 'name', 'slug']),
             ]);
         });
     }

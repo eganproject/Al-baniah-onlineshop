@@ -8,9 +8,12 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'name' => 'MGA',
-    'full_name' => 'Media Gudang Acc',
-    'tagline' => 'Gudangnya aksesoris gadget original & terjangkau',
+    'name' => 'NuFit',
+    'full_name' => 'NuFit Indonesia',
+    'tagline' => 'Aksesoris olahraga untuk hidup yang lebih aktif',
+    // Slogan brand, tampil di beranda & footer.
+    'motto' => 'Healthy Body • Healthy Mind • Happy Life',
+    'hashtag' => '#BEFITWITHNUFIT',
     'whatsapp' => env('SHOP_WHATSAPP'),
     // Alamat gudang/pengirim, dicetak di invoice dan packing slip.
     'address' => env('SHOP_ADDRESS'),
@@ -33,7 +36,7 @@ return [
     | Semua nilai di sini bisa diubah dari Admin › Tampilan Beranda; isi di
     | sini/.env hanya nilai bawaan.
     | hero_image / hero_image_mobile: path di disk public, path di folder
-    | public/, atau URL. Kosong = ilustrasi bawaan MGA.
+    | public/, atau URL. Kosong = ilustrasi bawaan NuFit.
     | hero_text: "light" (teks putih, untuk foto gelap) atau "dark".
     | announcements: teks yang bergantian di bar paling atas.
     |
@@ -42,17 +45,17 @@ return [
     'storefront' => [
         'hero_image' => env('SHOP_HERO_IMAGE'),
         'hero_image_mobile' => env('SHOP_HERO_IMAGE_MOBILE'),
-        'hero_eyebrow' => 'Koleksi terbaru MGA',
-        'hero_title' => 'Aksesoris original, harga gudang.',
-        'hero_subtitle' => 'Casing, charger, kabel, dan audio yang awet dipakai setiap hari.',
+        'hero_eyebrow' => 'Koleksi baru NuFit',
+        'hero_title' => 'Gerak lebih bebas, hidup lebih sehat.',
+        'hero_subtitle' => 'Perlengkapan lari, yoga, pilates, renang, padel, dan workout yang nyaman dipakai setiap latihan.',
         'hero_primary_label' => 'Belanja sekarang',
         'hero_primary_url' => '/produk',
         'hero_secondary_label' => 'Lihat promo',
         'hero_secondary_url' => '/produk?promo=1',
         'hero_text' => 'light',
         'announcements' => [
-            'Kirim ke seluruh Indonesia',
-            'Produk 100% original & bergaransi',
+            'Gratis ongkir untuk belanja minimal Rp75.000 pakai kode ONGKIRGRATIS',
+            'Diskon 10% untuk pembelian pertama: pakai kode HEMAT10',
             'Bayar mudah: transfer bank, e-wallet & QRIS',
         ],
         // Tab Best Seller: "auto" (terlaris 90 hari) atau "manual" (pilihan admin, berurutan).
@@ -156,7 +159,7 @@ return [
 
     'seo' => [
         'indexing' => (bool) env('SEO_INDEXING', true),
-        'description' => env('SEO_DESCRIPTION', 'Belanja aksesoris HP & gadget original: casing, charger, kabel data, earphone, powerbank. Harga terjangkau, kirim ke seluruh Indonesia.'),
+        'description' => env('SEO_DESCRIPTION', 'NuFit Indonesia: aksesoris olahraga untuk lari, yoga, pilates, renang, padel, hiking, dan workout. Nyaman, berkualitas, kirim ke seluruh Indonesia.'),
         'default_image' => env('SEO_DEFAULT_IMAGE') ?: 'images/brand/og-default.png',
     ],
 

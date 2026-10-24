@@ -51,9 +51,9 @@
             <div class="-mx-4 min-w-0 sm:mx-0 lg:col-span-7">
                 <div class="relative">
                     @if ($product->images->isEmpty())
-                        <x-product-image :product="$product" :eager="true" class="aspect-square sm:aspect-[4/5]" />
+                        <x-product-image :product="$product" :eager="true" class="aspect-square sm:aspect-[4/5] sm:rounded-3xl" />
                     @else
-                        <div class="relative aspect-square overflow-hidden bg-sand-100 sm:aspect-[4/5]">
+                        <div class="relative aspect-square overflow-hidden bg-sand-100 sm:aspect-[4/5] sm:rounded-3xl">
                             @foreach ($product->images as $index => $image)
                                 <img src="{{ $image->url() }}" alt="{{ $product->name }} — foto {{ $index + 1 }}"
                                      @if ($index > 0) loading="lazy" x-cloak @endif decoding="async"
@@ -68,15 +68,15 @@
                         @endif
                     @endif
                     <template x-if="discount">
-                        <span class="absolute left-4 top-4 bg-brand-600 px-2.5 py-1 text-[11px] font-bold tracking-wider text-white uppercase" x-text="`Hemat ${discount}%`"></span>
+                        <span class="absolute left-4 top-4 rounded-full bg-accent-500 px-3 py-1 text-[11px] font-bold tracking-wider text-white uppercase" x-text="`Hemat ${discount}%`"></span>
                     </template>
                 </div>
                 @if ($product->images->count() > 1)
                     <div class="no-scrollbar mt-3 flex gap-2 overflow-x-auto px-4 sm:px-0">
                         @foreach ($product->images as $index => $image)
                             <button type="button" @click="active = {{ $index }}"
-                                    class="size-16 shrink-0 overflow-hidden border-2 transition sm:size-20"
-                                    :class="active === {{ $index }} ? 'border-ink' : 'border-transparent opacity-60 hover:opacity-100'"
+                                    class="size-16 shrink-0 overflow-hidden rounded-xl border-2 transition sm:size-20"
+                                    :class="active === {{ $index }} ? 'border-brand-400' : 'border-transparent opacity-60 hover:opacity-100'"
                                     aria-label="Lihat foto {{ $index + 1 }}">
                                 <img src="{{ $image->url() }}" alt="" loading="lazy" class="size-full object-cover">
                             </button>
@@ -89,9 +89,9 @@
             <div class="lg:col-span-5">
                 <div class="lg:sticky lg:top-28">
                     @if ($product->category)
-                        <a href="{{ route('products.index', ['kategori' => $product->category->slug]) }}" class="eyebrow text-stone-500 hover:text-ink">{{ $product->category->name }}</a>
+                        <a href="{{ route('products.index', ['kategori' => $product->category->slug]) }}" class="eyebrow inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-brand-700 hover:bg-brand-100"><x-sport-icon :for="$product->category->name.' '.($product->category->parent?->name)" class="size-3.5" />{{ $product->category->name }}</a>
                     @endif
-                    <h1 class="mt-2 font-display text-3xl leading-[1.05] font-extrabold tracking-tight sm:text-4xl">{{ $product->name }}</h1>
+                    <h1 class="mt-3 font-display text-3xl leading-[1.05] font-extrabold tracking-tight sm:text-4xl">{{ $product->name }}</h1>
                     @if ($product->hasReviews())
                         <a href="#ulasan" class="mt-3 inline-flex items-center gap-2 text-sm">
                             <x-star-rating :rating="$product->rating_avg" />
@@ -101,7 +101,7 @@
                     @endif
 
                     <div class="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                        <p class="text-2xl font-semibold" :class="compareAt && 'text-brand-700'">
+                        <p class="text-3xl font-extrabold tracking-tight" :class="compareAt && 'text-accent-600'">
                             @if ($priceRange)<span x-show="!selected" class="text-base font-medium text-stone-500">Mulai</span>@endif
                             <span x-text="rupiah(price)">@rupiah($product->price)</span>
                         </p>
@@ -153,14 +153,14 @@
                                        class="w-12 border-0 bg-transparent p-0 text-center text-base font-semibold lg:text-sm focus:ring-0 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none">
                                 <button type="button" @click="qty = Math.min(max, qty + 1)" class="grid size-11 place-items-center rounded-full hover:bg-sand-100" aria-label="Tambah"><x-icon name="plus" class="size-4" /></button>
                             </div>
-                            <p x-ref="variantHint" x-show="needsVariant" class="mt-4 hidden text-sm font-medium text-brand-700">Pilih {{ mb_strtolower($product->variant_label ?: 'varian') }} terlebih dahulu.</p>
+                            <p x-ref="variantHint" x-show="needsVariant" class="mt-4 hidden text-sm font-medium text-accent-600">Pilih {{ mb_strtolower($product->variant_label ?: 'varian') }} terlebih dahulu.</p>
                             <div class="mt-6 grid gap-3">
-                                <button class="btn btn-ink btn-pill w-full py-4 text-[15px]">Tambah ke keranjang</button>
-                                <button name="buy_now" value="1" class="btn btn-outline btn-pill w-full py-4 text-[15px]">Beli sekarang</button>
+                                <button class="btn btn-brand btn-pill w-full py-4 text-[15px]"><x-icon name="bag" class="size-5" /> Tambah ke keranjang</button>
+                                <button name="buy_now" value="1" class="btn btn-ink btn-pill w-full py-4 text-[15px]">Beli sekarang</button>
                             </div>
                         </form>
                     @else
-                        <div class="mt-8 bg-sand-100 p-5 text-sm text-stone-600">
+                        <div class="mt-8 rounded-2xl bg-sand-100 p-5 text-sm text-stone-600">
                             Produk ini sedang habis.
                             @if (config('shop.whatsapp'))
                                 <a href="https://wa.me/{{ config('shop.whatsapp') }}?text={{ urlencode('Halo, kapan '.$product->name.' tersedia lagi?') }}" target="_blank" rel="noopener" class="link-underline font-semibold text-ink">Tanya ketersediaan</a>
@@ -170,9 +170,9 @@
 
                     <x-wishlist-button :product="$product" variant="button" class="mt-3" />
 
-                    <ul class="mt-8 grid grid-cols-3 gap-2 border-y border-stone-200 py-5 text-center text-xs font-medium text-stone-600">
-                        @foreach ([['shield', 'Original'], ['truck', 'Kirim se-Indonesia'], ['refresh', 'Garansi tukar']] as [$icon, $label])
-                            <li class="flex flex-col items-center gap-2"><x-icon :name="$icon" class="size-6 text-ink" /> {{ $label }}</li>
+                    <ul class="mt-8 grid grid-cols-3 gap-2 rounded-2xl bg-sand-50 py-5 text-center text-xs font-medium text-stone-600">
+                        @foreach ([['shield', 'Produk resmi'], ['truck', 'Kirim se-Indonesia'], ['refresh', 'Garansi tukar 7 hari']] as [$icon, $label])
+                            <li class="flex flex-col items-center gap-2 px-1"><span class="grid size-10 place-items-center rounded-full bg-white text-brand-600 shadow-xs"><x-icon :name="$icon" class="size-5" /></span> {{ $label }}</li>
                         @endforeach
                     </ul>
 
@@ -182,7 +182,7 @@
                             'desc' => $product->description ? ['Deskripsi', null] : null,
                             'detail' => ['Detail produk', null],
                             'ship' => ['Pengiriman & pembayaran', 'Pesanan dikirim dari gudang kami dengan kurir pilihanmu (JNE, SiCepat, J&T, POS, dan lainnya). Ongkir dihitung otomatis saat checkout. Bayar dengan transfer bank, e-wallet, atau QRIS.'],
-                            'warranty' => ['Garansi', 'Semua produk original. Produk cacat pabrik bisa ditukar, cukup hubungi CS kami dengan menyertakan nomor pesanan.'],
+                            'warranty' => ['Garansi', 'Produk resmi NuFit. Produk cacat produksi bisa ditukar dalam 7 hari setelah diterima, cukup hubungi CS kami dengan menyertakan nomor pesanan.'],
                         ]);
                     @endphp
                     <div class="divide-y divide-stone-200 border-b border-stone-200" x-data="{ open: @js(array_key_first($sections)) }">
@@ -240,7 +240,7 @@
                     <p class="truncate text-xs text-stone-500">{{ $product->name }}</p>
                     <p class="text-sm font-semibold">{{ $priceRange ? 'Mulai ' : '' }}@rupiah($product->price)</p>
                 </div>
-                <button form="add-to-cart" class="btn btn-ink rounded-full px-6 py-3">Tambah ke keranjang</button>
+                <button form="add-to-cart" class="btn btn-brand rounded-full px-6 py-3"><x-icon name="bag" class="size-4" /> Tambah ke keranjang</button>
             </div>
         </div>
     @endif

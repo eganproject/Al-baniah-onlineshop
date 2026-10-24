@@ -10,7 +10,7 @@
         <x-cart-notices :notices="$adjustments" class="mt-6" />
 
         @if ($lines->isEmpty())
-            <x-empty-state icon="bag" title="Keranjangmu masih kosong" description="Yuk, temukan aksesoris favoritmu dan tambahkan ke keranjang." class="py-20">
+            <x-empty-state icon="bag" title="Keranjangmu masih kosong" description="Yuk, temukan perlengkapan latihan favoritmu dan tambahkan ke keranjang." class="py-20">
                 <a href="{{ route('products.index') }}" class="btn btn-ink btn-pill">Mulai belanja</a>
             </x-empty-state>
         @else
@@ -20,9 +20,9 @@
                         <li class="flex gap-4 py-6 sm:gap-6">
                             <a href="{{ route('products.show', $line->product) }}" class="group w-24 shrink-0 sm:w-32">
                                 @if ($line->variant?->image)
-                                    <img src="{{ $line->imageUrl() }}" alt="{{ $line->product->name }}" class="aspect-[4/5] w-full object-cover">
+                                    <img src="{{ $line->imageUrl() }}" alt="{{ $line->product->name }}" class="aspect-[4/5] w-full rounded-2xl object-cover">
                                 @else
-                                    <x-product-image :product="$line->product" class="aspect-[4/5]" />
+                                    <x-product-image :product="$line->product" class="aspect-[4/5] rounded-2xl" />
                                 @endif
                             </a>
                             <div class="flex min-w-0 flex-1 flex-col">
@@ -64,7 +64,7 @@
                 </ul>
 
                 <div class="lg:col-span-4">
-                    <div class="bg-sand-50 p-6 lg:sticky lg:top-28 lg:mt-6">
+                    <div class="rounded-3xl bg-sand-50 p-6 lg:sticky lg:top-28 lg:mt-6">
                         <h2 class="font-display text-lg font-extrabold tracking-tight uppercase">Ringkasan</h2>
                         <dl class="mt-5 space-y-3 text-sm">
                             <div class="flex justify-between"><dt class="text-stone-500">Subtotal</dt><dd class="font-semibold">@rupiah($subtotal)</dd></div>
@@ -74,11 +74,11 @@
                         <div class="mt-5 flex justify-between border-t border-stone-200 pt-5 text-base font-semibold">
                             <span>Total</span><span>@rupiah($subtotal)</span>
                         </div>
-                        <a href="{{ route('checkout.index') }}" class="btn btn-ink btn-pill mt-6 w-full py-4">Checkout <x-icon name="arrow-right" class="size-4" /></a>
+                        <a href="{{ route('checkout.index') }}" class="btn btn-brand btn-pill mt-6 w-full py-4">Checkout <x-icon name="arrow-right" class="size-4" /></a>
                         <a href="{{ route('products.index') }}" class="link-underline mx-auto mt-2 block w-fit py-3 text-center text-sm font-semibold lg:mt-4 lg:py-0">Lanjut belanja</a>
                         <ul class="mt-6 space-y-2 border-t border-stone-200 pt-5 text-xs text-stone-500">
                             <li class="flex items-center gap-2"><x-icon name="lock" class="size-4" /> Pembayaran aman & terenkripsi</li>
-                            <li class="flex items-center gap-2"><x-icon name="shield" class="size-4" /> Produk original bergaransi</li>
+                            <li class="flex items-center gap-2"><x-icon name="refresh" class="size-4" /> Garansi tukar 7 hari bila cacat produksi</li>
                         </ul>
                     </div>
                 </div>

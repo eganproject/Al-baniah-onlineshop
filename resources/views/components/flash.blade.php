@@ -3,6 +3,10 @@
     bersama (window.confirmDialog / atribut data-confirm). Dipasang sekali di layout dasar.
 --}}
 @php
+    // Halaman error (mis. 404 untuk URL yang tidak punya route) dirender tanpa
+    // middleware web, jadi $errors bisa belum dibagikan ke view.
+    $errors ??= new \Illuminate\Support\ViewErrorBag;
+
     $messages = collect([
         ['success', session('success')],
         ['success', session('status')],

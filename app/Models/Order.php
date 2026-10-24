@@ -130,7 +130,7 @@ class Order extends Model
     public static function generateCode(): string
     {
         do {
-            $code = 'MGA-'.now()->format('ymd').'-'.Str::upper(Str::random(5));
+            $code = 'NF-'.now()->format('ymd').'-'.Str::upper(Str::random(5));
         } while (static::where('code', $code)->exists());
 
         return $code;

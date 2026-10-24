@@ -21,7 +21,7 @@
         @csrf
         <button type="submit" class="{{ $buttonClasses }}" :aria-pressed="on.toString()" aria-pressed="{{ $on ? 'true' : 'false' }}"
                 :aria-label="on ? 'Hapus dari wishlist' : 'Simpan ke wishlist'" aria-label="{{ $on ? 'Hapus dari wishlist' : 'Simpan ke wishlist' }}">
-            <x-icon name="heart" class="{{ $iconClasses }} transition {{ $on ? 'fill-brand-600 text-brand-600' : '' }}" x-bind:class="{ 'fill-brand-600 text-brand-600': on }" />
+            <x-icon name="heart" class="{{ $iconClasses }} transition {{ $on ? 'fill-accent-500 text-accent-500' : '' }}" x-bind:class="{ 'fill-accent-500 text-accent-500': on }" />
             @if ($variant === 'button')
                 <span x-text="on ? 'Tersimpan di wishlist' : 'Simpan ke wishlist'">{{ $on ? 'Tersimpan di wishlist' : 'Simpan ke wishlist' }}</span>
             @endif

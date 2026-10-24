@@ -32,7 +32,7 @@
             @csrf
             <div class="min-w-0 space-y-6 lg:col-span-2">
                 {{-- Alamat --}}
-                <section class="border border-stone-200 p-4 sm:p-6">
+                <section class="rounded-3xl border border-stone-200 p-4 sm:p-6">
                     <div class="flex items-center justify-between gap-3">
                         <h2 class="flex items-center gap-2 font-display text-base font-extrabold tracking-tight uppercase sm:text-lg"><x-icon name="map-pin" class="size-5 text-ink" /> Alamat pengiriman</h2>
                         @if ($addresses->isNotEmpty())
@@ -47,8 +47,8 @@
                     @else
                         <div class="mt-4 grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Alamat pengiriman">
                             @foreach ($addresses as $item)
-                                <label class="relative block cursor-pointer border-2 p-4 text-sm transition"
-                                       :class="addressId === '{{ $item->id }}' ? 'border-ink bg-sand-50' : 'border-stone-200 hover:border-stone-300'">
+                                <label class="relative block cursor-pointer rounded-2xl border-2 p-4 text-sm transition"
+                                       :class="addressId === '{{ $item->id }}' ? 'border-brand-400 bg-brand-50/60' : 'border-stone-200 hover:border-stone-300'">
                                     <input type="radio" name="address_id" value="{{ $item->id }}" class="sr-only"
                                            @checked($address?->is($item)) @change="changeAddress({{ $item->id }})">
                                     <span class="flex items-center gap-2 font-semibold text-stone-900">
@@ -71,7 +71,7 @@
                 </section>
 
                 {{-- Pengiriman --}}
-                <section class="border border-stone-200 p-4 sm:p-6" aria-live="polite">
+                <section class="rounded-3xl border border-stone-200 p-4 sm:p-6" aria-live="polite">
                     <div class="flex flex-wrap items-end justify-between gap-2">
                         <h2 class="flex items-center gap-2 font-display text-base font-extrabold tracking-tight uppercase sm:text-lg"><x-icon name="truck" class="size-5 text-ink" /> Pilih pengiriman</h2>
                         <p class="text-xs text-stone-500">Total berat {{ number_format(max($weight, 1) / 1000, 2, ',', '.') }} kg</p>
@@ -109,9 +109,9 @@
 
                             <div class="mt-3 grid gap-2" role="radiogroup" aria-label="Layanan pengiriman">
                                 <template x-for="item in visibleRates" :key="item.key">
-                                    <label class="flex min-w-0 cursor-pointer items-center gap-3 border p-3 transition sm:p-4"
-                                           :class="selected === item.key ? 'border-ink bg-sand-50' : 'border-stone-200 hover:border-stone-300'">
-                                        <input type="radio" name="shipping" :value="item.key" x-model="selected" class="text-ink focus:ring-ink/20">
+                                    <label class="flex min-w-0 cursor-pointer items-center gap-3 rounded-2xl border p-3 transition sm:p-4"
+                                           :class="selected === item.key ? 'border-brand-400 bg-brand-50/60' : 'border-stone-200 hover:border-stone-300'">
+                                        <input type="radio" name="shipping" :value="item.key" x-model="selected" class="text-brand-600 focus:ring-brand-400/30">
                                         <span class="hidden size-10 shrink-0 place-items-center rounded-full bg-stone-100 text-[11px] min-[400px]:grid sm:grid font-bold tracking-tight text-stone-700 uppercase" x-text="item.courier.slice(0, 4)"></span>
                                         <span class="min-w-0 flex-1">
                                             <span class="flex flex-wrap items-center gap-1.5 text-sm font-semibold text-stone-900">
@@ -143,7 +143,7 @@
                     <x-input-error for="shipping" />
                 </section>
 
-                <section class="border border-stone-200 p-4 sm:p-6">
+                <section class="rounded-3xl border border-stone-200 p-4 sm:p-6">
                     <x-form.textarea name="notes" label="Catatan untuk penjual" optional rows="2" maxlength="500" placeholder="Contoh: warna cadangan hitam" />
                 </section>
             </div>
@@ -157,7 +157,7 @@
                 $initialTotal = max(\App\Services\Promo\VoucherService::MIN_PAYABLE, $subtotal - $initialDiscount + $initialShipping - $initialShippingDiscount);
             @endphp
             <div class="min-w-0 lg:sticky lg:top-24 lg:self-start">
-                <div class="border border-stone-200 p-4 sm:p-6">
+                <div class="rounded-3xl border border-stone-200 p-4 sm:p-6">
                     <h2 class="font-display text-lg font-extrabold tracking-tight uppercase">Ringkasan pesanan</h2>
                     <ul class="mt-4 max-h-64 space-y-3 overflow-y-auto">
                         @foreach ($lines as $line)
@@ -206,7 +206,7 @@
                                 <p class="text-xs text-stone-500">Voucher tersedia</p>
                                 @foreach ($suggestions as ['voucher' => $item, 'error' => $itemError])
                                     <button type="button" @click="applyVoucher(@js($item->code))" :disabled="voucherLoading" @disabled($itemError)
-                                            @class(['flex w-full items-center gap-3 border p-3 text-left transition', 'border-stone-200 hover:border-ink' => ! $itemError, 'cursor-not-allowed border-stone-100 opacity-60' => $itemError])>
+                                            @class(['flex w-full items-center gap-3 rounded-xl border p-3 text-left transition', 'border-stone-200 hover:border-brand-400' => ! $itemError, 'cursor-not-allowed border-stone-100 opacity-60' => $itemError])>
                                         <span class="grid size-9 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600"><x-icon :name="$item->type === \App\Enums\VoucherType::FreeShipping ? 'truck' : 'ticket'" class="size-4" /></span>
                                         <span class="min-w-0 flex-1">
                                             <span class="block text-sm font-semibold text-stone-900">{{ $item->benefitLabel() }}</span>

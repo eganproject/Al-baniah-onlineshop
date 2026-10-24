@@ -3,16 +3,18 @@
     <div class="grid min-h-screen lg:grid-cols-2">
         {{-- Panel brand --}}
         <div class="relative hidden overflow-hidden bg-ink lg:block">
-            <x-logo variant="mark" mono class="pointer-events-none absolute -bottom-8 -left-10 h-80 text-white/[0.05]" aria-hidden="true" />
+            <span class="pointer-events-none absolute -top-32 -right-32 size-[30rem] rounded-full border-[56px] border-brand-400" aria-hidden="true"></span>
+            <span class="pointer-events-none absolute top-72 right-24 size-20 rounded-full bg-volt" aria-hidden="true"></span>
+            <x-logo variant="mark" mono class="pointer-events-none absolute -bottom-10 -left-10 h-72 text-white/[0.05]" aria-hidden="true" />
             <div class="relative flex h-full flex-col justify-between p-12 text-white">
                 <a href="{{ route('home') }}" class="self-start"><x-wordmark dark size="lg" /></a>
                 <div class="max-w-md">
-                    <p class="eyebrow text-accent-400">{{ config('shop.full_name') }}</p>
-                    <h2 class="display mt-4 text-5xl leading-[0.92]">Aksesoris gadget favoritmu, semua di satu gudang.</h2>
-                    <p class="mt-5 text-base text-white/60">Casing, charger, kabel data, earphone, dan banyak lagi. Original, bergaransi, dan harga bersahabat.</p>
+                    <p class="eyebrow text-brand-300">{{ config('shop.hashtag', '#BEFITWITHNUFIT') }}</p>
+                    <h2 class="display mt-4 text-5xl leading-[0.92]">Healthy body, healthy mind, happy life.</h2>
+                    <p class="mt-5 text-base text-white/60">Perlengkapan lari, yoga, pilates, renang, padel, dan workout yang menemani setiap latihanmu.</p>
                     <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/80">
-                        @foreach ([['shield', 'Original'], ['truck', 'Kirim cepat'], ['lock', 'Bayar aman']] as [$icon, $label])
-                            <li class="flex items-center gap-2"><x-icon :name="$icon" class="size-4 text-white/50" /> {{ $label }}</li>
+                        @foreach ([['shield', 'Produk resmi'], ['truck', 'Kirim se-Indonesia'], ['lock', 'Bayar aman']] as [$icon, $label])
+                            <li class="flex items-center gap-2"><x-icon :name="$icon" class="size-4 text-brand-300" /> {{ $label }}</li>
                         @endforeach
                     </ul>
                 </div>

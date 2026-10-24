@@ -27,29 +27,31 @@
 <x-layouts.shop :title="$activeCategory?->name ?? 'Semua Produk'" :description="$metaDescription">
     <div x-data="{ filters: false }">
         {{-- Judul --}}
-        <section class="border-b border-stone-200 bg-sand-50">
-            <div class="shop-container pb-6 pt-8 sm:pt-12">
-                <nav class="flex items-center gap-1.5 text-xs text-stone-500" aria-label="Breadcrumb">
-                    <a href="{{ route('home') }}" class="hover:text-ink">Beranda</a>
+        <section class="relative overflow-hidden bg-ink text-white">
+            <span class="pointer-events-none absolute -top-40 -right-40 size-96 rounded-full border-[40px] border-brand-400/25" aria-hidden="true"></span>
+            <span class="pointer-events-none absolute top-10 right-16 hidden size-10 rounded-full bg-volt md:block" aria-hidden="true"></span>
+            <div class="shop-container relative pb-6 pt-8 sm:pt-12">
+                <nav class="flex items-center gap-1.5 text-xs text-white/55" aria-label="Breadcrumb">
+                    <a href="{{ route('home') }}" class="hover:text-white">Beranda</a>
                     @if ($activeCategory?->parent)
                         <span>/</span>
-                        <a href="{{ route('products.index', ['kategori' => $activeCategory->parent->slug]) }}" class="hover:text-ink">{{ $activeCategory->parent->name }}</a>
+                        <a href="{{ route('products.index', ['kategori' => $activeCategory->parent->slug]) }}" class="hover:text-white">{{ $activeCategory->parent->name }}</a>
                     @endif
                     <span>/</span>
-                    <span class="text-ink">{{ $activeCategory?->name ?? 'Produk' }}</span>
+                    <span class="text-white">{{ $activeCategory?->name ?? 'Produk' }}</span>
                 </nav>
-                <div class="mt-4 flex flex-wrap items-end justify-between gap-3">
+                <div class="mt-4 flex flex-wrap items-end gap-x-4 gap-y-2">
                     <h1 class="display text-4xl leading-[0.92] break-words sm:text-6xl">{{ $heading }}</h1>
-                    <p class="text-sm text-stone-500">{{ $products->total() }} produk</p>
+                    <p class="pb-1 text-sm text-white/60 sm:pb-2">{{ $products->total() }} produk</p>
                 </div>
 
                 {{-- Kategori --}}
                 @if ($categories->isNotEmpty())
                     <div class="no-scrollbar -mx-4 mt-6 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
-                        <a href="{{ route('products.index', \Illuminate\Support\Arr::except($baseQuery, 'kategori')) }}" @class(['chip', 'chip-active' => ! $activeCategory])>Semua</a>
+                        <a href="{{ route('products.index', \Illuminate\Support\Arr::except($baseQuery, 'kategori')) }}" @class(['chip chip-dark', 'chip-active' => ! $activeCategory])>Semua</a>
                         @foreach ($categories as $category)
                             <a href="{{ route('products.index', ['kategori' => $category->slug] + \Illuminate\Support\Arr::except($baseQuery, 'kategori')) }}"
-                               @class(['chip', 'chip-active' => $activeCategory?->is($category) || ($activeCategory && (int) $activeCategory->parent_id === $category->id)])>{{ $category->name }}</a>
+                               @class(['chip chip-dark', 'chip-active' => $activeCategory?->is($category) || ($activeCategory && (int) $activeCategory->parent_id === $category->id)])><x-sport-icon :for="$category->name.' '.$category->slug" class="size-4" /> {{ $category->name }}</a>
                         @endforeach
                     </div>
                     {{-- Subkategori dari kategori induk yang sedang dibuka --}}
@@ -57,10 +59,10 @@
                     @if ($openParent?->children->isNotEmpty())
                         <div class="no-scrollbar -mx-4 mt-3 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
                             <a href="{{ route('products.index', ['kategori' => $openParent->slug] + \Illuminate\Support\Arr::except($baseQuery, 'kategori')) }}"
-                               @class(['chip px-3 py-1.5 text-xs', 'chip-active' => $activeCategory->is($openParent)])>Semua {{ $openParent->name }}</a>
+                               @class(['chip chip-dark px-3 py-1.5 text-xs', 'chip-active' => $activeCategory->is($openParent)])>Semua {{ $openParent->name }}</a>
                             @foreach ($openParent->children as $child)
                                 <a href="{{ route('products.index', ['kategori' => $child->slug] + \Illuminate\Support\Arr::except($baseQuery, 'kategori')) }}"
-                                   @class(['chip px-3 py-1.5 text-xs', 'chip-active' => $activeCategory->is($child)])>{{ $child->name }}</a>
+                                   @class(['chip chip-dark px-3 py-1.5 text-xs', 'chip-active' => $activeCategory->is($child)])>{{ $child->name }}</a>
                             @endforeach
                         </div>
                     @endif
@@ -168,7 +170,7 @@
                 @endif
 
                 @if ($products->isEmpty())
-                    <div class="border border-dashed border-stone-300">
+                    <div class="rounded-3xl border border-dashed border-stone-300">
                         <x-empty-state icon="search" title="Produk tidak ditemukan" description="Coba kata kunci lain atau kurangi filter yang dipakai.">
                             <a href="{{ route('products.index') }}" class="btn btn-ink btn-pill">Lihat semua produk</a>
                         </x-empty-state>

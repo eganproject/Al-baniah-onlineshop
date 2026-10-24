@@ -8,7 +8,7 @@
             </div>
             <a href="{{ route('articles.index') }}" class="link-underline shrink-0 text-sm font-semibold">Semua artikel</a>
         </div>
-        <div class="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 sm:overflow-visible sm:px-0 lg:grid-cols-3">
+        <div class="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 sm:overflow-visible sm:px-0 lg:grid-cols-3">
             @foreach ($latestArticles as $article)
                 <x-article-card :article="$article" class="w-[82%] shrink-0 snap-start sm:w-auto" />
             @endforeach
