@@ -179,13 +179,11 @@
                         </a>
                     @endunless
 
-                    <a href="{{ route('cart.index') }}" class="{{ $iconBtn }} -mr-1 lg:mr-0" aria-label="Keranjang ({{ $cartCount }})">
+                    <a href="{{ route('cart.index') }}" class="{{ $iconBtn }} -mr-1 lg:mr-0" aria-label="Keranjang ({{ $cartCount }})"
+                       x-data="{ count: {{ $cartCount }} }" @cart-updated.window="count = $event.detail.count" :aria-label="`Keranjang (${count})`">
                         <x-icon name="bag" />
-                        @if ($cartCount > 0)
-                            <span class="absolute top-0.5 right-0.5 grid min-w-[18px] place-items-center rounded-full bg-brand-400 px-1 text-[10px] leading-[18px] font-bold text-ink">
-                                {{ $cartCount > 99 ? '99+' : $cartCount }}
-                            </span>
-                        @endif
+                        <span x-show="count > 0" x-text="count > 99 ? '99+' : count" @if (! $cartCount) x-cloak @endif
+                              class="absolute top-0.5 right-0.5 grid min-w-[18px] place-items-center rounded-full bg-brand-400 px-1 text-[10px] leading-[18px] font-bold text-ink">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
                     </a>
                 </div>
             </div>

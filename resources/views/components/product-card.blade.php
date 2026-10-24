@@ -36,7 +36,7 @@
                         <x-icon name="plus" class="size-[18px]" />
                     </a>
                 @else
-                    <form method="POST" action="{{ route('cart.store', $product) }}">
+                    <form method="POST" action="{{ route('cart.store', $product) }}" data-cart-add>
                         @csrf
                         <button class="{{ $addClasses }}" aria-label="Tambah {{ $product->name }} ke keranjang">
                             <x-icon name="plus" class="size-[18px]" />

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Shop;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Services\Cart\CartService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -23,7 +24,11 @@ class CartController extends Controller
         ]);
     }
 
-    public function store(Request $request, Product $product): RedirectResponse
+    /**
+     * Tambah ke keranjang. Dengan JS (Accept: application/json) dibalas JSON supaya
+     * halaman tidak dimuat ulang; tanpa JS kembali ke halaman sebelumnya dengan toast.
+     */
+    public function store(Request $request, Product $product): RedirectResponse|JsonResponse
     {
         abort_unless($product->is_active, 404);
 
@@ -38,23 +43,45 @@ class CartController extends Controller
             $variant = $product->activeVariants()->find($data['variant_id'] ?? 0);
 
             if (! $variant) {
-                return back()->withInput()->with('error', "Pilih {$this->variantLabel($product)} terlebih dahulu.");
+                return $this->failed($request, "Pilih {$this->variantLabel($product)} terlebih dahulu.", withInput: true);
             }
         }
 
         if (! ($variant ?? $product)->inStock()) {
-            return back()->with('error', 'Maaf, stok produk ini sedang habis.');
+            return $this->failed($request, 'Maaf, stok produk ini sedang habis.');
         }
 
-        $this->cart->add($product, $variant, (int) ($data['quantity'] ?? 1));
+        $requested = (int) ($data['quantity'] ?? 1);
+        $key = CartService::key($product->id, $variant?->id);
+        $before = $this->cart->find($key)?->quantity ?? 0;
+        $inCart = $this->cart->add($product, $variant, $requested);
+        $added = $inCart - $before;
 
         if ($request->boolean('buy_now')) {
             return redirect()->route('checkout.index');
         }
 
         $name = $variant ? "{$product->name} ({$variant->name})" : $product->name;
+        $stock = ($variant ?? $product)->stock;
 
-        return back()->with('success', "{$name} ditambahkan ke keranjang.");
+        [$type, $message] = match (true) {
+            $added < 1 => ['warning', "Stok {$name} tinggal {$stock} pcs dan semuanya sudah ada di keranjang."],
+            $added < $requested => ['warning', "Hanya {$added} pcs {$name} yang bisa ditambahkan (stok tinggal {$stock}). Di keranjang: {$inCart} pcs."],
+            $before > 0 => ['success', "{$added} pcs {$name} ditambahkan. Di keranjang sekarang {$inCart} pcs."],
+            default => ['success', "{$added} pcs {$name} ditambahkan ke keranjang."],
+        };
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'type' => $type,
+                'message' => $message,
+                'added' => $added,
+                'line_quantity' => $inCart,
+                'count' => $this->cart->count(),
+            ]);
+        }
+
+        return back()->with($type, $message);
     }
 
     public function update(Request $request, string $line): RedirectResponse
@@ -79,6 +106,17 @@ class CartController extends Controller
         $this->cart->remove($line);
 
         return back()->with('success', ($cartLine?->name() ?? 'Produk').' dihapus dari keranjang.');
+    }
+
+    private function failed(Request $request, string $message, bool $withInput = false): RedirectResponse|JsonResponse
+    {
+        if ($request->expectsJson()) {
+            return response()->json(['type' => 'error', 'message' => $message], 422);
+        }
+
+        $back = back()->with('error', $message);
+
+        return $withInput ? $back->withInput() : $back;
     }
 
     private function variantLabel(Product $product): string
