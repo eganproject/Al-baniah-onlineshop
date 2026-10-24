@@ -13,7 +13,7 @@
         </header>
 
         <main class="flex flex-1 items-center px-5 py-16 sm:px-10">
-            <div class="mx-auto grid w-full max-w-5xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
+            <div class="mx-auto grid w-full max-w-5xl grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
                 <div class="relative order-last lg:order-first" aria-hidden="true">
                     <p class="font-display text-[8rem] leading-none font-bold tracking-[-0.06em] text-sand-200 sm:text-[12rem]">{{ $code }}</p>
                     <span class="absolute bottom-4 left-1 h-1.5 w-24 -skew-x-[30deg] rounded-sm bg-brand-400 sm:bottom-7 sm:w-32"></span>

@@ -105,7 +105,7 @@ sudo certbot --nginx -d nufit.id -d www.nufit.id
 Antrean dipakai untuk email dan pekerjaan latar supaya checkout tetap cepat.
 
 ```bash
-sudo cp deploy/supervisor-worker.conf.example /etc/supervisor/conf.d/mga-worker.conf
+sudo cp deploy/supervisor-worker.conf.example /etc/supervisor/conf.d/nufit-worker.conf
 sudo supervisorctl reread && sudo supervisorctl update
 sudo supervisorctl status
 ```
@@ -225,7 +225,7 @@ Restore:
 
 ```bash
 php artisan down
-gunzip -c db-2026-10-23_020000.sql.gz | mysql -u mga -p nufit_onlineshop
+gunzip -c db-2026-10-23_020000.sql.gz | mysql -u nufit -p nufit_onlineshop
 tar -xzf uploads-2026-10-23_020000.tar.gz -C storage/app
 php artisan optimize:clear && php artisan optimize
 php artisan up

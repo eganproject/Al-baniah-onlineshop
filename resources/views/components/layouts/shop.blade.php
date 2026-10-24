@@ -430,7 +430,7 @@
                         <div>
                             <h3 class="eyebrow text-white/35">Bantuan</h3>
                             <ul class="mt-3 text-sm lg:mt-5 lg:space-y-3">
-                                <li><a href="{{ auth()->check() ? route('account.orders.index') : route('login') }}" class="{{ $footLink }}">Lacak pesanan</a></li>
+                                <li><a href="{{ $user?->isAdmin() ? $accountUrl : ($user ? route('account.orders.index') : route('login')) }}" class="{{ $footLink }}">Lacak pesanan</a></li>
                                 <li><a href="{{ $accountUrl }}" class="{{ $footLink }}">Akun saya</a></li>
                                 <li><a href="{{ route('cart.index') }}" class="{{ $footLink }}">Keranjang</a></li>
                                 <li><a href="{{ route('articles.index') }}" class="{{ $footLink }}">Artikel &amp; tips latihan</a></li>

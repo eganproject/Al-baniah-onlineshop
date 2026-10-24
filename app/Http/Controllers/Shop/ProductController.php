@@ -33,6 +33,11 @@ class ProductController extends Controller
         $minPrice = $request->integer('harga_min') ?: null;
         $maxPrice = $request->integer('harga_max') ?: null;
 
+        // Min & maks tertukar (mis. 500rb – 100rb): tukar supaya hasilnya tidak kosong.
+        if ($minPrice && $maxPrice && $minPrice > $maxPrice) {
+            [$minPrice, $maxPrice] = [$maxPrice, $minPrice];
+        }
+
         $sort = array_key_exists($request->query('urut'), self::SORTS) ? $request->query('urut') : 'terbaru';
 
         $products = Product::active()
