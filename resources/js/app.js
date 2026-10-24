@@ -12,6 +12,7 @@ import articleEditor from './components/article-editor';
 import shareButtons from './components/share-buttons';
 import bestSellerPicker from './components/best-seller-picker';
 import cartAdd from './components/cart-add';
+import cartPage from './components/cart-page';
 
 window.Alpine = Alpine;
 
@@ -33,5 +34,6 @@ Alpine.data('shareButtons', shareButtons);
 Alpine.data('bestSellerPicker', bestSellerPicker);
 
 cartAdd();
+cartPage();
 
 Alpine.start();
