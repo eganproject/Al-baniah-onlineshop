@@ -9,7 +9,7 @@
     'viewportFit' => false,
 ])
 @php
-    $pageTitle = ($title ? $title.' · ' : '').config('shop.name').' - '.config('shop.full_name');
+    $pageTitle = $title ? $title.' · '.config('shop.full_name') : config('shop.full_name').' · '.config('shop.tagline');
     $metaDescription = \Illuminate\Support\Str::limit($description ?: config('shop.seo.description'), 160);
     $canonicalUrl = $canonical ?: \App\Support\Seo::canonical(request());
     $index = ! $noindex && \App\Support\Seo::shouldIndex(request());
@@ -21,7 +21,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1{{ $viewportFit ? ', viewport-fit=cover' : '' }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="theme-color" content="#21939f">
+    <meta name="theme-color" content="#0b1b2b">
     <title>{{ $pageTitle }}</title>
     <meta name="description" content="{{ $metaDescription }}">
     <meta name="robots" content="{{ $index ? 'index, follow, max-image-preview:large' : 'noindex, follow' }}">

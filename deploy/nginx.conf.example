@@ -1,13 +1,13 @@
-# Contoh server block Nginx untuk MGA Online Shop (VPS).
-# Salin ke /etc/nginx/sites-available/mga, sesuaikan domain & path,
-# lalu: ln -s /etc/nginx/sites-available/mga /etc/nginx/sites-enabled/
-# SSL gratis: sudo certbot --nginx -d tokomga.com -d www.tokomga.com
+# Contoh server block Nginx untuk NuFit Online Shop (VPS).
+# Salin ke /etc/nginx/sites-available/nufit, sesuaikan domain & path,
+# lalu: ln -s /etc/nginx/sites-available/nufit /etc/nginx/sites-enabled/
+# SSL gratis: sudo certbot --nginx -d nufit.id -d www.nufit.id
 
 server {
     listen 80;
     listen [::]:80;
-    server_name tokomga.com www.tokomga.com;
-    root /var/www/mga-onlineshop/public;
+    server_name nufit.id www.nufit.id;
+    root /var/www/nufit-onlineshop/public;
 
     index index.php;
     charset utf-8;

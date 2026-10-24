@@ -1,4 +1,4 @@
-# MGA Online Shop — catatan untuk agent
+# NuFit Online Shop — catatan untuk agent
 
 - Laravel 13, PHP 8.3+, MySQL (test pakai SQLite in-memory), Tailwind v4 + Alpine.js, Blade (tanpa Livewire/Inertia).
 - Bahasa UI: Indonesia. Locale `id`, timezone `Asia/Jakarta`.

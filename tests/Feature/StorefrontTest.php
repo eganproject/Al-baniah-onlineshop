@@ -35,12 +35,12 @@ class StorefrontTest extends TestCase
         $this->get(route('home'))->assertOk()
             ->assertSee(asset(Storefront::DEFAULT_IMAGE), false)
             ->assertSee(asset(Storefront::DEFAULT_IMAGE_MOBILE), false)
-            ->assertSee('Aksesoris original, harga gudang.')
+            ->assertSee('Gerak lebih bebas, hidup lebih sehat.')
             ->assertSee('Best Seller')
             ->assertSee('Kategori')
             ->assertSee('Casing HP')
             ->assertSee('Kabel Data')
-            ->assertSee('Produk 100% original &amp; bergaransi', false);
+            ->assertSee('Diskon 10% untuk pembelian pertama: pakai kode HEMAT10', false);
     }
 
     public function test_best_sellers_are_ordered_by_paid_sales_and_filled_with_other_products(): void
@@ -100,7 +100,7 @@ class StorefrontTest extends TestCase
         $this->put(route('admin.storefront.update'), ['hero_text' => 'light', 'remove_hero_image' => 1])->assertSessionHasNoErrors();
         Storage::disk('public')->assertMissing($image);
         $this->assertNull(config('shop.storefront.hero_image'));
-        $this->assertSame('Aksesoris original, harga gudang.', config('shop.storefront.hero_title'));
+        $this->assertSame('Gerak lebih bebas, hidup lebih sehat.', config('shop.storefront.hero_title'));
     }
 
     public function test_storefront_page_requires_promo_permission(): void

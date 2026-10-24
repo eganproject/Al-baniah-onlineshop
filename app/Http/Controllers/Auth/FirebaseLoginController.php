@@ -35,7 +35,7 @@ class FirebaseLoginController extends Controller
         $request->session()->regenerate();
 
         return redirect()->intended(route('account.dashboard'))->with('success', $created
-            ? 'Selamat datang di MGA, '.$user->name.'!'
+            ? 'Selamat datang di NuFit, '.$user->name.'!'
             : 'Halo lagi, '.$user->name.'!');
     }
 }

@@ -9,6 +9,8 @@
 @import '@fontsource/poppins/latin-600.css';
 @import '@fontsource/poppins/latin-700.css';
 @import '@fontsource/poppins/latin-800.css';
+@import '@fontsource/poppins/latin-800-italic.css';
+@import '@fontsource/poppins/latin-900-italic.css';
 @plugin '@tailwindcss/forms';
 
 /* Library form (di-host sendiri lewat npm), ditimpa gaya brand di bawah. */
@@ -21,49 +23,68 @@
 @source '../../app';
 
 /*
- * Warna brand MGA ada di satu tempat ini (diambil dari logo):
- *   brand  = teal  #21939F (brand-500) -> warna utama: tombol, link, fokus
- *   accent = oranye #F68E55 (accent-400) -> aksen: promo, diskon, badge
+ * Warna brand NuFit ada di satu tempat ini (diambil dari logo "nü fit"):
+ *   brand  = cyan #3BCFEB (brand-400, warna logo) -> aksen utama. Untuk
+ *            teks/tombol berlatar putih pakai brand-600/700 supaya kontras.
+ *   accent = coral #FF5A36 (accent-500) -> promo, diskon, badge sale
+ *   volt   = hijau stabilo #D8FF3D -> sentuhan sporty (label "Baru", sorotan)
+ *   ink    = navy gelap #0B1B2B -> teks utama, tombol gelap, footer
+ * `stone` ditimpa jadi abu-abu dingin supaya serasi dengan cyan & navy.
  * Ganti nilai di sini untuk rebranding tanpa menyentuh view.
  */
 @theme {
     --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
 
-    --color-brand-50: #effafb;
-    --color-brand-100: #d6f2f4;
-    --color-brand-200: #b0e4e8;
-    --color-brand-300: #7dcfd6;
-    --color-brand-400: #45b0ba;
-    --color-brand-500: #21939f;
-    --color-brand-600: #1a7f8a;
-    --color-brand-700: #18666f;
-    --color-brand-800: #18535a;
-    --color-brand-900: #17454c;
-    --color-brand-950: #0b2c31;
+    --color-brand-50: #ebfbfe;
+    --color-brand-100: #cdf4fc;
+    --color-brand-200: #a1e9f9;
+    --color-brand-300: #6ddcf3;
+    --color-brand-400: #3bcfeb;
+    --color-brand-500: #17b4d3;
+    --color-brand-600: #0b8fae;
+    --color-brand-700: #0e728c;
+    --color-brand-800: #135d72;
+    --color-brand-900: #154d60;
+    --color-brand-950: #073243;
 
-    --color-accent-50: #fff5ef;
-    --color-accent-100: #ffe8db;
-    --color-accent-200: #fdcdb3;
-    --color-accent-300: #fbae85;
-    --color-accent-400: #f68e55;
-    --color-accent-500: #f2733a;
-    --color-accent-600: #e05a22;
-    --color-accent-700: #ba461b;
-    --color-accent-800: #94391c;
-    --color-accent-900: #77321b;
+    --color-accent-50: #fff3f0;
+    --color-accent-100: #ffe3dc;
+    --color-accent-200: #ffcabd;
+    --color-accent-300: #ffa38f;
+    --color-accent-400: #ff7a5c;
+    --color-accent-500: #ff5a36;
+    --color-accent-600: #ed3d18;
+    --color-accent-700: #c72f10;
+    --color-accent-800: #a42912;
+    --color-accent-900: #872715;
 
-    --color-cream: #fbf8f4;
+    --color-volt: #d8ff3d;
+    --color-volt-dark: #b5dc12;
+
+    --color-stone-50: oklch(98.5% 0.002 247.839);
+    --color-stone-100: oklch(96.7% 0.003 264.542);
+    --color-stone-200: oklch(92.8% 0.006 264.531);
+    --color-stone-300: oklch(87.2% 0.01 258.338);
+    --color-stone-400: oklch(70.7% 0.022 261.325);
+    --color-stone-500: oklch(55.1% 0.027 264.364);
+    --color-stone-600: oklch(44.6% 0.03 256.802);
+    --color-stone-700: oklch(37.3% 0.034 259.733);
+    --color-stone-800: oklch(27.8% 0.033 256.848);
+    --color-stone-900: oklch(21% 0.034 264.665);
+    --color-stone-950: oklch(13% 0.028 261.692);
+
+    --color-cream: #f5f8fa;
 
     /*
-     * Storefront: netral hangat + tinta gelap kehijauan (turunan teal
-     * brand) untuk tampilan editorial yang bersih ala bro.do/Allbirds.
+     * Storefront: netral dingin + tinta navy untuk tampilan sporty yang
+     * bersih. Judul besar (.display) memakai Poppins tebal miring.
      */
     --font-display: 'Poppins', ui-sans-serif, system-ui, sans-serif;
-    --color-ink: #10292d;
-    --color-sand-50: #faf9f6;
-    --color-sand-100: #f4f2ed;
-    --color-sand-200: #e9e5dc;
-    --color-sand-300: #d8d2c4;
+    --color-ink: #0b1b2b;
+    --color-sand-50: #f6f9fb;
+    --color-sand-100: #eef3f7;
+    --color-sand-200: #dfe7ee;
+    --color-sand-300: #c9d5df;
 
     --animate-marquee: marquee 30s linear infinite;
 

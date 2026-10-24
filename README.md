@@ -1,6 +1,6 @@
-# MGA Online Shop
+# NuFit Online Shop
 
-Toko online **Media Gudang Acc (MGA)** berbasis Laravel 13, MySQL, Tailwind CSS v4, dan Alpine.js.
+Toko online **NuFit Indonesia (NuFit)** berbasis Laravel 13, MySQL, Tailwind CSS v4, dan Alpine.js.
 
 ## Fitur saat ini
 
@@ -31,10 +31,10 @@ Akun contoh dari seeder (password: `password`):
 
 | Peran | Email |
 |---|---|
-| Owner (akses penuh) | `admin@mga.test` |
-| Staf Gudang | `gudang@mga.test` |
-| Customer Service | `cs@mga.test` |
-| Pelanggan | `pelanggan@mga.test` |
+| Owner (akses penuh) | `admin@nufit.test` |
+| Staf Gudang | `gudang@nufit.test` |
+| Customer Service | `cs@nufit.test` |
+| Pelanggan | `pelanggan@nufit.test` |
 
 Panel admin punya jabatan staf (Owner, Admin, Staf Gudang, Customer Service).
 Hak akses tiap jabatan ada di `App\Enums\StaffRole::permissions()`; route admin

@@ -66,7 +66,7 @@ class IntegrationTester
         $response = Http::withBasicAuth($serverKey, '')
             ->acceptJson()
             ->timeout(10)
-            ->get($base.'/v2/'.rawurlencode('MGA-TES-'.Str::upper(Str::random(10))).'/status');
+            ->get($base.'/v2/'.rawurlencode('NF-TES-'.Str::upper(Str::random(10))).'/status');
 
         $code = (string) ($response->json('status_code') ?? $response->status());
         $mode = $production ? 'Production' : 'Sandbox';

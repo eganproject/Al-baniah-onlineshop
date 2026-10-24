@@ -355,7 +355,7 @@
                             </ul>
                         </div>
                         <div class="col-span-2 sm:col-span-1">
-                            <h3 class="eyebrow text-white/40">Kenapa MGA</h3>
+                            <h3 class="eyebrow text-white/40">Kenapa NuFit</h3>
                             <ul class="mt-3 text-sm text-white/80 lg:mt-4 lg:space-y-2.5">
                                 <li class="flex min-h-9 items-center gap-2 lg:min-h-0"><x-icon name="shield" class="size-4 text-white/50" /> Original & bergaransi</li>
                                 <li class="flex min-h-9 items-center gap-2 lg:min-h-0"><x-icon name="truck" class="size-4 text-white/50" /> Kirim se-Indonesia</li>
