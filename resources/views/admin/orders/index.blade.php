@@ -46,15 +46,92 @@
         @if ($orders->isEmpty())
             <x-empty-state icon="receipt" title="Tidak ada pesanan" description="Belum ada pesanan yang cocok dengan filter ini." />
         @else
-            <form method="POST" action="{{ route('admin.orders.bulk') }}" x-data="{ selected: [] }">
+            @php
+                // Tombol status massal: muncul bila ada pesanan terpilih dengan status asalnya.
+                $bulkActions = [
+                    'process' => ['status' => \App\Enums\OrderStatus::Paid, 'icon' => 'cube', 'label' => 'Tandai diproses', 'to' => 'diproses'],
+                    'ship' => ['status' => \App\Enums\OrderStatus::Processing, 'icon' => 'truck', 'label' => 'Tandai dikirim', 'to' => 'dikirim'],
+                    'deliver' => ['status' => \App\Enums\OrderStatus::Shipped, 'icon' => 'map-pin', 'label' => 'Tandai sampai tujuan', 'to' => 'sampai tujuan'],
+                    'complete' => ['status' => \App\Enums\OrderStatus::Delivered, 'icon' => 'check-circle', 'label' => 'Tandai selesai', 'to' => 'selesai'],
+                ];
+                $toShip = $orders->getCollection()->filter(fn ($o) => $o->status === \App\Enums\OrderStatus::Processing);
+            @endphp
+            <form id="bulk-orders" method="POST" action="{{ route('admin.orders.bulk') }}"
+                  x-data="{
+                      selected: @js(array_map('strval', (array) old('orders', []))),
+                      statuses: @js($orders->getCollection()->mapWithKeys(fn ($o) => [$o->id => $o->status->value])),
+                      shipOpen: @js(old('action') === 'ship'),
+                      count(status) { return this.selected.filter(id => this.statuses[id] === status).length },
+                      nextField(el) {
+                          const fields = [...document.querySelectorAll('[data-ship-resi]')].filter(i => ! i.disabled);
+                          const next = fields[fields.indexOf(el) + 1];
+                          next ? next.focus() : document.getElementById('bulk-ship-submit')?.focus();
+                      },
+                  }">
                 @csrf
                 <div x-show="selected.length" x-cloak class="flex flex-wrap items-center gap-2 border-b border-stone-100 bg-brand-50/60 px-4 py-3 text-sm">
-                    <span class="font-semibold text-stone-800"><span x-text="selected.length"></span> dipilih</span>
+                    <span class="mr-1 font-semibold text-stone-800"><span x-text="selected.length"></span> dipilih</span>
                     @can('orders.manage')
-                        <button name="action" value="process" class="btn btn-secondary btn-sm"><x-icon name="cube" class="size-4" /> Tandai diproses</button>
+                        @foreach ($bulkActions as $action => $item)
+                            @php $from = $item['status']->value; @endphp
+                            <button @if ($action === 'ship') type="button" @click="shipOpen = true" @else name="action" value="{{ $action }}"
+                                        data-confirm-title="{{ $item['label'] }}?" data-confirm-ok="Ya, {{ mb_strtolower($item['label']) }}"
+                                        x-bind:data-confirm="count('{{ $from }}') + ' pesanan berstatus {{ $item['status']->label() }} akan ditandai {{ $item['to'] }}.' + (count('{{ $from }}') < selected.length ? ' Pesanan dengan status lain dilewati.' : '')"
+                                    @endif
+                                    x-show="count('{{ $from }}')" class="btn btn-primary btn-sm">
+                                <x-icon :name="$item['icon']" class="size-4" /> {{ $item['label'] }}
+                                <span x-show="count('{{ $from }}') < selected.length" class="rounded-full bg-white/20 px-1.5 text-xs" x-text="count('{{ $from }}')"></span>
+                            </button>
+                        @endforeach
                     @endcan
                     <button name="action" value="packing-slips" formtarget="_blank" class="btn btn-secondary btn-sm"><x-icon name="printer" class="size-4" /> Cetak packing slip</button>
                 </div>
+
+                @can('orders.manage')
+                    @if ($toShip->isNotEmpty())
+                        {{-- Kirim massal: isi nomor resi per pesanan --}}
+                        <template x-teleport="body">
+                            <div x-show="shipOpen" x-cloak class="fixed inset-0 z-50 flex items-end justify-center bg-stone-900/40 backdrop-blur-sm sm:items-center sm:p-4" @keydown.escape.window="shipOpen = false">
+                                <div @click.outside="shipOpen = false" x-show="shipOpen" x-transition
+                                     class="flex max-h-[90dvh] w-full max-w-lg flex-col rounded-t-3xl bg-white shadow-2xl sm:rounded-3xl"
+                                     role="dialog" aria-modal="true" aria-labelledby="bulk-ship-title">
+                                    <div class="flex items-start justify-between gap-3 border-b border-stone-100 p-5">
+                                        <div>
+                                            <h2 id="bulk-ship-title" class="text-lg font-bold text-stone-900">Tandai dikirim</h2>
+                                            <p class="text-sm text-stone-500">Isi nomor resi <span x-text="count('processing')"></span> pesanan. Yang dikosongkan tetap berstatus Diproses.</p>
+                                        </div>
+                                        <button type="button" @click="shipOpen = false" class="btn btn-ghost -mr-2 -mt-1 p-2" aria-label="Tutup"><x-icon name="x" class="size-5" /></button>
+                                    </div>
+                                    <div class="flex-1 divide-y divide-stone-100 overflow-y-auto px-5">
+                                        @foreach ($toShip as $order)
+                                            <div x-show="selected.includes('{{ $order->id }}')" class="py-3">
+                                                <label for="resi-{{ $order->id }}" class="flex flex-wrap items-baseline justify-between gap-x-3 text-sm">
+                                                    <span class="font-semibold text-stone-900">{{ $order->code }}</span>
+                                                    <span class="text-xs text-stone-500">{{ $order->recipient_name }} · {{ $order->courierLabel() ?? 'Kurir belum dipilih' }}</span>
+                                                </label>
+                                                <input id="resi-{{ $order->id }}" form="bulk-orders" name="tracking[{{ $order->id }}]"
+                                                       value="{{ old('tracking.'.$order->id, $order->tracking_number) }}" maxlength="64"
+                                                       x-bind:disabled="! shipOpen || ! selected.includes('{{ $order->id }}')"
+                                                       @keydown.enter.prevent="nextField($el)" data-ship-resi
+                                                       placeholder="Nomor resi" autocomplete="off" class="input mt-1.5 font-mono @error('tracking.'.$order->id) input-error @enderror">
+                                                <x-input-error :for="'tracking.'.$order->id" />
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <div class="space-y-3 border-t border-stone-100 p-5">
+                                        <p class="flex gap-2 text-xs text-stone-500"><x-icon name="info" class="size-4 shrink-0" /> Bisa pakai pemindai barcode: setelah satu resi terbaca, kursor pindah ke pesanan berikutnya.</p>
+                                        <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                                            <button type="button" @click="shipOpen = false" class="btn btn-ghost">Batal</button>
+                                            <button id="bulk-ship-submit" form="bulk-orders" name="action" value="ship" class="btn btn-primary">
+                                                <x-icon name="truck" class="size-4" /> Tandai dikirim
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    @endif
+                @endcan
             <div class="relative overflow-x-auto">
                 <table class="table-base">
                     <thead class="bg-stone-50/70"><tr>

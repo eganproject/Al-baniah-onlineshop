@@ -119,14 +119,30 @@ class OrderController extends Controller
         return view('orders.packing-slip', ['orders' => collect([$order->load('items')])]);
     }
 
-    /** Aksi massal dari daftar pesanan: proses atau cetak packing slip. */
+    /**
+     * Aksi status massal: dari status asal => ke status tujuan. Tombolnya di
+     * daftar pesanan muncul sesuai status pesanan yang dipilih.
+     */
+    public const BULK_TRANSITIONS = [
+        'process' => [OrderStatus::Paid, OrderStatus::Processing],
+        'ship' => [OrderStatus::Processing, OrderStatus::Shipped],
+        'deliver' => [OrderStatus::Shipped, OrderStatus::Delivered],
+        'complete' => [OrderStatus::Delivered, OrderStatus::Completed],
+    ];
+
+    /** Aksi massal dari daftar pesanan: ubah status atau cetak packing slip. */
     public function bulk(Request $request, OrderService $orders): RedirectResponse|View
     {
         $data = $request->validate([
-            'action' => ['required', Rule::in(['process', 'packing-slips'])],
+            'action' => ['required', Rule::in([...array_keys(self::BULK_TRANSITIONS), 'packing-slips'])],
             'orders' => ['required', 'array', 'max:100'],
             'orders.*' => ['integer'],
-        ], ['orders.required' => 'Pilih minimal satu pesanan.']);
+            'tracking' => ['nullable', 'array', 'max:100'],
+            'tracking.*' => ['nullable', 'string', 'max:64'],
+        ], [
+            'orders.required' => 'Pilih minimal satu pesanan.',
+            'tracking.*.max' => 'Nomor resi maksimal 64 karakter.',
+        ]);
 
         $selected = Order::whereKey($data['orders'])->with('items')->oldest()->get();
 
@@ -136,18 +152,48 @@ class OrderController extends Controller
 
         Gate::authorize('orders.manage');
 
-        $processed = 0;
+        [$from, $to] = self::BULK_TRANSITIONS[$data['action']];
+        $eligible = $selected->filter(fn (Order $order) => $order->status === $from);
+        $skipped = $selected->count() - $eligible->count();
+        $notes = $skipped ? ["{$skipped} dilewati karena statusnya bukan {$from->label()}."] : [];
 
-        foreach ($selected as $order) {
-            if ($order->status === OrderStatus::Paid) {
-                $orders->transition($order, OrderStatus::Processing);
-                $processed++;
+        // Kirim massal: resi diisi per pesanan; yang dikosongkan tidak diubah.
+        $tracking = [];
+
+        if ($to === OrderStatus::Shipped) {
+            foreach ($eligible as $order) {
+                $tracking[$order->id] = trim((string) ($data['tracking'][$order->id] ?? ''));
+            }
+
+            $duplicates = collect($tracking)->filter()->map(fn ($resi) => mb_strtoupper($resi))->duplicates()->unique();
+
+            if ($duplicates->isNotEmpty()) {
+                return back()->withInput()->with('error', 'Nomor resi '.$duplicates->implode(', ').' dipakai lebih dari satu pesanan.');
+            }
+
+            $empty = collect($tracking)->filter(fn ($resi) => $resi === '')->count();
+
+            if ($empty) {
+                $eligible = $eligible->filter(fn (Order $order) => $tracking[$order->id] !== '');
+                $notes[] = "{$empty} belum dikirim karena nomor resinya kosong.";
             }
         }
 
-        $skipped = $selected->count() - $processed;
+        $done = 0;
 
-        return back()->with('success', "{$processed} pesanan diproses.".($skipped ? " {$skipped} dilewati karena statusnya bukan Dibayar." : ''));
+        foreach ($eligible as $order) {
+            try {
+                $orders->transition($order, $to, $tracking[$order->id] ?? null);
+                $done++;
+            } catch (InvalidArgumentException) {
+                // Status berubah di tempat lain sejak daftar dimuat.
+                $notes[] = "{$order->code} dilewati karena statusnya sudah berubah.";
+            }
+        }
+
+        $message = trim("{$done} pesanan ditandai ".mb_strtolower($to->label()).'. '.implode(' ', $notes));
+
+        return back()->with($done ? 'success' : 'warning', $message);
     }
 
     private function filtered(Request $request): Builder

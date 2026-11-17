@@ -139,13 +139,73 @@ class OrderManagementTest extends TestCase
 
         $this->actingAs($this->admin)
             ->post(route('admin.orders.bulk'), ['action' => 'process', 'orders' => [$paid->id, $pending->id]])
-            ->assertSessionHas('success', '1 pesanan diproses. 1 dilewati karena statusnya bukan Dibayar.');
+            ->assertSessionHas('success', '1 pesanan ditandai diproses. 1 dilewati karena statusnya bukan Dibayar.');
 
         $this->assertSame(OrderStatus::Processing, $paid->refresh()->status);
         $this->assertSame(OrderStatus::PendingPayment, $pending->refresh()->status);
 
         $this->post(route('admin.orders.bulk'), ['action' => 'packing-slips', 'orders' => [$paid->id, $pending->id]])
             ->assertOk()->assertSee($paid->code)->assertSee($pending->code);
+    }
+
+    public function test_admin_bulk_ship_requires_tracking_number_per_order(): void
+    {
+        $a = $this->makeOrder(OrderStatus::Processing, ['courier' => 'jne']);
+        $b = $this->makeOrder(OrderStatus::Processing);
+        $c = $this->makeOrder(OrderStatus::Processing);
+        $paid = $this->makeOrder(OrderStatus::Paid);
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.orders.index', ['status' => 'processing']))
+            ->assertOk()->assertSee('Tandai dikirim')->assertSee('tracking['.$a->id.']', false);
+
+        $this->post(route('admin.orders.bulk'), [
+            'action' => 'ship',
+            'orders' => [$a->id, $b->id, $c->id, $paid->id],
+            'tracking' => [$a->id => ' JNE123 ', $b->id => 'SCP456', $c->id => ''],
+        ])->assertSessionHas('success', '2 pesanan ditandai dikirim. 1 dilewati karena statusnya bukan Diproses. 1 belum dikirim karena nomor resinya kosong.');
+
+        $a->refresh();
+        $this->assertSame(OrderStatus::Shipped, $a->status);
+        $this->assertSame('JNE123', $a->tracking_number);
+        $this->assertNotNull($a->shipped_at);
+        $this->assertStringContainsString('JNE123', $a->statusHistories()->get()->last()->note);
+        $this->assertSame('SCP456', $b->refresh()->tracking_number);
+        $this->assertSame(OrderStatus::Processing, $c->refresh()->status);
+        $this->assertSame(OrderStatus::Paid, $paid->refresh()->status);
+    }
+
+    public function test_admin_bulk_ship_rejects_duplicate_tracking_numbers(): void
+    {
+        $a = $this->makeOrder(OrderStatus::Processing);
+        $b = $this->makeOrder(OrderStatus::Processing);
+
+        $this->actingAs($this->admin)->post(route('admin.orders.bulk'), [
+            'action' => 'ship',
+            'orders' => [$a->id, $b->id],
+            'tracking' => [$a->id => 'jne1', $b->id => 'JNE1'],
+        ])->assertSessionHas('error')->assertSessionHasInput('action', 'ship');
+
+        $this->assertSame(OrderStatus::Processing, $a->refresh()->status);
+        $this->assertSame(OrderStatus::Processing, $b->refresh()->status);
+    }
+
+    public function test_admin_bulk_deliver_and_complete(): void
+    {
+        $shipped = $this->makeOrder(OrderStatus::Shipped, ['tracking_number' => 'JNE9', 'shipped_at' => now()]);
+        $delivered = $this->makeOrder(OrderStatus::Delivered, ['tracking_number' => 'JNE8', 'shipped_at' => now(), 'delivered_at' => now()]);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.orders.bulk'), ['action' => 'deliver', 'orders' => [$shipped->id, $delivered->id]])
+            ->assertSessionHas('success', '1 pesanan ditandai sampai tujuan. 1 dilewati karena statusnya bukan Dikirim.');
+
+        $this->assertSame(OrderStatus::Delivered, $shipped->refresh()->status);
+        $this->assertNotNull($shipped->delivered_at);
+
+        $this->post(route('admin.orders.bulk'), ['action' => 'complete', 'orders' => [$shipped->id, $delivered->id]])
+            ->assertSessionHas('success', '2 pesanan ditandai selesai.');
+
+        $this->assertSame(OrderStatus::Completed, $delivered->refresh()->status);
     }
 
     public function test_admin_print_pages_and_detail_render(): void
